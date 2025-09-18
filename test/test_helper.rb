@@ -4,6 +4,6 @@ require 'simplecov'
 SimpleCov.start
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
-require 'numo/tiny_linalg'
+require_relative '../lib/numo/linalg'
 
 require 'minitest/autorun'

@@ -1,6 +1,6 @@
 {
-  "name": "numo-tiny_linalg",
-  "repository": "git@github.com:yoshoku/numo-tiny_linalg.git",
+  "name": "numo-linalg-alt",
+  "repository": "git@github.com:yoshoku/numo-linalg-alt.git",
   "author": "Atsushi Tatsuma <yoshoku@outlook.com>",
   "license": "BSD-3-Clause",
   "private": true,
