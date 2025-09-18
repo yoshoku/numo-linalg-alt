@@ -1,19 +1,20 @@
-# Numo::TinyLinalg
+# Numo::Linalg Alternative
 
-[![Gem Version](https://badge.fury.io/rb/numo-tiny_linalg.svg)](https://badge.fury.io/rb/numo-tiny_linalg)
-[![Build Status](https://github.com/yoshoku/numo-tiny_linalg/actions/workflows/main.yml/badge.svg)](https://github.com/yoshoku/numo-tiny_linalg/actions/workflows/main.yml)
-[![BSD 3-Clause License](https://img.shields.io/badge/License-BSD%203--Clause-orange.svg)](https://github.com/yoshoku/numo-tiny_linalg/blob/main/LICENSE.txt)
-[![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://yoshoku.github.io/numo-tiny_linalg/doc/)
+[![Build Status](https://github.com/yoshoku/numo-linalg-alt/actions/workflows/main.yml/badge.svg)](https://github.com/yoshoku/numo-linalg-alt/actions/workflows/main.yml)
+[![BSD 3-Clause License](https://img.shields.io/badge/License-BSD%203--Clause-orange.svg)](https://github.com/yoshoku/numo-linalg-alt/blob/main/LICENSE.txt)
 
-Numo::TinyLinalg is a subset library from [Numo::Linalg](https://github.com/ruby-numo/numo-linalg) consisting only of methods used in Machine Learning algorithms.
-The functions Numo::TinyLinalg supports are dot, det, eigh, inv, pinv, qr, solve, cholesky, cho_solve and svd.
+Numo::Linalg Alternative (numo-linalg-alt) is an alternative to [Numo::Linalg](https://github.com/ruby-numo/numo-linalg).
+Unlike Numo::Linalg, numo-linalg-alt depends on [Numo::NArray Alterntive](https://github.com/yoshoku/numo-narray-alt).
+Please note that this gem was forked from [Numo::TinyLinalg](https://github.com/yoshoku/numo-tiny_linalg),
+not Numo::Linalg, and therefore may be missing some method implementations.
 
-Note that the version numbering rule of Numo::TinyLinalg is not compatible with that of Numo::Linalg.
+Note that the version numbering rule of Numo::Linalg Alternative is not compatible with that of Numo::Linalg.
 
 ## Installation
-Unlike Numo::Linalg, Numo::TinyLinalg only supports OpenBLAS as a backend library for BLAS and LAPACK.
+Unlike Numo::Linalg, numo-linalg-alt only supports [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS)
+as a backend library for BLAS and LAPACK.
 
-Install the OpenBlas.
+Install the OpenBLAS.
 
 macOS:
 
@@ -32,14 +33,14 @@ Install the gem and add to the application's Gemfile by executing.
 macOS:
 
 ```sh
-$ bundle config --local build.numo-tiny_linalg "--with-opt-dir=/opt/homebrew/Cellar/openblas/0.3.23/"
-$ bundle add numo-tiny_linalg
+$ bundle config build.numo-linalg-alt "--with-opt-dir=/opt/homebrew/Cellar/openblas/0.3.30/"
+$ bundle add numo-linalg-alt
 ```
 
 Ubuntu:
 
 ```sh
-$ bundle add numo-tiny_linalg
+$ bundle add numo-linalg-alt
 ```
 
 If bundler is not being used to manage dependencies, install the gem by executing.
@@ -47,13 +48,13 @@ If bundler is not being used to manage dependencies, install the gem by executin
 macOS:
 
 ```sh
-$ gem install numo-tiny_linalg -- --with-opt-dir=/opt/homebrew/Cellar/openblas/0.3.23/
+$ gem install numo-linalg-alt -- --with-opt-dir=/opt/homebrew/Cellar/openblas/0.3.30/
 ```
 
 Ubuntu:
 
 ```sh
-$ gem install numo-tiny_linalg
+$ gem install numo-linalg-alt
 ```
 
 ## Usage
@@ -61,9 +62,7 @@ $ gem install numo-tiny_linalg
 An example of singular value decomposition.
 
 ```ruby
-require 'numo/tiny_linalg'
-
-Numo::Linalg = Numo::TinyLinalg unless defined?(Numo::Linalg)
+require 'numo/linalg'
 
 x = Numo::DFloat.new(5, 2).rand.dot(Numo::DFloat.new(2, 3).rand)
 # =>
@@ -91,12 +90,12 @@ puts (x - z).abs.max
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/yoshoku/numo-tiny_linalg.
-This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/yoshoku/numo-tiny_linalg/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/yoshoku/numo-linalg-alt.
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/yoshoku/numo-linalg-alt/blob/main/CODE_OF_CONDUCT.md).
 
 ## Code of Conduct
 
-Everyone interacting in the Numo::TinyLinalg project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/yoshoku/numo-tiny_linalg/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Numo::TinyLinalg project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/yoshoku/numo-linalg-alt/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 

@@ -9,11 +9,11 @@ Gem::Specification.new do |spec|
   spec.email = ['yoshoku@outlook.com']
 
   spec.summary = <<~MSG
-    Numo::TinyLinalg is a subset library from Numo::Linalg consisting only of methods used in Machine Learning algorithms.
+    Numo::Linalg Alternative (numo-linalg-alt) is an alternative to Numo::Linalg.
   MSG
   spec.description = <<~MSG
-    Numo::TinyLinalg is a subset library from Numo::Linalg consisting only of methods used in Machine Learning algorithms.
-    The functions Numo::TinyLinalg supports are dot, det, eigh, inv, pinv, qr, solve, cholesky, cho_solve and svd.
+    Numo::Linalg Alternative (numo-linalg-alt) is an alternative to Numo::Linalg.
+    Unlike Numo::Linalg, numo-linalg-alt depends on Numo::NArray Alternative (numo-narray-alt).
   MSG
   spec.homepage = 'https://github.com/yoshoku/numo-linalg-alt'
   spec.license = 'BSD-3-Clause'
