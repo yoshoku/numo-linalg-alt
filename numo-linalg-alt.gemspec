@@ -36,8 +36,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.extensions = ['ext/numo/linalg/extconf.rb']
 
-  # Uncomment to register a new dependency of your gem
-  spec.add_dependency 'numo-narray', '>= 0.9.1'
+  spec.add_dependency 'numo-narray-alt', '>= 0.9.3'
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
