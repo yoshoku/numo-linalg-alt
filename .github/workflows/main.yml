@@ -39,10 +39,6 @@ jobs:
         run: |
           pacman -Syu
           pacman -S --noconfirm mingw-w64-ucrt-x86_64-openblas mingw-w64-ucrt-x86_64-lapack
-      - name: Install numo-narray
-        run: |
-          gem install specific_install
-          gem specific_install -l 'https://github.com/ruby-numo/numo-narray.git'
       - name: Run the default task
         run: |
           bundle install
