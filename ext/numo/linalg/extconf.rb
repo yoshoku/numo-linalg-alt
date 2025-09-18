@@ -30,7 +30,11 @@ if on_windows
   abort 'libnarray.a is not found' unless have_library('narray', 'nary_new')
 end
 
-abort 'libstdc++ is not found.' unless have_library('stdc++')
+if RUBY_PLATFORM.include?('darwin')
+  warn 'libc++ is not found.' unless have_library('c++')
+else
+  warn 'libstdc++ is not found.' unless have_library('stdc++')
+end
 
 build_openblas = false
 unless find_library('openblas', 'LAPACKE_dsyevr')
