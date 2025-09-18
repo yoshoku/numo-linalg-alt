@@ -33,7 +33,7 @@ Install the gem and add to the application's Gemfile by executing.
 macOS:
 
 ```sh
-$ bundle config build.numo-linalg-alt "--with-opt-dir=/opt/homebrew/Cellar/openblas/0.3.30/"
+$ bundle config build.numo-linalg-alt "--with-opt-dir=/opt/homebrew/opt/openblas"
 $ bundle add numo-linalg-alt
 ```
 
@@ -48,7 +48,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 macOS:
 
 ```sh
-$ gem install numo-linalg-alt -- --with-opt-dir=/opt/homebrew/Cellar/openblas/0.3.30/
+$ gem install numo-linalg-alt -- --with-opt-dir=/opt/homebrew/opt/openblas
 ```
 
 Ubuntu:
