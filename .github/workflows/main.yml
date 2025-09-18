@@ -62,5 +62,5 @@ jobs:
         bundler-cache: true
     - name: Run the default task
       run: |
-        bundle exec rake compile -- --with-opt-dir=/usr/local/opt/openblas
+        bundle exec rake compile -- --with-opt-dir=/opt/homebrew/opt/openblas
         bundle exec rake test
