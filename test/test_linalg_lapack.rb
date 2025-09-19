@@ -100,8 +100,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgesv
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::DFloat.new(5, 5).rand
     b = Numo::DFloat.new(5).rand
     c = Numo::DFloat.new(5, 5).rand
@@ -116,8 +114,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgesv
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::SFloat.new(3, 3).rand
     b = Numo::SFloat.new(3).rand
     c = Numo::SFloat.new(3, 3).rand
@@ -132,8 +128,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgesv
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::DComplex.new(5, 5).rand
     b = Numo::DComplex.new(5).rand
     c = Numo::DComplex.new(5, 5).rand
@@ -148,8 +142,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgesv
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::SComplex.new(3, 3).rand
     b = Numo::SComplex.new(3).rand
     c = Numo::SComplex.new(3, 3).rand

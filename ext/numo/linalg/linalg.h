@@ -52,6 +52,7 @@
 #include "blas/nrm2.h"
 
 #include "lapack/geqrf.h"
+#include "lapack/gesv.h"
 #include "lapack/orgqr.h"
 #include "lapack/ungqr.h"
 
