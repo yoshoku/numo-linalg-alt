@@ -28,36 +28,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef NUMO_LINALG_ALT_H
-#define NUMO_LINALG_ALT_H 1
+#ifndef NUMO_LINALG_ALT_LINALG_H
+#define NUMO_LINALG_ALT_LINALG_H 1
+
+#include <string.h>
 
 #include <cblas.h>
 #include <lapacke.h>
 #include <openblas_config.h>
-
-#include <string>
 
 #include <ruby.h>
 
 #include <numo/narray.h>
 #include <numo/template.h>
 
-namespace Linalg {
+#include "converter.h"
+#include "util.h"
 
-const VALUE NaryTypes[4] = {
-  numo_cDFloat,
-  numo_cSFloat,
-  numo_cDComplex,
-  numo_cSComplex
-};
+#include "blas/dot.h"
+#include "blas/dot_sub.h"
+#include "blas/gemm.h"
+#include "blas/gemv.h"
+#include "blas/nrm2.h"
 
-enum NaryType {
-  numo_cDFloatId,
-  numo_cSFloatId,
-  numo_cDComplexId,
-  numo_cSComplexId
-};
-
-} // namespace Linalg
-
-#endif /* NUMO_LINALG_ALT_H */
+#endif /* NUMO_LINALG_ALT_LINALG_H */
