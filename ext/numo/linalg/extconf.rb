@@ -94,5 +94,6 @@ end
 
 $srcs = Dir.glob("#{$srcdir}/**/*.c").map { |path| File.basename(path) }
 $VPATH << '$(srcdir)/blas'
+$VPATH << '$(srcdir)/lapack'
 
 create_makefile('numo/linalg/linalg')
