@@ -192,8 +192,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgesdd
-    skip 'This function has not been translated into C yet.'
-
     x = Numo::DFloat.new(5, 3).rand.dot(Numo::DFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.dgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -203,8 +201,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgesdd
-    skip 'This function has not been translated into C yet.'
-
     x = Numo::SFloat.new(5, 3).rand.dot(Numo::SFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.sgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -214,8 +210,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgesdd
-    skip 'This function has not been translated into C yet.'
-
     x = Numo::DComplex.new(5, 3).rand.dot(Numo::DComplex.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.zgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -225,8 +219,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgesdd
-    skip 'This function has not been translated into C yet.'
-
     x = Numo::SComplex.new(5, 3).rand.dot(Numo::SComplex.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.cgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
