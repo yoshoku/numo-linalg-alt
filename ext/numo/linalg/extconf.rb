@@ -92,4 +92,7 @@ if RUBY_PLATFORM.include?('darwin') && Gem::Version.new('3.1.0') <= Gem::Version
   $LDFLAGS << ' -Wl,-undefined,dynamic_lookup'
 end
 
+$srcs = Dir.glob("#{$srcdir}/**/*.c").map { |path| File.basename(path) }
+$VPATH << '$(srcdir)/blas'
+
 create_makefile('numo/linalg/linalg')
