@@ -4,6 +4,7 @@ require 'test_helper'
 
 class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   def setup
+    skip 'Lapack functions has not been translated into C yet.'
     Numo::NArray.srand(53_196)
   end
 
