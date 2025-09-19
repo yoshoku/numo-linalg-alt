@@ -51,4 +51,6 @@
 #include "blas/gemv.h"
 #include "blas/nrm2.h"
 
+#include "lapack/geqrf.h"
+
 #endif /* NUMO_LINALG_ALT_LINALG_H */
