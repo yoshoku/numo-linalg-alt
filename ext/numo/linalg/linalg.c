@@ -258,6 +258,7 @@ void Init_linalg(void) {
   define_linalg_lapack_orgqr(rb_mLinalgLapack);
   define_linalg_lapack_ungqr(rb_mLinalgLapack);
   define_linalg_lapack_gesv(rb_mLinalgLapack);
+  define_linalg_lapack_gesvd(rb_mLinalgLapack);
 
   rb_define_alias(rb_singleton_class(rb_mLinalgBlas), "znrm2", "dznrm2");
   rb_define_alias(rb_singleton_class(rb_mLinalgBlas), "cnrm2", "scnrm2");
