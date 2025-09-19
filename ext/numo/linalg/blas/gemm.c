@@ -173,6 +173,7 @@ DEF_LINALG_FUNC(scomplex, numo_cSComplex, cgemm)
 
 #undef DEF_LINALG_OPTIONS
 #undef DEF_LINALG_ITER_FUNC
+#undef DEF_LINALG_ITER_FUNC_COMPLEX
 #undef DEF_LINALG_FUNC
 
 void define_linalg_blas_gemm(VALUE mBlas) {

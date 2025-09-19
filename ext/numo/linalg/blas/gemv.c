@@ -150,6 +150,7 @@ DEF_LINALG_FUNC(scomplex, numo_cSComplex, cgemv)
 
 #undef DEF_LINALG_OPTIONS
 #undef DEF_LINALG_ITER_FUNC
+#undef DEF_LINALG_ITER_FUNC_COMPLEX
 #undef DEF_LINALG_FUNC
 
 void define_linalg_blas_gemv(VALUE mBlas) {
