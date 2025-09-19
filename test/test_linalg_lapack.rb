@@ -54,8 +54,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgeqrf_zungqr
-    skip 'These functions have not been translated into C yet.'
-
     ma = 3
     na = 2
     a = Numo::DComplex.new(ma, na).rand
@@ -76,6 +74,29 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
 
     assert_operator(error_a, :<, 1e-7)
     assert_operator(error_b, :<, 1e-7)
+  end
+
+  def test_lapack_cgeqrf_cungqr
+    ma = 3
+    na = 2
+    a = Numo::SComplex.new(ma, na).rand
+    qr, tau, = Numo::Linalg::Lapack.cgeqrf(a.dup)
+    r = qr.triu
+    qq = Numo::SComplex.zeros(ma, ma)
+    qq[0...ma, 0...na] = qr
+    q, = Numo::Linalg::Lapack.cungqr(qq, tau)
+    error_a = (a - q.dot(r)).abs.max
+
+    mb = 2
+    nb = 3
+    b = Numo::SComplex.new(mb, nb).rand
+    qr, tau, = Numo::Linalg::Lapack.cgeqrf(b.dup)
+    r = qr.triu
+    q, = Numo::Linalg::Lapack.cungqr(qr[true, 0...mb], tau)
+    error_b = (b - q.dot(r)).abs.max
+
+    assert_operator(error_a, :<, 1e-5)
+    assert_operator(error_b, :<, 1e-5)
   end
 
   def test_lapack_dgesv

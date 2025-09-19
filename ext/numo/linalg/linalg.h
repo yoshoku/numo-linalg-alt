@@ -53,5 +53,6 @@
 
 #include "lapack/geqrf.h"
 #include "lapack/orgqr.h"
+#include "lapack/ungqr.h"
 
 #endif /* NUMO_LINALG_ALT_LINALG_H */
