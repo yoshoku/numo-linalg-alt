@@ -4,7 +4,6 @@ require 'test_helper'
 
 class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   def setup
-    skip 'Lapack functions has not been translated into C yet.'
     Numo::NArray.srand(53_196)
   end
 
@@ -55,6 +54,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgeqrf_zungqr
+    skip 'These functions have not been translated into C yet.'
+
     ma = 3
     na = 2
     a = Numo::DComplex.new(ma, na).rand
@@ -78,6 +79,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgesv
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::DFloat.new(5, 5).rand
     b = Numo::DFloat.new(5).rand
     c = Numo::DFloat.new(5, 5).rand
@@ -92,6 +95,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgesv
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::SFloat.new(3, 3).rand
     b = Numo::SFloat.new(3).rand
     c = Numo::SFloat.new(3, 3).rand
@@ -106,6 +111,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgesv
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::DComplex.new(5, 5).rand
     b = Numo::DComplex.new(5).rand
     c = Numo::DComplex.new(5, 5).rand
@@ -120,6 +127,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgesv
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::SComplex.new(3, 3).rand
     b = Numo::SComplex.new(3).rand
     c = Numo::SComplex.new(3, 3).rand
@@ -134,6 +143,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgesvd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::DFloat.new(5, 3).rand.dot(Numo::DFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.dgesvd(x.dup, jobu: 'S', jobvt: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -143,6 +154,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgesvd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::SFloat.new(5, 3).rand.dot(Numo::SFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.sgesvd(x.dup, jobu: 'S', jobvt: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -152,6 +165,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgesvd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::DComplex.new(5, 3).rand.dot(Numo::DComplex.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.zgesvd(x.dup, jobu: 'S', jobvt: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -161,6 +176,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgesvd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::SComplex.new(5, 3).rand.dot(Numo::SComplex.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.cgesvd(x.dup, jobu: 'S', jobvt: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -170,6 +187,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgesdd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::DFloat.new(5, 3).rand.dot(Numo::DFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.dgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -179,6 +198,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgesdd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::SFloat.new(5, 3).rand.dot(Numo::SFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.sgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -188,6 +209,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgesdd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::DComplex.new(5, 3).rand.dot(Numo::DComplex.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.zgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -197,6 +220,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgesdd
+    skip 'This function has not been translated into C yet.'
+
     x = Numo::SComplex.new(5, 3).rand.dot(Numo::SComplex.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.cgesdd(x.dup, jobz: 'S')
     z = u.dot(s.diag).dot(vt)
@@ -206,6 +231,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgetrf
+    skip 'This function has not been translated into C yet.'
+
     nr = 3
     nc = 2
     a = Numo::DFloat.new(nr, nc).rand
@@ -219,6 +246,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgetrf
+    skip 'This function has not been translated into C yet.'
+
     nr = 3
     nc = 5
     a = Numo::SFloat.new(nr, nc).rand
@@ -232,6 +261,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgetrf
+    skip 'This function has not been translated into C yet.'
+
     nr = 3
     nc = 2
     a = Numo::DComplex.new(nr, nc).rand
@@ -245,6 +276,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgetrf
+    skip 'This function has not been translated into C yet.'
+
     nr = 3
     nc = 2
     a = Numo::SComplex.new(nr, nc).rand
@@ -258,6 +291,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgetri
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::DFloat.new(n, n).rand - 0.5
     lu, piv, = Numo::Linalg::Lapack.dgetrf(a.dup)
@@ -268,6 +303,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgetri
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::SFloat.new(n, n).rand - 0.5
     lu, piv, = Numo::Linalg::Lapack.sgetrf(a.dup)
@@ -278,6 +315,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgetri
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::DComplex.new(n, n).rand
     lu, piv, = Numo::Linalg::Lapack.zgetrf(a.dup)
@@ -288,6 +327,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgetri
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::SComplex.new(n, n).rand
     lu, piv, = Numo::Linalg::Lapack.cgetrf(a.dup)
@@ -298,6 +339,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dtrtrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DFloat.new(n, n).rand.triu
     b = Numo::DFloat.new(n).rand - 0.5
@@ -309,6 +352,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_strtrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SFloat.new(n, n).rand.tril
     b = Numo::SFloat.new(n).rand - 0.5
@@ -320,6 +365,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ztrtrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DComplex.new(n, n).rand.triu
     b = Numo::DComplex.new(n).rand - 0.5
@@ -331,6 +378,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ctrtrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SComplex.new(n, n).rand.tril
     b = Numo::SComplex.new(n).rand - 0.5
@@ -342,6 +391,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dpotrf
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::DFloat.new(n, n).rand - 0.5
     b = a.transpose.dot(a)
@@ -359,6 +410,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_spotrf
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::SFloat.new(n, n).rand - 0.5
     b = a.transpose.dot(a)
@@ -376,6 +429,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zpotrf
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::DComplex.new(n, n).rand - 0.5
     b = a.transpose.conjugate.dot(a)
@@ -393,6 +448,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cpotrf
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::SComplex.new(n, n).rand - 0.5
     b = a.transpose.conjugate.dot(a)
@@ -410,6 +467,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dpotrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DFloat.new(n, n).rand
     c = a.transpose.dot(a)
@@ -422,6 +481,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_spotrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DFloat.new(n, n).rand
     c = a.transpose.dot(a)
@@ -434,6 +495,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zpotrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
@@ -446,6 +509,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cpotrs
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
@@ -458,6 +523,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dsyev
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -468,6 +535,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ssyev
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -478,6 +547,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zheev
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
@@ -488,6 +559,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cheev
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
@@ -498,6 +571,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dsyevd
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -508,6 +583,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ssyevd
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -518,6 +595,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zheevd
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
@@ -528,6 +607,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cheevd
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
@@ -538,6 +619,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dsyevr
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::DFloat.new(m, n).rand - 0.5
@@ -557,6 +640,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ssyevr
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::SFloat.new(m, n).rand - 0.5
@@ -576,6 +661,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zheevr
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::DComplex.new(m, n).rand - 0.5
@@ -595,6 +682,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cheevr
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::SComplex.new(m, n).rand - 0.5
@@ -614,6 +703,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dsygv
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -625,6 +716,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ssygv
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -636,6 +729,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zhegv
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::DFloat.new(n, n).rand - 0.5
     a = 0.5 * (a.transpose + a)
@@ -652,6 +747,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_chegv
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::SFloat.new(n, n).rand - 0.5
     a = 0.5 * (a.transpose + a)
@@ -668,6 +765,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dsygvd
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -679,6 +778,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ssygvd
+    skip 'This function has not been translated into C yet.'
+
     n = 5
     a = Numo::SFloat.new(n, n).rand - 0.5
     c = 0.5 * (a.transpose + a)
@@ -690,6 +791,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zhegvd
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::DFloat.new(n, n).rand - 0.5
     a = 0.5 * (a.transpose + a)
@@ -706,6 +809,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_chegvd
+    skip 'This function has not been translated into C yet.'
+
     n = 3
     a = Numo::SFloat.new(n, n).rand - 0.5
     a = 0.5 * (a.transpose + a)
@@ -722,6 +827,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dsygvx
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::DFloat.new(m, n).rand - 0.5
@@ -742,6 +849,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ssygvx
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::SFloat.new(m, n).rand - 0.5
@@ -762,6 +871,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zhegvx
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::DComplex.new(m, n).rand - 0.5
@@ -782,6 +893,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_chegvx
+    skip 'This function has not been translated into C yet.'
+
     m = 3
     n = 5
     a = Numo::SComplex.new(m, n).rand - 0.5
@@ -802,6 +915,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dlange
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::DFloat.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.dlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose).trace)).abs
@@ -813,6 +928,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_slange
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::SFloat.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.dlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose).trace)).abs
@@ -824,6 +941,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zlange
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::DComplex.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.zlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose.conjugate).trace)).abs
@@ -835,6 +954,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_clange
+    skip 'This function has not been translated into C yet.'
+
     a = Numo::SComplex.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.clange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose.conjugate).trace)).abs

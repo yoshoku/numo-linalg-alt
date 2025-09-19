@@ -52,5 +52,6 @@
 #include "blas/nrm2.h"
 
 #include "lapack/geqrf.h"
+#include "lapack/orgqr.h"
 
 #endif /* NUMO_LINALG_ALT_LINALG_H */
