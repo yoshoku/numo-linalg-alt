@@ -1,10 +1,10 @@
 #include "dot_sub.h"
 
-#define DEF_LINALG_FUNC(tElType, tNArrType, fBlasFnc)                            \
+#define DEF_LINALG_FUNC(tDType, tNArrType, fBlasFnc)                             \
   static void _iter_##fBlasFnc(na_loop_t* const lp) {                            \
-    tElType* x = (tElType*)NDL_PTR(lp, 0);                                       \
-    tElType* y = (tElType*)NDL_PTR(lp, 1);                                       \
-    tElType* d = (tElType*)NDL_PTR(lp, 2);                                       \
+    tDType* x = (tDType*)NDL_PTR(lp, 0);                                         \
+    tDType* y = (tDType*)NDL_PTR(lp, 1);                                         \
+    tDType* d = (tDType*)NDL_PTR(lp, 2);                                         \
     const size_t n = NDL_SHAPE(lp, 0)[0];                                        \
     cblas_##fBlasFnc(n, x, 1, y, 1, d);                                          \
   }                                                                              \

@@ -4,10 +4,10 @@ struct _gesv_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tElType, tNArrType, fLapackFnc)                                                    \
+#define DEF_LINALG_FUNC(tDType, tNArrType, fLapackFnc)                                                     \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
-    tElType* a = (tElType*)NDL_PTR(lp, 0);                                                                 \
-    tElType* b = (tElType*)NDL_PTR(lp, 1);                                                                 \
+    tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
+    tDType* b = (tDType*)NDL_PTR(lp, 1);                                                                   \
     int* ipiv = (int*)NDL_PTR(lp, 2);                                                                      \
     int* info = (int*)NDL_PTR(lp, 3);                                                                      \
     struct _gesv_option* opt = (struct _gesv_option*)(lp->opt_ptr);                                        \

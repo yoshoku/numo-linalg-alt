@@ -4,9 +4,9 @@ struct _getrf_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tElType, tNArrType, fLapackFnc)                                                    \
+#define DEF_LINALG_FUNC(tDType, tNArrType, fLapackFnc)                                                     \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
-    tElType* a = (tElType*)NDL_PTR(lp, 0);                                                                 \
+    tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     int* ipiv = (int*)NDL_PTR(lp, 1);                                                                      \
     int* info = (int*)NDL_PTR(lp, 2);                                                                      \
     struct _getrf_option* opt = (struct _getrf_option*)(lp->opt_ptr);                                      \

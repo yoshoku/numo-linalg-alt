@@ -1,8 +1,8 @@
 #include "nrm2.h"
 
-#define DEF_LINALG_FUNC(tElType, tRtType, tNArrType, tRetNArrType, fBlasFnc)     \
+#define DEF_LINALG_FUNC(tDType, tRtType, tNArrType, tRetNArrType, fBlasFnc)      \
   static void _iter_##fBlasFnc(na_loop_t* const lp) {                            \
-    tElType* x = (tElType*)NDL_PTR(lp, 0);                                       \
+    tDType* x = (tDType*)NDL_PTR(lp, 0);                                         \
     tRtType* d = (tRtType*)NDL_PTR(lp, 1);                                       \
     const size_t n = NDL_SHAPE(lp, 0)[0];                                        \
     tRtType ret = cblas_##fBlasFnc(n, x, 1);                                     \

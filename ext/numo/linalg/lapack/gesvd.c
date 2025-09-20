@@ -6,12 +6,12 @@ struct _gesvd_option {
   char jobvt;
 };
 
-#define DEF_LINALG_FUNC(tElType, tRtType, tNArrType, tRtNArrType, fLapackFnc)                                                              \
+#define DEF_LINALG_FUNC(tDType, tRtType, tNArrType, tRtNArrType, fLapackFnc)                                                               \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                                                    \
-    tElType* a = (tElType*)NDL_PTR(lp, 0);                                                                                                 \
+    tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                   \
     tRtType* s = (tRtType*)NDL_PTR(lp, 1);                                                                                                 \
-    tElType* u = (tElType*)NDL_PTR(lp, 2);                                                                                                 \
-    tElType* vt = (tElType*)NDL_PTR(lp, 3);                                                                                                \
+    tDType* u = (tDType*)NDL_PTR(lp, 2);                                                                                                   \
+    tDType* vt = (tDType*)NDL_PTR(lp, 3);                                                                                                  \
     int* info = (int*)NDL_PTR(lp, 4);                                                                                                      \
     struct _gesvd_option* opt = (struct _gesvd_option*)(lp->opt_ptr);                                                                      \
                                                                                                                                            \

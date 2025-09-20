@@ -4,10 +4,10 @@ struct _geqrf_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tElType, tNArrType, fLapackFnc)                                                    \
+#define DEF_LINALG_FUNC(tDType, tNArrType, fLapackFnc)                                                     \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
-    tElType* a = (tElType*)NDL_PTR(lp, 0);                                                                 \
-    tElType* tau = (tElType*)NDL_PTR(lp, 1);                                                               \
+    tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
+    tDType* tau = (tDType*)NDL_PTR(lp, 1);                                                                 \
     int* info = (int*)NDL_PTR(lp, 2);                                                                      \
     struct _geqrf_option* opt = (struct _geqrf_option*)(lp->opt_ptr);                                      \
     const lapack_int m = NDL_SHAPE(lp, 0)[0];                                                              \

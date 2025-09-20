@@ -1,57 +1,57 @@
 #include "gemm.h"
 
-#define DEF_LINALG_OPTIONS(tElType) \
-  struct _gemm_options_##tElType {  \
-    tElType alpha;                  \
-    tElType beta;                   \
-    enum CBLAS_ORDER order;         \
-    enum CBLAS_TRANSPOSE transa;    \
-    enum CBLAS_TRANSPOSE transb;    \
-    blasint m;                      \
-    blasint n;                      \
-    blasint k;                      \
+#define DEF_LINALG_OPTIONS(tDType) \
+  struct _gemm_options_##tDType {  \
+    tDType alpha;                  \
+    tDType beta;                   \
+    enum CBLAS_ORDER order;        \
+    enum CBLAS_TRANSPOSE transa;   \
+    enum CBLAS_TRANSPOSE transb;   \
+    blasint m;                     \
+    blasint n;                     \
+    blasint k;                     \
   };
 
-#define DEF_LINALG_ITER_FUNC(tElType, fBlasFnc)                                                 \
-  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                           \
-    const tElType* a = (tElType*)NDL_PTR(lp, 0);                                                \
-    const tElType* b = (tElType*)NDL_PTR(lp, 1);                                                \
-    tElType* c = (tElType*)NDL_PTR(lp, 2);                                                      \
-    const struct _gemm_options_##tElType* opt = (struct _gemm_options_##tElType*)(lp->opt_ptr); \
-    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                          \
-    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                          \
-    const blasint ldc = opt->n;                                                                 \
-    cblas_##fBlasFnc(opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k,              \
-                     opt->alpha, a, lda, b, ldb, opt->beta, c, ldc);                            \
+#define DEF_LINALG_ITER_FUNC(tDType, fBlasFnc)                                                \
+  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                         \
+    const tDType* a = (tDType*)NDL_PTR(lp, 0);                                                \
+    const tDType* b = (tDType*)NDL_PTR(lp, 1);                                                \
+    tDType* c = (tDType*)NDL_PTR(lp, 2);                                                      \
+    const struct _gemm_options_##tDType* opt = (struct _gemm_options_##tDType*)(lp->opt_ptr); \
+    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                        \
+    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                        \
+    const blasint ldc = opt->n;                                                               \
+    cblas_##fBlasFnc(opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k,            \
+                     opt->alpha, a, lda, b, ldb, opt->beta, c, ldc);                          \
   }
 
-#define DEF_LINALG_ITER_FUNC_COMPLEX(tElType, fBlasFnc)                                         \
-  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                           \
-    const tElType* a = (tElType*)NDL_PTR(lp, 0);                                                \
-    const tElType* b = (tElType*)NDL_PTR(lp, 1);                                                \
-    tElType* c = (tElType*)NDL_PTR(lp, 2);                                                      \
-    const struct _gemm_options_##tElType* opt = (struct _gemm_options_##tElType*)(lp->opt_ptr); \
-    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                          \
-    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                          \
-    const blasint ldc = opt->n;                                                                 \
-    cblas_##fBlasFnc(opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k,              \
-                     &opt->alpha, a, lda, b, ldb, &opt->beta, c, ldc);                          \
+#define DEF_LINALG_ITER_FUNC_COMPLEX(tDType, fBlasFnc)                                        \
+  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                         \
+    const tDType* a = (tDType*)NDL_PTR(lp, 0);                                                \
+    const tDType* b = (tDType*)NDL_PTR(lp, 1);                                                \
+    tDType* c = (tDType*)NDL_PTR(lp, 2);                                                      \
+    const struct _gemm_options_##tDType* opt = (struct _gemm_options_##tDType*)(lp->opt_ptr); \
+    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                        \
+    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                        \
+    const blasint ldc = opt->n;                                                               \
+    cblas_##fBlasFnc(opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k,            \
+                     &opt->alpha, a, lda, b, ldb, &opt->beta, c, ldc);                        \
   }
 
-#define DEF_LINALG_ITER_FUNC(tElType, fBlasFnc)                                                 \
-  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                           \
-    const tElType* a = (tElType*)NDL_PTR(lp, 0);                                                \
-    const tElType* b = (tElType*)NDL_PTR(lp, 1);                                                \
-    tElType* c = (tElType*)NDL_PTR(lp, 2);                                                      \
-    const struct _gemm_options_##tElType* opt = (struct _gemm_options_##tElType*)(lp->opt_ptr); \
-    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                          \
-    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                          \
-    const blasint ldc = opt->n;                                                                 \
-    cblas_##fBlasFnc(opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k,              \
-                     opt->alpha, a, lda, b, ldb, opt->beta, c, ldc);                            \
+#define DEF_LINALG_ITER_FUNC(tDType, fBlasFnc)                                                \
+  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                         \
+    const tDType* a = (tDType*)NDL_PTR(lp, 0);                                                \
+    const tDType* b = (tDType*)NDL_PTR(lp, 1);                                                \
+    tDType* c = (tDType*)NDL_PTR(lp, 2);                                                      \
+    const struct _gemm_options_##tDType* opt = (struct _gemm_options_##tDType*)(lp->opt_ptr); \
+    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                        \
+    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                        \
+    const blasint ldc = opt->n;                                                               \
+    cblas_##fBlasFnc(opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k,            \
+                     opt->alpha, a, lda, b, ldb, opt->beta, c, ldc);                          \
   }
 
-#define DEF_LINALG_FUNC(tElType, tNArrType, fBlasFnc)                                                    \
+#define DEF_LINALG_FUNC(tDType, tNArrType, fBlasFnc)                                                     \
   static VALUE _linalg_blas_##fBlasFnc(int argc, VALUE* argv, VALUE self) {                              \
     VALUE a = Qnil;                                                                                      \
     VALUE b = Qnil;                                                                                      \
@@ -85,8 +85,8 @@
       }                                                                                                  \
     }                                                                                                    \
                                                                                                          \
-    tElType alpha = kw_values[0] != Qundef ? conv_##tElType(kw_values[0]) : one_##tElType();             \
-    tElType beta = kw_values[1] != Qundef ? conv_##tElType(kw_values[1]) : zero_##tElType();             \
+    tDType alpha = kw_values[0] != Qundef ? conv_##tDType(kw_values[0]) : one_##tDType();                \
+    tDType beta = kw_values[1] != Qundef ? conv_##tDType(kw_values[1]) : zero_##tDType();                \
     enum CBLAS_ORDER order = kw_values[2] != Qundef ? get_cblas_order(kw_values[2]) : CblasRowMajor;     \
     enum CBLAS_TRANSPOSE transa = kw_values[3] != Qundef ? get_cblas_trans(kw_values[3]) : CblasNoTrans; \
     enum CBLAS_TRANSPOSE transb = kw_values[4] != Qundef ? get_cblas_trans(kw_values[4]) : CblasNoTrans; \
@@ -127,7 +127,7 @@
       return Qnil;                                                                                       \
     }                                                                                                    \
                                                                                                          \
-    struct _gemm_options_##tElType opt = { alpha, beta, order, transa, transb, m, n, k };                \
+    struct _gemm_options_##tDType opt = { alpha, beta, order, transa, transb, m, n, k };                 \
     size_t shape_out[2] = { (size_t)m, (size_t)n };                                                      \
     ndfunc_arg_out_t aout[1] = { { tNArrType, 2, shape_out } };                                          \
     VALUE ret = Qnil;                                                                                    \
