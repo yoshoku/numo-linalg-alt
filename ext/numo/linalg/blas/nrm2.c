@@ -1,6 +1,6 @@
 #include "nrm2.h"
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryType, tRetNAryType, fBlasFnc)      \
+#define DEF_LINALG_FUNC(tDType, tRtType, tNAryType, tRtNAryType, fBlasFnc)       \
   static void _iter_##fBlasFnc(na_loop_t* const lp) {                            \
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                         \
     tRtType* d = (tRtType*)NDL_PTR(lp, 1);                                       \
@@ -40,7 +40,7 @@
                                                                                  \
     ndfunc_arg_in_t ain[1] = { { tNAryType, 1 } };                               \
     size_t shape_out[1] = { 1 };                                                 \
-    ndfunc_arg_out_t aout[1] = { { tRetNAryType, 0, shape_out } };               \
+    ndfunc_arg_out_t aout[1] = { { tRtNAryType, 0, shape_out } };                \
     ndfunc_t ndf = { _iter_##fBlasFnc, NO_LOOP | NDF_EXTRACT, 1, 1, ain, aout }; \
     if (keepdims) {                                                              \
       ndf.flag |= NDF_KEEP_DIM;                                                  \
