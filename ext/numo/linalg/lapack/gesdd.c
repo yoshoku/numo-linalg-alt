@@ -14,9 +14,9 @@ struct _gesdd_option {
     int* info = (int*)NDL_PTR(lp, 4);                                                                                                      \
     struct _gesdd_option* opt = (struct _gesdd_option*)(lp->opt_ptr);                                                                      \
                                                                                                                                            \
-    const size_t m = opt->matrix_order == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[0] : NDL_SHAPE(lp, 0)[1];                                    \
-    const size_t n = opt->matrix_order == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[1] : NDL_SHAPE(lp, 0)[0];                                    \
-    const size_t min_mn = m < n ? m : n;                                                                                                   \
+    const lapack_int m = (lapack_int)(opt->matrix_order == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[0] : NDL_SHAPE(lp, 0)[1]);                  \
+    const lapack_int n = (lapack_int)(opt->matrix_order == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[1] : NDL_SHAPE(lp, 0)[0]);                  \
+    const lapack_int min_mn = m < n ? m : n;                                                                                               \
     const lapack_int lda = n;                                                                                                              \
     const lapack_int ldu = opt->jobz == 'S' ? min_mn : m;                                                                                  \
     const lapack_int ldvt = opt->jobz == 'S' ? min_mn : n;                                                                                 \

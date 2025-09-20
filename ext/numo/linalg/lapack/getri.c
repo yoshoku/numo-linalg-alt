@@ -10,7 +10,7 @@ struct _getri_option {
     lapack_int* ipiv = (lapack_int*)NDL_PTR(lp, 1);                                                        \
     int* info = (int*)NDL_PTR(lp, 2);                                                                      \
     struct _getri_option* opt = (struct _getri_option*)(lp->opt_ptr);                                      \
-    const lapack_int n = NDL_SHAPE(lp, 0)[0];                                                              \
+    const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[0];                                                  \
     const lapack_int lda = n;                                                                              \
     const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, n, a, lda, ipiv);                        \
     *info = (int)i;                                                                                        \

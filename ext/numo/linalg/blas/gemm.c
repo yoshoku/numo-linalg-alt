@@ -113,10 +113,10 @@
       return Qnil;                                                                                       \
     }                                                                                                    \
                                                                                                          \
-    const blasint ma = NA_SHAPE(a_nary)[0];                                                              \
-    const blasint ka = NA_SHAPE(a_nary)[1];                                                              \
-    const blasint kb = NA_SHAPE(b_nary)[0];                                                              \
-    const blasint nb = NA_SHAPE(b_nary)[1];                                                              \
+    const blasint ma = (blasint)NA_SHAPE(a_nary)[0];                                                     \
+    const blasint ka = (blasint)NA_SHAPE(a_nary)[1];                                                     \
+    const blasint kb = (blasint)NA_SHAPE(b_nary)[0];                                                     \
+    const blasint nb = (blasint)NA_SHAPE(b_nary)[1];                                                     \
     const blasint m = transa == CblasNoTrans ? ma : ka;                                                  \
     const blasint n = transb == CblasNoTrans ? nb : kb;                                                  \
     const blasint k = transa == CblasNoTrans ? ka : ma;                                                  \
@@ -135,7 +135,7 @@
     if (!NIL_P(c)) {                                                                                     \
       narray_t* c_nary = NULL;                                                                           \
       GetNArray(c, c_nary);                                                                              \
-      blasint nc = NA_SHAPE(c_nary)[0];                                                                  \
+      blasint nc = (blasint)NA_SHAPE(c_nary)[0];                                                         \
       if (m > nc) {                                                                                      \
         rb_raise(nary_eShapeError, "shape3[0](=%d) >= shape1[0]=%d", nc, m);                             \
         return Qnil;                                                                                     \

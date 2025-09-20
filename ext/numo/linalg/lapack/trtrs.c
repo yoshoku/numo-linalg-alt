@@ -13,8 +13,8 @@ struct _trtrs_option {
     tDType* b = (tDType*)NDL_PTR(lp, 1);                                                                                      \
     int* info = (int*)NDL_PTR(lp, 2);                                                                                         \
     struct _trtrs_option* opt = (struct _trtrs_option*)(lp->opt_ptr);                                                         \
-    const lapack_int n = NDL_SHAPE(lp, 0)[0];                                                                                 \
-    const lapack_int nrhs = lp->args[1].ndim == 1 ? 1 : NDL_SHAPE(lp, 1)[1];                                                  \
+    const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[0];                                                                     \
+    const lapack_int nrhs = lp->args[1].ndim == 1 ? 1 : (lapack_int)NDL_SHAPE(lp, 1)[1];                                      \
     const lapack_int lda = n;                                                                                                 \
     const lapack_int ldb = nrhs;                                                                                              \
     const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, opt->uplo, opt->trans, opt->diag, n, nrhs, a, lda, b, ldb); \
@@ -66,8 +66,8 @@ struct _trtrs_option {
       return Qnil;                                                                                                            \
     }                                                                                                                         \
                                                                                                                               \
-    lapack_int n = NA_SHAPE(a_nary)[0];                                                                                       \
-    lapack_int nb = NA_SHAPE(b_nary)[0];                                                                                      \
+    lapack_int n = (lapack_int)NA_SHAPE(a_nary)[0];                                                                           \
+    lapack_int nb = (lapack_int)NA_SHAPE(b_nary)[0];                                                                          \
     if (n != nb) {                                                                                                            \
       rb_raise(nary_eShapeError, "shape1[0](=%d) != shape2[0](=%d)", n, nb);                                                  \
     }                                                                                                                         \

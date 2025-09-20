@@ -108,14 +108,14 @@ static VALUE linalg_blas_call(int argc, VALUE* argv, VALUE self) {
     for (size_t i = 0; i < n; i++) {
       args[i] = rb_ary_entry(nary_arr, i);
     }
-    ret = rb_funcallv(self, fn_id, n, args);
+    ret = rb_funcallv(self, fn_id, (int)n, args);
   } else {
     VALUE* args = ALLOCA_N(VALUE, n + 1);
     for (size_t i = 0; i < n; i++) {
       args[i] = rb_ary_entry(nary_arr, i);
     }
     args[n] = kw_args;
-    ret = rb_funcallv_kw(self, fn_id, n + 1, args, RB_PASS_KEYWORDS);
+    ret = rb_funcallv_kw(self, fn_id, (int)(n + 1), args, RB_PASS_KEYWORDS);
   }
 
   return ret;

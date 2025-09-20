@@ -5,7 +5,7 @@
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                         \
     tDType* y = (tDType*)NDL_PTR(lp, 1);                                         \
     tDType* d = (tDType*)NDL_PTR(lp, 2);                                         \
-    const size_t n = NDL_SHAPE(lp, 0)[0];                                        \
+    const blasint n = (blasint)NDL_SHAPE(lp, 0)[0];                              \
     tDType ret = cblas_##fBlasFnc(n, x, 1, y, 1);                                \
     *d = ret;                                                                    \
   }                                                                              \

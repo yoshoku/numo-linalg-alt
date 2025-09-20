@@ -11,8 +11,8 @@ struct _gesv_option {
     int* ipiv = (int*)NDL_PTR(lp, 2);                                                                      \
     int* info = (int*)NDL_PTR(lp, 3);                                                                      \
     struct _gesv_option* opt = (struct _gesv_option*)(lp->opt_ptr);                                        \
-    const lapack_int n = NDL_SHAPE(lp, 0)[0];                                                              \
-    const lapack_int nhrs = lp->args[1].ndim == 1 ? 1 : NDL_SHAPE(lp, 1)[1];                               \
+    const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[0];                                                  \
+    const lapack_int nhrs = lp->args[1].ndim == 1 ? 1 : (lapack_int)NDL_SHAPE(lp, 1)[1];                   \
     const lapack_int lda = n;                                                                              \
     const lapack_int ldb = nhrs;                                                                           \
     const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, n, nhrs, a, lda, ipiv, b, ldb);          \
@@ -61,13 +61,13 @@ struct _gesv_option {
       return Qnil;                                                                                         \
     }                                                                                                      \
                                                                                                            \
-    lapack_int n = NA_SHAPE(a_nary)[0];                                                                    \
-    lapack_int nb = b_n_dims == 1 ? NA_SHAPE(b_nary)[0] : NA_SHAPE(b_nary)[0];                             \
+    lapack_int n = (lapack_int)NA_SHAPE(a_nary)[0];                                                        \
+    lapack_int nb = (lapack_int)(b_n_dims == 1 ? NA_SHAPE(b_nary)[0] : NA_SHAPE(b_nary)[0]);               \
     if (n != nb) {                                                                                         \
       rb_raise(nary_eShapeError, "shape1[1](=%d) != shape2[0](=%d)", n, nb);                               \
     }                                                                                                      \
                                                                                                            \
-    lapack_int nhrs = b_n_dims == 1 ? 1 : NA_SHAPE(b_nary)[1];                                             \
+    lapack_int nhrs = b_n_dims == 1 ? 1 : (lapack_int)NA_SHAPE(b_nary)[1];                                 \
     size_t shape[2] = { (size_t)n, (size_t)nhrs };                                                         \
     ndfunc_arg_in_t ain[2] = { { OVERWRITE, 2 }, { OVERWRITE, b_n_dims } };                                \
     ndfunc_arg_out_t aout[2] = { { numo_cInt32, 1, shape }, { numo_cInt32, 0 } };                          \

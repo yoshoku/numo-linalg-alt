@@ -93,9 +93,9 @@
       return Qnil;                                                                                      \
     }                                                                                                   \
                                                                                                         \
-    const blasint ma = NA_SHAPE(a_nary)[0];                                                             \
-    const blasint na = NA_SHAPE(a_nary)[1];                                                             \
-    const blasint mx = NA_SHAPE(x_nary)[0];                                                             \
+    const blasint ma = (blasint)NA_SHAPE(a_nary)[0];                                                    \
+    const blasint na = (blasint)NA_SHAPE(a_nary)[1];                                                    \
+    const blasint mx = (blasint)NA_SHAPE(x_nary)[0];                                                    \
     const blasint m = trans == CblasNoTrans ? ma : na;                                                  \
     const blasint n = trans == CblasNoTrans ? na : ma;                                                  \
                                                                                                         \
@@ -112,7 +112,7 @@
     if (!NIL_P(y)) {                                                                                    \
       narray_t* y_nary = NULL;                                                                          \
       GetNArray(y, y_nary);                                                                             \
-      blasint my = NA_SHAPE(y_nary)[0];                                                                 \
+      blasint my = (blasint)NA_SHAPE(y_nary)[0];                                                        \
       if (m > my) {                                                                                     \
         rb_raise(nary_eShapeError, "shape3[0](=%d) >= shape1[0]=%d", my, m);                            \
         return Qnil;                                                                                    \
