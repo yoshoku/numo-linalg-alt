@@ -432,8 +432,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dpotrs
-    skip 'This function has not been translated into C yet.'
-
     n = 5
     a = Numo::DFloat.new(n, n).rand
     c = a.transpose.dot(a)
@@ -446,8 +444,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_spotrs
-    skip 'This function has not been translated into C yet.'
-
     n = 5
     a = Numo::DFloat.new(n, n).rand
     c = a.transpose.dot(a)
@@ -460,8 +456,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zpotrs
-    skip 'This function has not been translated into C yet.'
-
     n = 5
     a = Numo::DComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
@@ -474,8 +468,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cpotrs
-    skip 'This function has not been translated into C yet.'
-
     n = 5
     a = Numo::SComplex.new(n, n).rand - 0.5
     c = a.transpose.conjugate.dot(a)
