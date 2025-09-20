@@ -58,6 +58,7 @@
 #include "lapack/getrf.h"
 #include "lapack/getri.h"
 #include "lapack/orgqr.h"
+#include "lapack/potrf.h"
 #include "lapack/trtrs.h"
 #include "lapack/ungqr.h"
 
