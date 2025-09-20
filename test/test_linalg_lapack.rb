@@ -280,8 +280,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dgetri
-    skip 'This function has not been translated into C yet.'
-
     n = 3
     a = Numo::DFloat.new(n, n).rand - 0.5
     lu, piv, = Numo::Linalg::Lapack.dgetrf(a.dup)
@@ -292,8 +290,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_sgetri
-    skip 'This function has not been translated into C yet.'
-
     n = 3
     a = Numo::SFloat.new(n, n).rand - 0.5
     lu, piv, = Numo::Linalg::Lapack.sgetrf(a.dup)
@@ -304,8 +300,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zgetri
-    skip 'This function has not been translated into C yet.'
-
     n = 3
     a = Numo::DComplex.new(n, n).rand
     lu, piv, = Numo::Linalg::Lapack.zgetrf(a.dup)
@@ -316,8 +310,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_cgetri
-    skip 'This function has not been translated into C yet.'
-
     n = 3
     a = Numo::SComplex.new(n, n).rand
     lu, piv, = Numo::Linalg::Lapack.cgetrf(a.dup)
