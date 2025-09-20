@@ -4,7 +4,7 @@ struct _gesv_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNArrType, fLapackFnc)                                                     \
+#define DEF_LINALG_FUNC(tDType, tNAryType, fLapackFnc)                                                     \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* b = (tDType*)NDL_PTR(lp, 1);                                                                   \
@@ -33,14 +33,14 @@ struct _gesv_option {
                                                                                                            \
     const int matrix_layout = kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR; \
                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNArrType) {                                                                  \
-      a_vnary = rb_funcall(tNArrType, rb_intern("cast"), 1, a_vnary);                                      \
+    if (CLASS_OF(a_vnary) != tNAryType) {                                                                  \
+      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                      \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                          \
       a_vnary = nary_dup(a_vnary);                                                                         \
     }                                                                                                      \
-    if (CLASS_OF(b_vnary) != tNArrType) {                                                                  \
-      b_vnary = rb_funcall(tNArrType, rb_intern("cast"), 1, b_vnary);                                      \
+    if (CLASS_OF(b_vnary) != tNAryType) {                                                                  \
+      b_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, b_vnary);                                      \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(b_vnary))) {                                                          \
       b_vnary = nary_dup(b_vnary);                                                                         \

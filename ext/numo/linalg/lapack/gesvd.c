@@ -6,7 +6,7 @@ struct _gesvd_option {
   char jobvt;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNArrType, tRtNArrType, fLapackFnc)                                                               \
+#define DEF_LINALG_FUNC(tDType, tRtType, tNAryType, tRtNAryType, fLapackFnc)                                                               \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                   \
     tRtType* s = (tRtType*)NDL_PTR(lp, 1);                                                                                                 \
@@ -49,13 +49,13 @@ struct _gesvd_option {
       rb_raise(rb_eArgError, "jobu and jobvt cannot be both 'O'");                                                                         \
       return Qnil;                                                                                                                         \
     }                                                                                                                                      \
-    if (CLASS_OF(a_vnary) != tNArrType) {                                                                                                  \
+    if (CLASS_OF(a_vnary) != tNAryType) {                                                                                                  \
       rb_raise(rb_eTypeError, "type of input array is invalid for overwriting");                                                           \
       return Qnil;                                                                                                                         \
     }                                                                                                                                      \
                                                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNArrType) {                                                                                                  \
-      a_vnary = rb_funcall(tNArrType, rb_intern("cast"), 1, a_vnary);                                                                      \
+    if (CLASS_OF(a_vnary) != tNAryType) {                                                                                                  \
+      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                                                      \
     }                                                                                                                                      \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                                                          \
       a_vnary = nary_dup(a_vnary);                                                                                                         \
@@ -79,7 +79,7 @@ struct _gesvd_option {
     size_t shape_vt[2] = { n, n };                                                                                                         \
                                                                                                                                            \
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                                                         \
-    ndfunc_arg_out_t aout[4] = { { tRtNArrType, 1, shape_s }, { tNArrType, 2, shape_u }, { tNArrType, 2, shape_vt }, { numo_cInt32, 0 } }; \
+    ndfunc_arg_out_t aout[4] = { { tRtNAryType, 1, shape_s }, { tNAryType, 2, shape_u }, { tNAryType, 2, shape_vt }, { numo_cInt32, 0 } }; \
                                                                                                                                            \
     switch (jobu) {                                                                                                                        \
     case 'A':                                                                                                                              \

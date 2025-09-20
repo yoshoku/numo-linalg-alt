@@ -5,7 +5,7 @@ struct _gesdd_option {
   char jobz;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNArrType, tRtNArrType, fLapackFnc)                                                               \
+#define DEF_LINALG_FUNC(tDType, tRtType, tNAryType, tRtNAryType, fLapackFnc)                                                               \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                   \
     tRtType* s = (tRtType*)NDL_PTR(lp, 1);                                                                                                 \
@@ -39,7 +39,7 @@ struct _gesdd_option {
     const char jobz = kw_values[0] == Qundef ? 'A' : StringValueCStr(kw_values[0])[0];                                                     \
     const char order = kw_values[1] == Qundef ? 'R' : StringValueCStr(kw_values[1])[0];                                                    \
                                                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNArrType) {                                                                                                  \
+    if (CLASS_OF(a_vnary) != tNAryType) {                                                                                                  \
       rb_raise(rb_eTypeError, "type of input array is invalid for overwriting");                                                           \
       return Qnil;                                                                                                                         \
     }                                                                                                                                      \
@@ -65,7 +65,7 @@ struct _gesdd_option {
     size_t shape_vt[2] = { n, n };                                                                                                         \
                                                                                                                                            \
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                                                         \
-    ndfunc_arg_out_t aout[4] = { { tRtNArrType, 1, shape_s }, { tNArrType, 2, shape_u }, { tNArrType, 2, shape_vt }, { numo_cInt32, 0 } }; \
+    ndfunc_arg_out_t aout[4] = { { tRtNAryType, 1, shape_s }, { tNAryType, 2, shape_u }, { tNAryType, 2, shape_vt }, { numo_cInt32, 0 } }; \
                                                                                                                                            \
     switch (jobz) {                                                                                                                        \
     case 'A':                                                                                                                              \

@@ -4,7 +4,7 @@ struct _geqrf_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNArrType, fLapackFnc)                                                     \
+#define DEF_LINALG_FUNC(tDType, tNAryType, fLapackFnc)                                                     \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* tau = (tDType*)NDL_PTR(lp, 1);                                                                 \
@@ -26,8 +26,8 @@ struct _geqrf_option {
     rb_get_kwargs(kw_args, kw_table, 0, 1, kw_values);                                                     \
     const int matrix_layout = kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR; \
                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNArrType) {                                                                  \
-      a_vnary = rb_funcall(tNArrType, rb_intern("cast"), 1, a_vnary);                                      \
+    if (CLASS_OF(a_vnary) != tNAryType) {                                                                  \
+      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                      \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                          \
       a_vnary = nary_dup(a_vnary);                                                                         \
@@ -45,7 +45,7 @@ struct _geqrf_option {
     size_t n = NA_SHAPE(a_nary)[1];                                                                        \
     size_t shape[1] = { m < n ? m : n };                                                                   \
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                         \
-    ndfunc_arg_out_t aout[2] = { { tNArrType, 1, shape }, { numo_cInt32, 0 } };                            \
+    ndfunc_arg_out_t aout[2] = { { tNAryType, 1, shape }, { numo_cInt32, 0 } };                            \
     ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 1, 2, ain, aout };                         \
     struct _geqrf_option opt = { matrix_layout };                                                          \
     VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                        \

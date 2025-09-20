@@ -32,7 +32,7 @@
                      &opt->alpha, a, lda, x, 1, &opt->beta, y, 1);                            \
   }
 
-#define DEF_LINALG_FUNC(tDType, tNArrType, fBlasFnc)                                                    \
+#define DEF_LINALG_FUNC(tDType, tNAryType, fBlasFnc)                                                    \
   static VALUE _linalg_blas_##fBlasFnc(int argc, VALUE* argv, VALUE self) {                             \
     VALUE a = Qnil;                                                                                     \
     VALUE x = Qnil;                                                                                     \
@@ -45,21 +45,21 @@
     VALUE kw_values[4] = { Qundef, Qundef, Qundef, Qundef };                                            \
     rb_get_kwargs(kw_args, kw_table, 0, 4, kw_values);                                                  \
                                                                                                         \
-    if (CLASS_OF(a) != tNArrType) {                                                                     \
-      a = rb_funcall(tNArrType, rb_intern("cast"), 1, a);                                               \
+    if (CLASS_OF(a) != tNAryType) {                                                                     \
+      a = rb_funcall(tNAryType, rb_intern("cast"), 1, a);                                               \
     }                                                                                                   \
     if (!RTEST(nary_check_contiguous(a))) {                                                             \
       a = nary_dup(a);                                                                                  \
     }                                                                                                   \
-    if (CLASS_OF(x) != tNArrType) {                                                                     \
-      x = rb_funcall(tNArrType, rb_intern("cast"), 1, x);                                               \
+    if (CLASS_OF(x) != tNAryType) {                                                                     \
+      x = rb_funcall(tNAryType, rb_intern("cast"), 1, x);                                               \
     }                                                                                                   \
     if (!RTEST(nary_check_contiguous(x))) {                                                             \
       x = nary_dup(x);                                                                                  \
     }                                                                                                   \
     if (!NIL_P(y)) {                                                                                    \
-      if (CLASS_OF(y) != tNArrType) {                                                                   \
-        y = rb_funcall(tNArrType, rb_intern("cast"), 1, y);                                             \
+      if (CLASS_OF(y) != tNAryType) {                                                                   \
+        y = rb_funcall(tNAryType, rb_intern("cast"), 1, y);                                             \
       }                                                                                                 \
       if (!RTEST(nary_check_contiguous(y))) {                                                           \
         y = nary_dup(y);                                                                                \
@@ -106,7 +106,7 @@
                                                                                                         \
     struct _gemv_options_##tDType opt = { alpha, beta, order, trans, ma, na };                          \
     size_t shape_out[1] = { (size_t)(m) };                                                              \
-    ndfunc_arg_out_t aout[1] = { { tNArrType, 1, shape_out } };                                         \
+    ndfunc_arg_out_t aout[1] = { { tNAryType, 1, shape_out } };                                         \
     VALUE ret = Qnil;                                                                                   \
                                                                                                         \
     if (!NIL_P(y)) {                                                                                    \
@@ -117,13 +117,13 @@
         rb_raise(nary_eShapeError, "shape3[0](=%d) >= shape1[0]=%d", my, m);                            \
         return Qnil;                                                                                    \
       }                                                                                                 \
-      ndfunc_arg_in_t ain[3] = { { tNArrType, 2 }, { tNArrType, 1 }, { OVERWRITE, 1 } };                \
+      ndfunc_arg_in_t ain[3] = { { tNAryType, 2 }, { tNAryType, 1 }, { OVERWRITE, 1 } };                \
       ndfunc_t ndf = { _iter_##fBlasFnc, NO_LOOP, 3, 0, ain, aout };                                    \
       na_ndloop3(&ndf, &opt, 3, a, x, y);                                                               \
       ret = y;                                                                                          \
     } else {                                                                                            \
       y = INT2NUM(0);                                                                                   \
-      ndfunc_arg_in_t ain[3] = { { tNArrType, 2 }, { tNArrType, 1 }, { sym_init, 0 } };                 \
+      ndfunc_arg_in_t ain[3] = { { tNAryType, 2 }, { tNAryType, 1 }, { sym_init, 0 } };                 \
       ndfunc_t ndf = { _iter_##fBlasFnc, NO_LOOP, 3, 1, ain, aout };                                    \
       ret = na_ndloop3(&ndf, &opt, 3, a, x, y);                                                         \
     }                                                                                                   \
