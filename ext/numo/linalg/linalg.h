@@ -58,6 +58,7 @@
 #include "lapack/getrf.h"
 #include "lapack/getri.h"
 #include "lapack/orgqr.h"
+#include "lapack/trtrs.h"
 #include "lapack/ungqr.h"
 
 #endif /* NUMO_LINALG_ALT_LINALG_H */
