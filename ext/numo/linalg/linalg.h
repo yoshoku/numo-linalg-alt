@@ -60,6 +60,7 @@
 #include "lapack/orgqr.h"
 #include "lapack/potrf.h"
 #include "lapack/potrs.h"
+#include "lapack/syev.h"
 #include "lapack/trtrs.h"
 #include "lapack/ungqr.h"
 
