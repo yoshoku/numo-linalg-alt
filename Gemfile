@@ -14,3 +14,7 @@ gem 'rubocop-performance', '~> 1.17'
 gem 'rubocop-rake', '~> 0.7.1'
 gem 'simplecov', '~> 0.22.0'
 gem 'yard', github: '/yoshoku/yard', branch: 'vanilla-js'
+
+group :memcheck, optional: true do
+  gem 'ruby_memcheck', '~> 3.0'
+end
