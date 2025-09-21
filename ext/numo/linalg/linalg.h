@@ -57,6 +57,7 @@
 #include "lapack/gesvd.h"
 #include "lapack/getrf.h"
 #include "lapack/getri.h"
+#include "lapack/heev.h"
 #include "lapack/orgqr.h"
 #include "lapack/potrf.h"
 #include "lapack/potrs.h"
