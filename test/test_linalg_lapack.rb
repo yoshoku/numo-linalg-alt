@@ -824,8 +824,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dlange
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::DFloat.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.dlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose).trace)).abs
@@ -837,8 +835,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_slange
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::SFloat.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.dlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose).trace)).abs
@@ -850,8 +846,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zlange
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::DComplex.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.zlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose.conjugate).trace)).abs
@@ -863,8 +857,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_clange
-    skip 'This function has not been translated into C yet.'
-
     a = Numo::SComplex.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.clange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose.conjugate).trace)).abs
