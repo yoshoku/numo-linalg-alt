@@ -752,8 +752,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_dsygvx
-    skip 'This function has not been translated into C yet.'
-
     m = 3
     n = 5
     a = Numo::DFloat.new(m, n).rand - 0.5
@@ -774,8 +772,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_ssygvx
-    skip 'This function has not been translated into C yet.'
-
     m = 3
     n = 5
     a = Numo::SFloat.new(m, n).rand - 0.5
