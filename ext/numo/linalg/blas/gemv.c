@@ -10,30 +10,30 @@
     blasint n;                     \
   };
 
-#define DEF_LINALG_ITER_FUNC(tDType, fBlasFnc)                                                \
-  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                         \
+#define DEF_LINALG_ITER_FUNC(tDType, fBlasFunc)                                               \
+  static void _iter_##fBlasFunc(na_loop_t* const lp) {                                        \
     const tDType* a = (tDType*)NDL_PTR(lp, 0);                                                \
     const tDType* x = (tDType*)NDL_PTR(lp, 1);                                                \
     tDType* y = (tDType*)NDL_PTR(lp, 2);                                                      \
     const struct _gemv_options_##tDType* opt = (struct _gemv_options_##tDType*)(lp->opt_ptr); \
     const blasint lda = opt->n;                                                               \
-    cblas_##fBlasFnc(opt->order, opt->trans, opt->m, opt->n,                                  \
-                     opt->alpha, a, lda, x, 1, opt->beta, y, 1);                              \
+    cblas_##fBlasFunc(opt->order, opt->trans, opt->m, opt->n,                                 \
+                      opt->alpha, a, lda, x, 1, opt->beta, y, 1);                             \
   }
 
-#define DEF_LINALG_ITER_FUNC_COMPLEX(tDType, fBlasFnc)                                        \
-  static void _iter_##fBlasFnc(na_loop_t* const lp) {                                         \
+#define DEF_LINALG_ITER_FUNC_COMPLEX(tDType, fBlasFunc)                                       \
+  static void _iter_##fBlasFunc(na_loop_t* const lp) {                                        \
     const tDType* a = (tDType*)NDL_PTR(lp, 0);                                                \
     const tDType* x = (tDType*)NDL_PTR(lp, 1);                                                \
     tDType* y = (tDType*)NDL_PTR(lp, 2);                                                      \
     const struct _gemv_options_##tDType* opt = (struct _gemv_options_##tDType*)(lp->opt_ptr); \
     const blasint lda = opt->n;                                                               \
-    cblas_##fBlasFnc(opt->order, opt->trans, opt->m, opt->n,                                  \
-                     &opt->alpha, a, lda, x, 1, &opt->beta, y, 1);                            \
+    cblas_##fBlasFunc(opt->order, opt->trans, opt->m, opt->n,                                 \
+                      &opt->alpha, a, lda, x, 1, &opt->beta, y, 1);                           \
   }
 
-#define DEF_LINALG_FUNC(tDType, tNAryClass, fBlasFnc)                                                   \
-  static VALUE _linalg_blas_##fBlasFnc(int argc, VALUE* argv, VALUE self) {                             \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fBlasFunc)                                                  \
+  static VALUE _linalg_blas_##fBlasFunc(int argc, VALUE* argv, VALUE self) {                            \
     VALUE a = Qnil;                                                                                     \
     VALUE x = Qnil;                                                                                     \
     VALUE y = Qnil;                                                                                     \
@@ -118,13 +118,13 @@
         return Qnil;                                                                                    \
       }                                                                                                 \
       ndfunc_arg_in_t ain[3] = { { tNAryClass, 2 }, { tNAryClass, 1 }, { OVERWRITE, 1 } };              \
-      ndfunc_t ndf = { _iter_##fBlasFnc, NO_LOOP, 3, 0, ain, aout };                                    \
+      ndfunc_t ndf = { _iter_##fBlasFunc, NO_LOOP, 3, 0, ain, aout };                                   \
       na_ndloop3(&ndf, &opt, 3, a, x, y);                                                               \
       ret = y;                                                                                          \
     } else {                                                                                            \
       y = INT2NUM(0);                                                                                   \
       ndfunc_arg_in_t ain[3] = { { tNAryClass, 2 }, { tNAryClass, 1 }, { sym_init, 0 } };               \
-      ndfunc_t ndf = { _iter_##fBlasFnc, NO_LOOP, 3, 1, ain, aout };                                    \
+      ndfunc_t ndf = { _iter_##fBlasFunc, NO_LOOP, 3, 1, ain, aout };                                   \
       ret = na_ndloop3(&ndf, &opt, 3, a, x, y);                                                         \
     }                                                                                                   \
                                                                                                         \
