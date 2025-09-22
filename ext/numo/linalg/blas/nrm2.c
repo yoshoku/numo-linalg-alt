@@ -1,6 +1,6 @@
 #include "nrm2.h"
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryType, tRtNAryType, fBlasFnc)       \
+#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fBlasFnc)     \
   static void _iter_##fBlasFnc(na_loop_t* const lp) {                            \
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                         \
     tRtType* d = (tRtType*)NDL_PTR(lp, 1);                                       \
@@ -19,8 +19,8 @@
     rb_get_kwargs(kw_args, kw_table, 0, 1, kw_values);                           \
     const bool keepdims = kw_values[0] != Qundef ? RTEST(kw_values[0]) : false;  \
                                                                                  \
-    if (CLASS_OF(x) != tNAryType) {                                              \
-      x = rb_funcall(tNAryType, rb_intern("cast"), 1, x);                        \
+    if (CLASS_OF(x) != tNAryClass) {                                             \
+      x = rb_funcall(tNAryClass, rb_intern("cast"), 1, x);                       \
     }                                                                            \
     if (!RTEST(nary_check_contiguous(x))) {                                      \
       x = nary_dup(x);                                                           \
@@ -38,9 +38,9 @@
       return Qnil;                                                               \
     }                                                                            \
                                                                                  \
-    ndfunc_arg_in_t ain[1] = { { tNAryType, 1 } };                               \
+    ndfunc_arg_in_t ain[1] = { { tNAryClass, 1 } };                              \
     size_t shape_out[1] = { 1 };                                                 \
-    ndfunc_arg_out_t aout[1] = { { tRtNAryType, 0, shape_out } };                \
+    ndfunc_arg_out_t aout[1] = { { tRtNAryClass, 0, shape_out } };               \
     ndfunc_t ndf = { _iter_##fBlasFnc, NO_LOOP | NDF_EXTRACT, 1, 1, ain, aout }; \
     if (keepdims) {                                                              \
       ndf.flag |= NDF_KEEP_DIM;                                                  \

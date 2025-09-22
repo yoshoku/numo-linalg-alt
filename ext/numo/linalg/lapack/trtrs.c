@@ -7,7 +7,7 @@ struct _trtrs_option {
   char diag;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryType, fLapackFnc)                                                                        \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                                       \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                                       \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                      \
     tDType* b = (tDType*)NDL_PTR(lp, 1);                                                                                      \
@@ -34,14 +34,14 @@ struct _trtrs_option {
     const char trans = kw_values[2] != Qundef ? NUM2CHR(kw_values[2]) : 'N';                                                  \
     const char diag = kw_values[3] != Qundef ? NUM2CHR(kw_values[3]) : 'N';                                                   \
                                                                                                                               \
-    if (CLASS_OF(a_vnary) != tNAryType) {                                                                                     \
-      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                                         \
+    if (CLASS_OF(a_vnary) != tNAryClass) {                                                                                    \
+      a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                                                        \
     }                                                                                                                         \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                                             \
       a_vnary = nary_dup(a_vnary);                                                                                            \
     }                                                                                                                         \
-    if (CLASS_OF(b_vnary) != tNAryType) {                                                                                     \
-      b_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, b_vnary);                                                         \
+    if (CLASS_OF(b_vnary) != tNAryClass) {                                                                                    \
+      b_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, b_vnary);                                                        \
     }                                                                                                                         \
     if (!RTEST(nary_check_contiguous(b_vnary))) {                                                                             \
       b_vnary = nary_dup(b_vnary);                                                                                            \
@@ -72,7 +72,7 @@ struct _trtrs_option {
       rb_raise(nary_eShapeError, "shape1[0](=%d) != shape2[0](=%d)", n, nb);                                                  \
     }                                                                                                                         \
                                                                                                                               \
-    ndfunc_arg_in_t ain[2] = { { tNAryType, 2 }, { OVERWRITE, b_n_dims } };                                                   \
+    ndfunc_arg_in_t ain[2] = { { tNAryClass, 2 }, { OVERWRITE, b_n_dims } };                                                  \
     ndfunc_arg_out_t aout[1] = { { numo_cInt32, 0 } };                                                                        \
     ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout };                                            \
     struct _trtrs_option opt = { matrix_layout, uplo, trans, diag };                                                          \

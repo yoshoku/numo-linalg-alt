@@ -4,7 +4,7 @@ struct _orgqr_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryType, fLapackFnc)                                                     \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* tau = (tDType*)NDL_PTR(lp, 1);                                                                 \
@@ -28,14 +28,14 @@ struct _orgqr_option {
     rb_get_kwargs(kw_args, kw_table, 0, 1, kw_values);                                                     \
     const int matrix_layout = kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR; \
                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNAryType) {                                                                  \
-      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                      \
+    if (CLASS_OF(a_vnary) != tNAryClass) {                                                                 \
+      a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                                     \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                          \
       a_vnary = nary_dup(a_vnary);                                                                         \
     }                                                                                                      \
-    if (CLASS_OF(tau_vnary) != tNAryType) {                                                                \
-      tau_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, tau_vnary);                                  \
+    if (CLASS_OF(tau_vnary) != tNAryClass) {                                                               \
+      tau_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, tau_vnary);                                 \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(tau_vnary))) {                                                        \
       tau_vnary = nary_dup(tau_vnary);                                                                     \
@@ -54,7 +54,7 @@ struct _orgqr_option {
       return Qnil;                                                                                         \
     }                                                                                                      \
                                                                                                            \
-    ndfunc_arg_in_t ain[2] = { { OVERWRITE, 2 }, { tNAryType, 1 } };                                       \
+    ndfunc_arg_in_t ain[2] = { { OVERWRITE, 2 }, { tNAryClass, 1 } };                                      \
     ndfunc_arg_out_t aout[1] = { { numo_cInt32, 0 } };                                                     \
     ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout };                         \
     struct _orgqr_option opt = { matrix_layout };                                                          \

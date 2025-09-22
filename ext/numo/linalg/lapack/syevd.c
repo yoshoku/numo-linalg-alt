@@ -6,7 +6,7 @@ struct _syevd_option {
   char uplo;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryType, fLapackFnc)                                                     \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* w = (tDType*)NDL_PTR(lp, 1);                                                                   \
@@ -29,8 +29,8 @@ struct _syevd_option {
     const char uplo = kw_values[1] != Qundef ? get_uplo(kw_values[1]) : 'U';                               \
     const int matrix_layout = kw_values[2] != Qundef ? get_matrix_layout(kw_values[2]) : LAPACK_ROW_MAJOR; \
                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNAryType) {                                                                  \
-      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                      \
+    if (CLASS_OF(a_vnary) != tNAryClass) {                                                                 \
+      a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                                     \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                          \
       a_vnary = nary_dup(a_vnary);                                                                         \
@@ -50,7 +50,7 @@ struct _syevd_option {
     const size_t n = NA_SHAPE(a_nary)[1];                                                                  \
     size_t shape[1] = { n };                                                                               \
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                         \
-    ndfunc_arg_out_t aout[2] = { { tNAryType, 1, shape }, { numo_cInt32, 0 } };                            \
+    ndfunc_arg_out_t aout[2] = { { tNAryClass, 1, shape }, { numo_cInt32, 0 } };                           \
     ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 1, 2, ain, aout };                         \
     struct _syevd_option opt = { matrix_layout, jobz, uplo };                                              \
     VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                        \

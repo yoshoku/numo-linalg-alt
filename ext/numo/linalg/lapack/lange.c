@@ -5,7 +5,7 @@ struct _lange_option {
   char norm;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryType, fLapackFnc)                                                     \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* d = (tDType*)NDL_PTR(lp, 1);                                                                   \
@@ -26,8 +26,8 @@ struct _lange_option {
     const int matrix_layout = kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR; \
     const char norm = kw_values[1] != Qundef ? NUM2CHR(kw_values[1]) : 'F';                                \
                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNAryType) {                                                                  \
-      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                      \
+    if (CLASS_OF(a_vnary) != tNAryClass) {                                                                 \
+      a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                                     \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                          \
       a_vnary = nary_dup(a_vnary);                                                                         \
@@ -40,9 +40,9 @@ struct _lange_option {
       return Qnil;                                                                                         \
     }                                                                                                      \
                                                                                                            \
-    ndfunc_arg_in_t ain[1] = { { tNAryType, 2 } };                                                         \
+    ndfunc_arg_in_t ain[1] = { { tNAryClass, 2 } };                                                        \
     size_t shape_out[1] = { 1 };                                                                           \
-    ndfunc_arg_out_t aout[1] = { { tNAryType, 0, shape_out } };                                            \
+    ndfunc_arg_out_t aout[1] = { { tNAryClass, 0, shape_out } };                                           \
     ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 1, 1, ain, aout };                         \
     struct _lange_option opt = { matrix_layout, norm };                                                    \
     VALUE ret = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                        \

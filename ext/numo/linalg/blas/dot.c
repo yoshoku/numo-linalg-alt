@@ -1,6 +1,6 @@
 #include "dot.h"
 
-#define DEF_LINALG_FUNC(tDType, tNAryType, fBlasFnc)                             \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fBlasFnc)                            \
   static void _iter_##fBlasFnc(na_loop_t* const lp) {                            \
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                         \
     tDType* y = (tDType*)NDL_PTR(lp, 1);                                         \
@@ -11,14 +11,14 @@
   }                                                                              \
                                                                                  \
   static VALUE _linalg_blas_##fBlasFnc(VALUE self, VALUE x, VALUE y) {           \
-    if (CLASS_OF(x) != tNAryType) {                                              \
-      x = rb_funcall(tNAryType, rb_intern("cast"), 1, x);                        \
+    if (CLASS_OF(x) != tNAryClass) {                                             \
+      x = rb_funcall(tNAryClass, rb_intern("cast"), 1, x);                       \
     }                                                                            \
     if (!RTEST(nary_check_contiguous(x))) {                                      \
       x = nary_dup(x);                                                           \
     }                                                                            \
-    if (CLASS_OF(y) != tNAryType) {                                              \
-      y = rb_funcall(tNAryType, rb_intern("cast"), 1, y);                        \
+    if (CLASS_OF(y) != tNAryClass) {                                             \
+      y = rb_funcall(tNAryClass, rb_intern("cast"), 1, y);                       \
     }                                                                            \
     if (!RTEST(nary_check_contiguous(y))) {                                      \
       y = nary_dup(y);                                                           \
@@ -50,9 +50,9 @@
       return Qnil;                                                               \
     }                                                                            \
                                                                                  \
-    ndfunc_arg_in_t ain[2] = { { tNAryType, 1 }, { tNAryType, 1 } };             \
+    ndfunc_arg_in_t ain[2] = { { tNAryClass, 1 }, { tNAryClass, 1 } };           \
     size_t shape_out[1] = { 1 };                                                 \
-    ndfunc_arg_out_t aout[1] = { { tNAryType, 0, shape_out } };                  \
+    ndfunc_arg_out_t aout[1] = { { tNAryClass, 0, shape_out } };                 \
     ndfunc_t ndf = { _iter_##fBlasFnc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout }; \
     VALUE ret = na_ndloop(&ndf, 2, x, y);                                        \
                                                                                  \

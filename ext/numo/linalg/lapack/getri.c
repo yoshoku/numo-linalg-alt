@@ -4,7 +4,7 @@ struct _getri_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryType, fLapackFnc)                                                     \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
   static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     lapack_int* ipiv = (lapack_int*)NDL_PTR(lp, 1);                                                        \
@@ -26,8 +26,8 @@ struct _getri_option {
     rb_get_kwargs(kw_args, kw_table, 0, 1, kw_values);                                                     \
     const int matrix_layout = kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR; \
                                                                                                            \
-    if (CLASS_OF(a_vnary) != tNAryType) {                                                                  \
-      a_vnary = rb_funcall(tNAryType, rb_intern("cast"), 1, a_vnary);                                      \
+    if (CLASS_OF(a_vnary) != tNAryClass) {                                                                 \
+      a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                                     \
     }                                                                                                      \
     if (!RTEST(nary_check_contiguous(a_vnary))) {                                                          \
       a_vnary = nary_dup(a_vnary);                                                                         \
