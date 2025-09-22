@@ -64,6 +64,7 @@
 #include "lapack/potrs.h"
 #include "lapack/syev.h"
 #include "lapack/syevd.h"
+#include "lapack/syevr.h"
 #include "lapack/trtrs.h"
 #include "lapack/ungqr.h"
 
