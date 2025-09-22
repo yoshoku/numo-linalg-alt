@@ -61,6 +61,7 @@
 #include "lapack/heevd.h"
 #include "lapack/heevr.h"
 #include "lapack/hegv.h"
+#include "lapack/hegvd.h"
 #include "lapack/orgqr.h"
 #include "lapack/potrf.h"
 #include "lapack/potrs.h"
