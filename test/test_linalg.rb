@@ -307,4 +307,26 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
       Numo::Linalg.matmul(Numo::DFloat[1, 2], Numo::DFloat[3, 4])
     end.message)
   end
+
+  def test_matrix_power
+    a = Numo::DFloat[[1, 2], [3, 4]]
+    error_a2 = (Numo::DFloat[[7, 10], [15, 22]] - Numo::Linalg.matrix_power(a, 2)).abs.max
+    error_a3 = (Numo::DFloat[[37, 54], [81, 118]] - Numo::Linalg.matrix_power(a, 3)).abs.max
+    error_a_neg2 = (Numo::DFloat[[5.5, -2.5], [-3.75, 1.75]] - Numo::Linalg.matrix_power(a, -2)).abs.max
+    error_a_neg3 = (Numo::DFloat[[-14.75, 6.75], [10.125, -4.625]] - Numo::Linalg.matrix_power(a, -3)).abs.max
+
+    assert_operator(error_a2, :<, 1e-7)
+    assert_operator(error_a3, :<, 1e-7)
+    assert_operator(error_a_neg2, :<, 1e-7)
+    assert_operator(error_a_neg3, :<, 1e-7)
+    assert_match(/must be 2-d/, assert_raises(ArgumentError) do
+      Numo::Linalg.matrix_power(Numo::DFloat[1, 2, 3], 2)
+    end.message)
+    assert_match(/must be square/, assert_raises(ArgumentError) do
+      Numo::Linalg.matrix_power(Numo::DFloat[[1, 2, 3], [4, 5, 6]], 2)
+    end.message)
+    assert_match(/must be an integer/, assert_raises(ArgumentError) do
+      Numo::Linalg.matrix_power(Numo::DFloat[[1, 2], [3, 4]], 2.5)
+    end.message)
+  end
 end

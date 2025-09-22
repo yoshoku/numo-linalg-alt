@@ -686,9 +686,38 @@ module Numo
       Numo::Linalg::Blas.call(:gemm, a, b)
     end
 
-    # @!visibility private
-    def matrix_power(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the matrix `a` raised to the power of `n`.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[1, 2], [3, 4]]
+    #   pp Numo::Linalg.matrix_power(a, 3)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,2]
+    #   # [[37,  54],
+    #   #  [81, 118]]
+    #
+    # @param a [Numo::NArray] The square matrix.
+    # @param n [Integer] The exponent.
+    # @return [Numo::NArray] The matrix `a` raised to the power of `n`.
+    def matrix_power(a, n)
+      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise ArgumentError, "exponent n must be an integer: #{n}" unless n.is_a?(Integer)
+
+      if n.zero?
+        a.class.eye(a.shape[0])
+      elsif n.positive?
+        r = a.dup
+        (n - 1).times { r = Numo::Linalg.matmul(r, a) }
+        r
+      else
+        inv_a = inv(a)
+        r = inv_a.dup
+        (-n - 1).times { r = Numo::Linalg.matmul(r, inv_a) }
+        r
+      end
     end
 
     # @!visibility private
