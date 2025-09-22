@@ -71,11 +71,11 @@
     }                                                                                                                                                              \
                                                                                                                                                                    \
     const size_t n = NA_SHAPE(a_nary)[1];                                                                                                                          \
-    if (range == 'I' && (il < 1 || il > n)) {                                                                                                                      \
+    if (range == 'I' && (il < 1 || il > (lapack_int)n)) {                                                                                                          \
       rb_raise(rb_eArgError, "il must satisfy 1 <= il <= n");                                                                                                      \
       return Qnil;                                                                                                                                                 \
     }                                                                                                                                                              \
-    if (range == 'I' && (iu < 1 || iu > n)) {                                                                                                                      \
+    if (range == 'I' && (iu < 1 || iu > (lapack_int)n)) {                                                                                                          \
       rb_raise(rb_eArgError, "iu must satisfy 1 <= iu <= n");                                                                                                      \
       return Qnil;                                                                                                                                                 \
     }                                                                                                                                                              \
