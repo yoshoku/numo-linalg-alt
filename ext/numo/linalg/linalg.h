@@ -33,11 +33,11 @@
 
 #include <string.h>
 
+#include <ruby.h>
+
 #include <cblas.h>
 #include <lapacke.h>
 #include <openblas_config.h>
-
-#include <ruby.h>
 
 #include <numo/narray.h>
 #include <numo/template.h>

@@ -1,9 +1,9 @@
 #ifndef NUMO_LINALG_ALT_CONVERTER_H
 #define NUMO_LINALG_ALT_CONVERTER_H 1
 
-#include <cblas.h>
-
 #include <ruby.h>
+
+#include <cblas.h>
 
 #include <numo/narray.h>
 

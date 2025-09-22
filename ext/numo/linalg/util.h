@@ -1,10 +1,10 @@
 #ifndef NUMO_LINALG_ALT_UTIL_H
 #define NUMO_LINALG_ALT_UTIL_H 1
 
+#include <ruby.h>
+
 #include <cblas.h>
 #include <lapacke.h>
-
-#include <ruby.h>
 
 lapack_int get_itype(VALUE val);
 char get_jobz(VALUE val);
