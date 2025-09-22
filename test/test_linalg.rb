@@ -296,4 +296,15 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_cb, :<, 1e-7)
     assert_operator(error_cd, :<, 1e-7)
   end
+
+  def test_matmul
+    a = Numo::DFloat[[1, 0], [0, 1]]
+    b = Numo::DFloat[[4, 1], [2, 2]]
+    error_ab = (Numo::DFloat[[4, 1], [2, 2]] - Numo::Linalg.matmul(a, b)).abs.max
+
+    assert_operator(error_ab, :<, 1e-7)
+    assert_match(/must be 2-d/, assert_raises(ArgumentError) do
+      Numo::Linalg.matmul(Numo::DFloat[1, 2], Numo::DFloat[3, 4])
+    end.message)
+  end
 end

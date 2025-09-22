@@ -666,9 +666,24 @@ module Numo
       [s, u, vt]
     end
 
-    # @!visibility private
-    def matmul(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the matrix multiplication of two arrays.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[1, 0], [0, 1]]
+    #   b = Numo::DFloat[[4, 1], [2, 2]]
+    #   pp Numo::Linalg.matmul(a, b)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,2]
+    #   # [[4, 1],
+    #   #  [2, 2]]
+    #
+    # @param a [Numo::NArray] The first array.
+    # @param b [Numo::NArray] The second array.
+    # @return [Numo::NArray] The matrix product of `a` and `b`.
+    def matmul(a, b)
+      Numo::Linalg::Blas.call(:gemm, a, b)
     end
 
     # @!visibility private
