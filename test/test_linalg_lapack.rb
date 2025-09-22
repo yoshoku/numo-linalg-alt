@@ -784,8 +784,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_zhegvx
-    skip 'This function has not been translated into C yet.'
-
     m = 3
     n = 5
     a = Numo::DComplex.new(m, n).rand - 0.5
@@ -806,8 +804,6 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_lapack_chegvx
-    skip 'This function has not been translated into C yet.'
-
     m = 3
     n = 5
     a = Numo::SComplex.new(m, n).rand - 0.5
