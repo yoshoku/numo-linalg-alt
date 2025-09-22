@@ -4,8 +4,8 @@ struct _ungqr_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
-  static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                                   \
+  static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                   \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* tau = (tDType*)NDL_PTR(lp, 1);                                                                 \
     int* info = (int*)NDL_PTR(lp, 2);                                                                      \
@@ -14,11 +14,11 @@ struct _ungqr_option {
     const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[1];                                                  \
     const lapack_int k = (lapack_int)NDL_SHAPE(lp, 1)[0];                                                  \
     const lapack_int lda = n;                                                                              \
-    const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, m, n, k, a, lda, tau);                   \
+    const lapack_int i = LAPACKE_##fLapackFunc(opt->matrix_layout, m, n, k, a, lda, tau);                  \
     *info = (int)i;                                                                                        \
   }                                                                                                        \
                                                                                                            \
-  static VALUE _linalg_lapack_##fLapackFnc(int argc, VALUE* argv, VALUE self) {                            \
+  static VALUE _linalg_lapack_##fLapackFunc(int argc, VALUE* argv, VALUE self) {                           \
     VALUE a_vnary = Qnil;                                                                                  \
     VALUE tau_vnary = Qnil;                                                                                \
     VALUE kw_args = Qnil;                                                                                  \
@@ -56,7 +56,7 @@ struct _ungqr_option {
                                                                                                            \
     ndfunc_arg_in_t ain[2] = { { OVERWRITE, 2 }, { tNAryClass, 1 } };                                      \
     ndfunc_arg_out_t aout[1] = { { numo_cInt32, 0 } };                                                     \
-    ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout };                         \
+    ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout };                        \
     struct _ungqr_option opt = { matrix_layout };                                                          \
     VALUE res = na_ndloop3(&ndf, &opt, 2, a_vnary, tau_vnary);                                             \
                                                                                                            \

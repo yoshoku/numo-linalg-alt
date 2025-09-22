@@ -1,6 +1,6 @@
 #include "syevr.h"
 
-#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                                                                              \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                                                                                             \
   struct _syevr_option_##tDType {                                                                                                                                    \
     int matrix_layout;                                                                                                                                               \
     char jobz;                                                                                                                                                       \
@@ -12,7 +12,7 @@
     lapack_int iu;                                                                                                                                                   \
   };                                                                                                                                                                 \
                                                                                                                                                                      \
-  static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                                                                              \
+  static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                                                                             \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                                             \
     int* m = (int*)NDL_PTR(lp, 1);                                                                                                                                   \
     tDType* w = (tDType*)NDL_PTR(lp, 2);                                                                                                                             \
@@ -24,13 +24,13 @@
     const lapack_int lda = (lapack_int)NDL_SHAPE(lp, 0)[0];                                                                                                          \
     const lapack_int ldz = opt->range != 'I' ? n : opt->iu - opt->il + 1;                                                                                            \
     const tDType abstol = 0.0;                                                                                                                                       \
-    const lapack_int i = LAPACKE_##fLapackFnc(                                                                                                                       \
+    const lapack_int i = LAPACKE_##fLapackFunc(                                                                                                                      \
       opt->matrix_layout, opt->jobz, opt->range, opt->uplo, n, a, lda,                                                                                               \
       opt->vl, opt->vu, opt->il, opt->iu, abstol, m, w, z, ldz, isuppz);                                                                                             \
     *info = (int)i;                                                                                                                                                  \
   }                                                                                                                                                                  \
                                                                                                                                                                      \
-  static VALUE _linalg_lapack_##fLapackFnc(int argc, VALUE* argv, VALUE self) {                                                                                      \
+  static VALUE _linalg_lapack_##fLapackFunc(int argc, VALUE* argv, VALUE self) {                                                                                     \
     VALUE a_vnary = Qnil;                                                                                                                                            \
     VALUE kw_args = Qnil;                                                                                                                                            \
     rb_scan_args(argc, argv, "1:", &a_vnary, &kw_args);                                                                                                              \
@@ -90,7 +90,7 @@
     size_t isuppz_shape[1] = { 2 * m };                                                                                                                              \
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                                                                                   \
     ndfunc_arg_out_t aout[5] = { { numo_cInt32, 0 }, { tNAryClass, 1, w_shape }, { tNAryClass, 2, z_shape }, { numo_cInt32, 1, isuppz_shape }, { numo_cInt32, 0 } }; \
-    ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 1, 5, ain, aout };                                                                                   \
+    ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 1, 5, ain, aout };                                                                                  \
     struct _syevr_option_##tDType opt = { matrix_layout, jobz, range, uplo, vl, vu, il, iu };                                                                        \
     VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                                                                                  \
     VALUE ret = rb_ary_new3(6, a_vnary, rb_ary_entry(res, 0), rb_ary_entry(res, 1), rb_ary_entry(res, 2),                                                            \

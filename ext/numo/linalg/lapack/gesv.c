@@ -4,8 +4,8 @@ struct _gesv_option {
   int matrix_layout;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
-  static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                                   \
+  static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                   \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* b = (tDType*)NDL_PTR(lp, 1);                                                                   \
     int* ipiv = (int*)NDL_PTR(lp, 2);                                                                      \
@@ -15,11 +15,11 @@ struct _gesv_option {
     const lapack_int nhrs = lp->args[1].ndim == 1 ? 1 : (lapack_int)NDL_SHAPE(lp, 1)[1];                   \
     const lapack_int lda = n;                                                                              \
     const lapack_int ldb = nhrs;                                                                           \
-    const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, n, nhrs, a, lda, ipiv, b, ldb);          \
+    const lapack_int i = LAPACKE_##fLapackFunc(opt->matrix_layout, n, nhrs, a, lda, ipiv, b, ldb);         \
     *info = (int)i;                                                                                        \
   }                                                                                                        \
                                                                                                            \
-  static VALUE _linalg_lapack_##fLapackFnc(int argc, VALUE* argv, VALUE self) {                            \
+  static VALUE _linalg_lapack_##fLapackFunc(int argc, VALUE* argv, VALUE self) {                           \
     VALUE a_vnary = Qnil;                                                                                  \
     VALUE b_vnary = Qnil;                                                                                  \
     VALUE kw_args = Qnil;                                                                                  \
@@ -72,7 +72,7 @@ struct _gesv_option {
     ndfunc_arg_in_t ain[2] = { { OVERWRITE, 2 }, { OVERWRITE, b_n_dims } };                                \
     ndfunc_arg_out_t aout[2] = { { numo_cInt32, 1, shape }, { numo_cInt32, 0 } };                          \
                                                                                                            \
-    ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 2, 2, ain, aout };                         \
+    ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 2, 2, ain, aout };                        \
     struct _gesv_option opt = { matrix_layout };                                                           \
     VALUE res = na_ndloop3(&ndf, &opt, 2, a_vnary, b_vnary);                                               \
                                                                                                            \

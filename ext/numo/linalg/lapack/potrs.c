@@ -5,8 +5,8 @@ struct _potrs_option {
   char uplo;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
-  static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                                   \
+  static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                   \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* b = (tDType*)NDL_PTR(lp, 1);                                                                   \
     int* info = (int*)NDL_PTR(lp, 2);                                                                      \
@@ -15,11 +15,11 @@ struct _potrs_option {
     const lapack_int nrhs = lp->args[1].ndim == 1 ? 1 : (lapack_int)NDL_SHAPE(lp, 1)[1];                   \
     const lapack_int lda = n;                                                                              \
     const lapack_int ldb = nrhs;                                                                           \
-    const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, opt->uplo, n, nrhs, a, lda, b, ldb);     \
+    const lapack_int i = LAPACKE_##fLapackFunc(opt->matrix_layout, opt->uplo, n, nrhs, a, lda, b, ldb);    \
     *info = (int)i;                                                                                        \
   }                                                                                                        \
                                                                                                            \
-  static VALUE _linalg_lapack_##fLapackFnc(int argc, VALUE* argv, VALUE self) {                            \
+  static VALUE _linalg_lapack_##fLapackFunc(int argc, VALUE* argv, VALUE self) {                           \
     VALUE a_vnary = Qnil;                                                                                  \
     VALUE b_vnary = Qnil;                                                                                  \
     VALUE kw_args = Qnil;                                                                                  \
@@ -69,7 +69,7 @@ struct _potrs_option {
                                                                                                            \
     ndfunc_arg_in_t ain[2] = { { tNAryClass, 2 }, { OVERWRITE, b_n_dims } };                               \
     ndfunc_arg_out_t aout[1] = { { numo_cInt32, 0 } };                                                     \
-    ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout };                         \
+    ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout };                        \
     struct _potrs_option opt = { matrix_layout, uplo };                                                    \
     VALUE res = na_ndloop3(&ndf, &opt, 2, a_vnary, b_vnary);                                               \
     VALUE ret = rb_ary_new3(2, b_vnary, res);                                                              \

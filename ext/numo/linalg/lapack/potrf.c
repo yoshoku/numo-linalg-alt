@@ -5,18 +5,18 @@ struct _potrf_option {
   char uplo;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
-  static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                                   \
+  static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                   \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     int* info = (int*)NDL_PTR(lp, 1);                                                                      \
     struct _potrf_option* opt = (struct _potrf_option*)(lp->opt_ptr);                                      \
     const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[0];                                                  \
     const lapack_int lda = (lapack_int)NDL_SHAPE(lp, 0)[1];                                                \
-    const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, opt->uplo, n, a, lda);                   \
+    const lapack_int i = LAPACKE_##fLapackFunc(opt->matrix_layout, opt->uplo, n, a, lda);                  \
     *info = (int)i;                                                                                        \
   }                                                                                                        \
                                                                                                            \
-  static VALUE _linalg_lapack_##fLapackFnc(int argc, VALUE* argv, VALUE self) {                            \
+  static VALUE _linalg_lapack_##fLapackFunc(int argc, VALUE* argv, VALUE self) {                           \
     VALUE a_vnary = Qnil;                                                                                  \
     VALUE kw_args = Qnil;                                                                                  \
     rb_scan_args(argc, argv, "1:", &a_vnary, &kw_args);                                                    \
@@ -46,7 +46,7 @@ struct _potrf_option {
                                                                                                            \
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                         \
     ndfunc_arg_out_t aout[1] = { { numo_cInt32, 0 } };                                                     \
-    ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 1, 1, ain, aout };                         \
+    ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 1, 1, ain, aout };                        \
     struct _potrf_option opt = { matrix_layout, uplo };                                                    \
     VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                        \
     VALUE ret = rb_ary_new3(2, a_vnary, res);                                                              \

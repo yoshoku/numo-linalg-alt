@@ -5,8 +5,8 @@ struct _gesdd_option {
   char jobz;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fLapackFnc)                                                                \
-  static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                                                       \
+#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fLapackFunc)                                                               \
+  static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                                                      \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                      \
     tRtType* s = (tRtType*)NDL_PTR(lp, 1);                                                                                                    \
     tDType* u = (tDType*)NDL_PTR(lp, 2);                                                                                                      \
@@ -21,11 +21,11 @@ struct _gesdd_option {
     const lapack_int ldu = opt->jobz == 'S' ? min_mn : m;                                                                                     \
     const lapack_int ldvt = opt->jobz == 'S' ? min_mn : n;                                                                                    \
                                                                                                                                               \
-    lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_order, opt->jobz, m, n, a, lda, s, u, ldu, vt, ldvt);                                     \
+    lapack_int i = LAPACKE_##fLapackFunc(opt->matrix_order, opt->jobz, m, n, a, lda, s, u, ldu, vt, ldvt);                                    \
     *info = (int)i;                                                                                                                           \
   }                                                                                                                                           \
                                                                                                                                               \
-  static VALUE _linalg_lapack_##fLapackFnc(int argc, VALUE* argv, VALUE self) {                                                               \
+  static VALUE _linalg_lapack_##fLapackFunc(int argc, VALUE* argv, VALUE self) {                                                              \
     VALUE a_vnary = Qnil;                                                                                                                     \
     VALUE kw_args = Qnil;                                                                                                                     \
                                                                                                                                               \
@@ -85,7 +85,7 @@ struct _gesdd_option {
       return Qnil;                                                                                                                            \
     }                                                                                                                                         \
                                                                                                                                               \
-    ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 1, 4, ain, aout };                                                            \
+    ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 1, 4, ain, aout };                                                           \
     struct _gesdd_option opt = { matrix_order, jobz };                                                                                        \
     VALUE ret = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                                                           \
                                                                                                                                               \

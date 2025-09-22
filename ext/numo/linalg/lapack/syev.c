@@ -6,19 +6,19 @@ struct _syev_option {
   char uplo;
 };
 
-#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFnc)                                                    \
-  static void _iter_##fLapackFnc(na_loop_t* const lp) {                                                    \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                                   \
+  static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                   \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* w = (tDType*)NDL_PTR(lp, 1);                                                                   \
     int* info = (int*)NDL_PTR(lp, 2);                                                                      \
     struct _syev_option* opt = (struct _syev_option*)(lp->opt_ptr);                                        \
     const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[1];                                                  \
     const lapack_int lda = (lapack_int)NDL_SHAPE(lp, 0)[0];                                                \
-    const lapack_int i = LAPACKE_##fLapackFnc(opt->matrix_layout, opt->jobz, opt->uplo, n, a, lda, w);     \
+    const lapack_int i = LAPACKE_##fLapackFunc(opt->matrix_layout, opt->jobz, opt->uplo, n, a, lda, w);    \
     *info = (int)i;                                                                                        \
   }                                                                                                        \
                                                                                                            \
-  static VALUE _linalg_lapack_##fLapackFnc(int argc, VALUE* argv, VALUE self) {                            \
+  static VALUE _linalg_lapack_##fLapackFunc(int argc, VALUE* argv, VALUE self) {                           \
     VALUE a_vnary = Qnil;                                                                                  \
     VALUE kw_args = Qnil;                                                                                  \
     rb_scan_args(argc, argv, "1:", &a_vnary, &kw_args);                                                    \
@@ -51,7 +51,7 @@ struct _syev_option {
     size_t shape[1] = { n };                                                                               \
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                         \
     ndfunc_arg_out_t aout[2] = { { tNAryClass, 1, shape }, { numo_cInt32, 0 } };                           \
-    ndfunc_t ndf = { _iter_##fLapackFnc, NO_LOOP | NDF_EXTRACT, 1, 2, ain, aout };                         \
+    ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 1, 2, ain, aout };                        \
     struct _syev_option opt = { matrix_layout, jobz, uplo };                                               \
     VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                        \
     VALUE ret = rb_ary_new3(3, a_vnary, rb_ary_entry(res, 0), rb_ary_entry(res, 1));                       \
