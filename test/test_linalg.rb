@@ -319,7 +319,7 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_a3, :<, 1e-7)
     assert_operator(error_a_neg2, :<, 1e-7)
     assert_operator(error_a_neg3, :<, 1e-7)
-    assert_match(/must be 2-d/, assert_raises(ArgumentError) do
+    assert_match(/must be 2-d/, assert_raises(Numo::NArray::ShapeError) do
       Numo::Linalg.matrix_power(Numo::DFloat[1, 2, 3], 2)
     end.message)
     assert_match(/must be square/, assert_raises(ArgumentError) do
@@ -344,7 +344,7 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     error = (u.transpose.dot(u) - Numo::DFloat.eye(u.shape[1])).abs.max
 
     assert_operator(error, :<, 1e-7)
-    assert_match(/must be 2-d/, assert_raises(ArgumentError) do
+    assert_match(/must be 2-d/, assert_raises(Numo::NArray::ShapeError) do
       Numo::Linalg.orth(Numo::DFloat[1, 2, 3])
     end.message)
   end

@@ -47,11 +47,11 @@ module Numo
     # @param turbo [Bool] The flag indicating whether to use a divide and conquer algorithm. If vals_range is given, this flag is ignored.
     # @return [Array<Numo::NArray>] The eigenvalues and eigenvectors.
     def eigh(a, b = nil, vals_only: false, vals_range: nil, uplo: 'U', turbo: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/ParameterLists, Metrics/PerceivedComplexity, Lint/UnusedMethodArgument
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       b_given = !b.nil?
-      raise ArgumentError, 'input array b must be 2-dimensional' if b_given && b.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array b must be 2-dimensional' if b_given && b.ndim != 2
       raise ArgumentError, 'input array b must be square' if b_given && b.shape[0] != b.shape[1]
       raise ArgumentError, "invalid array type: #{b.class}" if b_given && blas_char(b) == 'n'
 
@@ -293,7 +293,7 @@ module Numo
     # @param uplo [String] Whether to compute the upper- or lower-triangular Cholesky factor ('U' or 'L').
     # @return [Numo::NArray] The upper- or lower-triangular Cholesky factor of a.
     def cholesky(a, uplo: 'U')
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
@@ -332,7 +332,7 @@ module Numo
     # @param uplo [String] Whether to compute the upper- or lower-triangular Cholesky factor ('U' or 'L').
     # @return [Numo::NArray] The solution vector or matrix `X`.
     def cho_solve(a, b, uplo: 'U')
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
       raise ArgumentError, "incompatible dimensions: a.shape[0] = #{a.shape[0]} != b.shape[0] = #{b.shape[0]}" if a.shape[0] != b.shape[0]
 
@@ -356,7 +356,7 @@ module Numo
     # @param a [Numo::NArray] The n-by-n square matrix.
     # @return [Float/Complex] The determinant of `a`.
     def det(a)
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
@@ -397,7 +397,7 @@ module Numo
     # @param uplo [String] This argument is for compatibility with Numo::Linalg.solver, and is not used.
     # @return [Numo::NArray] The inverse matrix of `a`.
     def inv(a, driver: 'getrf', uplo: 'U') # rubocop:disable Lint/UnusedMethodArgument
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
@@ -481,7 +481,7 @@ module Numo
     # @return [Numo::NArray] if mode='r'.
     # @return [Array<Numo::NArray>] if mode='reduce' or 'economic' or 'raw'.
     def qr(a, mode: 'reduce')
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, "invalid mode: #{mode}" unless %w[reduce r economic raw].include?(mode)
 
       bchr = blas_char(a)
@@ -538,7 +538,7 @@ module Numo
     # @param uplo [String] This argument is for compatibility with Numo::Linalg.solver, and is not used.
     # @return [Numo::NArray] The solusion vector / matrix `X`.
     def solve(a, b, driver: 'gen', uplo: 'U') # rubocop:disable Lint/UnusedMethodArgument
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a, b)
@@ -573,7 +573,7 @@ module Numo
     # @param lower [Boolean] The flag indicating whether to use the lower-triangular part of `a`.
     # @return [Numo::NArray] The solusion vector / matrix `X`.
     def solve_triangular(a, b, lower: false)
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a, b)
@@ -681,7 +681,7 @@ module Numo
     # @param n [Integer] The exponent.
     # @return [Numo::NArray] The matrix `a` raised to the power of `n`.
     def matrix_power(a, n)
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
       raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
       raise ArgumentError, "exponent n must be an integer: #{n}" unless n.is_a?(Integer)
 
@@ -757,7 +757,7 @@ module Numo
     # @param rcond [Float] The threshold value for small singular values of `a`, default value is `a.shape.max * EPS`.
     # @return [Numo::NArray] The orthonormal basis for the range of `a`.
     def orth(a, rcond: nil)
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
 
       s, u, = svd(a, driver: 'sdd', job: 'S')
       tol = if rcond.nil? || rcond.negative?
@@ -794,7 +794,7 @@ module Numo
     # @param rcond [Float] The threshold value for small singular values of `a`, default value is `a.shape.max * EPS`.
     # @return [Numo::NArray] The orthonormal basis for the null space of `a`.
     def null_space(a, rcond: nil)
-      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
 
       s, _u, vt = svd(a, driver: 'sdd', job: 'A')
       tol = if rcond.nil? || rcond.negative?
