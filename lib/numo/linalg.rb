@@ -811,9 +811,23 @@ module Numo
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
 
-    # @!visibility private
-    def lu_fact(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the LU decomposition of a matrix using partial pivoting.
+    #
+    # @param a [Numo::NArray] The m-by-n matrix to be decomposed.
+    # @return [Array<Numo::NArray>] The LU decomposition and pivot indices ([lu, piv]).
+    def lu_fact(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      getrf = :"#{bchr}getrf"
+      lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
+
+      raise "the #{info.abs}-th argument of getrf had illegal value" if info.negative?
+      raise "the U(#{info}, #{info}) is exactly zero. The factorization has been completed." if info.positive?
+
+      [lu, piv]
     end
 
     # @!visibility private

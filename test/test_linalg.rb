@@ -358,4 +358,17 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal(2, n.shape[1])
     assert_operator(error, :<, 1e-7)
   end
+
+  def test_lu_fact
+    a = Numo::DFloat.new(5, 3).rand - 0.5
+    lu, piv = Numo::Linalg.lu_fact(a)
+    l = lu.tril.tap { |m| m[m.diag_indices(0)] = 1.0 }
+    u = lu.triu[0...3, 0...3]
+    pm = Numo::DFloat.eye(a.shape[0]).tap do |m|
+      piv.to_a.each_with_index { |i, j| m[[i - 1, j], true] = m[[j, i - 1], true].dup }
+    end
+    error = (pm.dot(a) - l.dot(u)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
 end
