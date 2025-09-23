@@ -329,4 +329,12 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
       Numo::Linalg.matrix_power(Numo::DFloat[[1, 2], [3, 4]], 2.5)
     end.message)
   end
+
+  def test_svdvals
+    a = Numo::SFloat[[1, 2, 3], [2, 4, 6], [-1, 1, -1]]
+    s = Numo::Linalg.svdvals(a)
+    error = (Numo::SFloat[8.38434, 1.64402, 0] - s).abs.sum.fdiv(3)
+
+    assert_operator(error, :<, 1e-5)
+  end
 end

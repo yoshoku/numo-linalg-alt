@@ -720,9 +720,39 @@ module Numo
       end
     end
 
-    # @!visibility private
-    def svdvals(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the singular values of a matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[1, 2, 3], [2, 4, 6], [-1, 1, -1]]
+    #   pp Numo::Linalg.svdvals(a)
+    #   # => Numo::DFloat#shape=[3]
+    #   # [8.38434, 1.64402, 5.41675e-17]
+    #
+    # @param a [Numo::NArray] Matrix to be decomposed.
+    # @param driver [String] The LAPACK driver to be used ('svd' or 'sdd').
+    # @return [Numo::NArray] The singular values of `a`.
+    def svdvals(a, driver: 'sdd')
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      case driver.to_s
+      when 'sdd'
+        gesdd = :"#{bchr}gesdd"
+        s, _u, _vt, info = Numo::Linalg::Lapack.send(gesdd, a.dup, jobz: 'N')
+      when 'svd'
+        gesvd = :"#{bchr}gesvd"
+        s, _u, _vt, info = Numo::Linalg::Lapack.send(gesvd, a.dup, jobu: 'N', jobvt: 'N')
+      else
+        raise ArgumentError, "invalid driver: #{driver}"
+      end
+
+      raise "the #{info.abs}-th argument had illegal value" if info.negative?
+      raise 'input array has a NAN entry' if info == -4
+      raise 'svd did not converge' if info.positive?
+
+      s
     end
 
     # @!visibility private
