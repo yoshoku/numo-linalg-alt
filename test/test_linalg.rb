@@ -337,4 +337,15 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
 
     assert_operator(error, :<, 1e-5)
   end
+
+  def test_orth
+    a = Numo::DFloat[[1, 2, 3], [2, 4, 6], [-1, 1, -1]]
+    u = Numo::Linalg.orth(a)
+    error = (u.transpose.dot(u) - Numo::DFloat.eye(u.shape[1])).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_match(/must be 2-d/, assert_raises(ArgumentError) do
+      Numo::Linalg.orth(Numo::DFloat[1, 2, 3])
+    end.message)
+  end
 end

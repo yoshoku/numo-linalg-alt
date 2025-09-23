@@ -734,9 +734,39 @@ module Numo
       s
     end
 
-    # @!visibility private
-    def orth(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes an orthonormal basis for the range of `A` using SVD.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[1, 2, 3], [2, 4, 6], [-1, 1, -1]]
+    #   u = Numo::Linalg.orth(a)
+    #   pp u
+    #   # =>
+    #   # Numo::DFloat#shape=[3,2]
+    #   # [[-0.446229, -0.0296535],
+    #   #  [-0.892459, -0.059307],
+    #   #  [0.0663073, -0.997799]]
+    #   pp u.transpose.dot(u)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,2]
+    #   # [[1, -1.97749e-16],
+    #   #  [-1.97749e-16, 1]]
+    #
+    # @param a [Numo::NArray] The m-by-n input matrix.
+    # @param rcond [Float] The threshold value for small singular values of `a`, default value is `a.shape.max * EPS`.
+    # @return [Numo::NArray] The orthonormal basis for the range of `a`.
+    def orth(a, rcond: nil)
+      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+
+      s, u, = svd(a, driver: 'sdd', job: 'S')
+      tol = if rcond.nil? || rcond.negative?
+              a.shape.max * s.class::EPSILON
+            else
+              rcond
+            end
+      rank = s.gt(tol * s.max).count
+      u[true, 0...rank].dup
     end
 
     # @!visibility private
