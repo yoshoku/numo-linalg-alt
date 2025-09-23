@@ -769,9 +769,41 @@ module Numo
       u[true, 0...rank].dup
     end
 
-    # @!visibility private
-    def null_space(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes an orthonormal basis for the null space of `A` using SVD.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(3, 5).rand - 0.5
+    #   n = Numo::Linalg.null_space(a)
+    #   pp n
+    #   # =>
+    #   # Numo::DFloat#shape=[5,2]
+    #   # [[0.214096, -0.404277],
+    #   #  [-0.482225, -0.51557],
+    #   #  [-0.584394, -0.246804],
+    #   #  [0.596612, -0.351468],
+    #   #  [-0.155434, 0.621535]]
+    #   pp n.transpose.dot(n)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,2]
+    #   # [[1, 1.31078e-16],
+    #   #  [1.31078e-16, 1]]
+    #
+    # @param a [Numo::NArray] The m-by-n input matrix.
+    # @param rcond [Float] The threshold value for small singular values of `a`, default value is `a.shape.max * EPS`.
+    # @return [Numo::NArray] The orthonormal basis for the null space of `a`.
+    def null_space(a, rcond: nil)
+      raise ArgumentError, 'input array a must be 2-dimensional' if a.ndim != 2
+
+      s, _u, vt = svd(a, driver: 'sdd', job: 'A')
+      tol = if rcond.nil? || rcond.negative?
+              a.shape.max * s.class::EPSILON
+            else
+              rcond
+            end
+      rank = s.gt(tol * s.max).count
+      vt[rank...vt.shape[0], true].conj.transpose.dup
     end
 
     # @!visibility private

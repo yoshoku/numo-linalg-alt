@@ -348,4 +348,14 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
       Numo::Linalg.orth(Numo::DFloat[1, 2, 3])
     end.message)
   end
+
+  def test_null_space
+    a = Numo::DFloat.new(3, 4).seq + 1
+    n = Numo::Linalg.null_space(a)
+    error = (n.transpose.dot(n) - Numo::DFloat.eye(n.shape[1])).abs.max
+
+    assert_equal(4, n.shape[0])
+    assert_equal(2, n.shape[1])
+    assert_operator(error, :<, 1e-7)
+  end
 end
