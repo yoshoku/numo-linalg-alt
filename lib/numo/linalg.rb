@@ -16,8 +16,6 @@ module Numo
     # @example
     #   require 'numo/linalg'
     #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
-    #
     #   x = Numo::DFloat.new(5, 3).rand - 0.5
     #   c = x.dot(x.transpose)
     #   vals, vecs = Numo::Linalg.eigh(c, vals_range: [2, 4])
@@ -110,7 +108,6 @@ module Numo
     #
     # @example
     #   require 'numo/linalg'
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
     #
     #   # matrix norm
     #   x = Numo::DFloat[[1, 2, -3, 1], [-4, 1, 8, 2]]
@@ -266,8 +263,6 @@ module Numo
     # @example
     #   require 'numo/linalg'
     #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
-    #
     #   s = Numo::DFloat.new(3, 3).rand - 0.5
     #   a = s.transpose.dot(s)
     #   u = Numo::Linalg.cholesky(a)
@@ -322,8 +317,6 @@ module Numo
     # @example
     #   require 'numo/linalg'
     #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
-    #
     #   s = Numo::DFloat.new(3, 3).rand - 0.5
     #   a = s.transpose.dot(s)
     #   u = Numo::Linalg.cholesky(a)
@@ -355,8 +348,6 @@ module Numo
     #
     # @example
     #   require 'numo/linalg'
-    #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
     #
     #   a = Numo::DFloat[[0, 2, 3], [4, 5, 6], [7, 8, 9]]
     #   pp (3.0 - Numo::Linalg.det(a)).abs
@@ -390,8 +381,6 @@ module Numo
     #
     # @example
     #   require 'numo/linalg'
-    #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
     #
     #   a = Numo::DFloat.new(5, 5).rand
     #
@@ -432,8 +421,6 @@ module Numo
     # @example
     #   require 'numo/linalg'
     #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
-    #
     #   a = Numo::DFloat.new(5, 3).rand
     #
     #   inv_a = Numo::Linalg.pinv(a)
@@ -461,8 +448,6 @@ module Numo
     #
     # @example
     #   require 'numo/linalg'
-    #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
     #
     #   x = Numo::DFloat.new(5, 3).rand
     #
@@ -532,8 +517,6 @@ module Numo
     # @example
     #   require 'numo/linalg'
     #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
-    #
     #   a = Numo::DFloat.new(3, 3).rand
     #   b = Numo::DFloat.eye(3)
     #
@@ -569,8 +552,6 @@ module Numo
     #
     # @example
     #   require 'numo/linalg'
-    #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
     #
     #   a = Numo::DFloat.new(3, 3).rand.triu
     #   b = Numo::DFloat.eye(3)
@@ -610,8 +591,6 @@ module Numo
     #
     # @example
     #   require 'numo/linalg'
-    #
-    #   Numo::Linalg = Numo::Linalg unless defined?(Numo::Linalg)
     #
     #   x = Numo::DFloat.new(5, 2).rand.dot(Numo::DFloat.new(2, 3).rand)
     #   pp x
