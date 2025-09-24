@@ -909,9 +909,26 @@ module Numo
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
 
-    # @!visibility private
-    def cho_fact(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the Cholesky decomposition of a symmetric / Hermitian positive-definite matrix.
+    #
+    # @param a [Numo::NArray] The n-by-n symmetric / Hermitian positive-definite matrix.
+    # @param uplo [String] The part of the matrix to be used ('U' or 'L').
+    # @return [Numo::NArray] The upper- / lower-triangular matrix `U` / `L`.
+    def cho_fact(a, uplo: 'U')
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise ArgumentError, 'uplo must be "U" or "L"' unless %w[U L].include?(uplo)
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}potrf"
+      c, info = Numo::Linalg::Lapack.send(fnc, a.dup, uplo: uplo)
+
+      raise "the #{info}-th leading minor of the array is not positive definite, and the factorization could not be completed." if info.positive?
+      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+
+      c
     end
 
     # @!visibility private

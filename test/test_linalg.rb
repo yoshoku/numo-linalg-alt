@@ -395,4 +395,20 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
 
     assert_operator(error, :<, 1e-7)
   end
+
+  def test_cho_fact
+    a = Numo::DFloat.new(3, 3).rand - 0.5
+    b = a.transpose.dot(a)
+    u = Numo::Linalg.cholesky(b).triu
+    error = (b - u.transpose.dot(u)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::SComplex.new(3, 3).rand - 0.5
+    b = a.transpose.conjugate.dot(a)
+    l = Numo::Linalg.cholesky(b, uplo: 'L').tril
+    error = (b - l.dot(l.transpose.conjugate)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
 end
