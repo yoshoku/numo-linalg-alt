@@ -99,6 +99,66 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_b, :<, 1e-5)
   end
 
+  def test_lapack_dgeev
+    a = Numo::DFloat.new(5, 5).rand - 0.5
+    wr, wi, vl, vr, info = Numo::Linalg::Lapack.dgeev(a.dup, jobvl: 'V', jobvr: 'V')
+    w = wr + (wi * 1.0i)
+    img_ids = wi.gt(0).where
+    u = Numo::DComplex.cast(vl)
+    u[true, img_ids].imag = vl[true, img_ids + 1]
+    u[true, img_ids + 1] = u[true, img_ids].conj
+    vt = Numo::DComplex.cast(vr)
+    vt[true, img_ids].imag = vr[true, img_ids + 1]
+    vt[true, img_ids + 1] = vt[true, img_ids].conj
+    error_u = (u.transpose.conj.dot(a) - w.diag.dot(u.transpose.conj)).abs.max
+    error_vt = (a.dot(vt) - vt.dot(w.diag)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error_u, :<, 1e-7)
+    assert_operator(error_vt, :<, 1e-7)
+  end
+
+  def test_lapack_sgeev
+    a = Numo::SFloat.new(5, 5).rand - 0.5
+    wr, wi, vl, vr, info = Numo::Linalg::Lapack.sgeev(a.dup, jobvl: 'V', jobvr: 'V')
+    w = wr + (wi * 1.0i)
+    img_ids = wi.gt(0).where
+    u = Numo::SComplex.cast(vl)
+    u[true, img_ids].imag = vl[true, img_ids + 1]
+    u[true, img_ids + 1] = u[true, img_ids].conj
+    vt = Numo::SComplex.cast(vr)
+    vt[true, img_ids].imag = vr[true, img_ids + 1]
+    vt[true, img_ids + 1] = vt[true, img_ids].conj
+    error_u = (u.transpose.conj.dot(a) - w.diag.dot(u.transpose.conj)).abs.max
+    error_vt = (a.dot(vt) - vt.dot(w.diag)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error_u, :<, 1e-5)
+    assert_operator(error_vt, :<, 1e-5)
+  end
+
+  def test_lapack_zgeev
+    a = Numo::DComplex.new(5, 5).rand - (0.5 + 0.2i)
+    w, vl, vr, info = Numo::Linalg::Lapack.zgeev(a.dup, jobvl: 'V', jobvr: 'V')
+    error_vl = (vl.transpose.conj.dot(a) - w.diag.dot(vl.transpose.conj)).abs.max
+    error_vr = (a.dot(vr) - vr.dot(w.diag)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error_vl, :<, 1e-7)
+    assert_operator(error_vr, :<, 1e-7)
+  end
+
+  def test_lapack_cgeev
+    a = Numo::SComplex.new(5, 5).rand - (0.5 + 0.2i)
+    w, vl, vr, info = Numo::Linalg::Lapack.cgeev(a.dup, jobvl: 'V', jobvr: 'V')
+    error_vl = (vl.transpose.conj.dot(a) - w.diag.dot(vl.transpose.conj)).abs.max
+    error_vr = (a.dot(vr) - vr.dot(w.diag)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error_vl, :<, 1e-5)
+    assert_operator(error_vr, :<, 1e-5)
+  end
+
   def test_lapack_dgesv
     a = Numo::DFloat.new(5, 5).rand
     b = Numo::DFloat.new(5).rand
