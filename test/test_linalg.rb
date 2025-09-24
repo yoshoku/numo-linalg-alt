@@ -359,6 +359,20 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_lu
+    a = Numo::DFloat.new(5, 3).rand - 0.5
+    pm, l, u = Numo::Linalg.lu(a)
+    error = (pm.dot(a) - l.dot(u)).abs.max
+    l, u = Numo::Linalg.lu(a, permute_l: true)
+    error_perm = (a - l.dot(u)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_operator(error_perm, :<, 1e-7)
+    assert_match(/must be 2-d/, assert_raises(Numo::NArray::ShapeError) do
+      Numo::Linalg.orth(Numo::DFloat[1, 2, 3])
+    end.message)
+  end
+
   def test_lu_fact
     a = Numo::DFloat.new(5, 3).rand - 0.5
     lu, piv = Numo::Linalg.lu_fact(a)

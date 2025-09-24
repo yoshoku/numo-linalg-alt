@@ -806,9 +806,40 @@ module Numo
       vt[rank...vt.shape[0], true].conj.transpose.dup
     end
 
-    # @!visibility private
-    def lu(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the LU decomposition of a matrix using partial pivoting.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(3, 4).rand - 0.5
+    #   pm, l, u = Numo::Linalg.lu(a)
+    #   error = (pm.dot(l).dot(u) - a).abs.max
+    #   pp error
+    #   # => 5.551115123125783e-17
+    #
+    #   l, u = Numo::Linalg.lu(a, permute_l: true)
+    #   error = (l.dot(u) - a).abs.max
+    #   pp error
+    #   # => 5.551115123125783e-17
+    #
+    # @param a [Numo::NArray] The m-by-n matrix to be decomposed.
+    # @param permute_l [Boolean] If true, returns `L` with the permutation applied.
+    # @return [Array<Numo::NArray>] if `permute_l` is `false`, the permutation matrix `P`, lower-triangular matrix `L`, and
+    #  upper-triangular matrix `U` ([P, L, U]). if `permute_l` is `true`, the permuted lower-triangular matrix `L` and
+    #  upper-triangular matrix `U` ([L, U]).
+    def lu(a, permute_l: false)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+
+      m, n = a.shape
+      k = [m, n].min
+      lu, piv = lu_fact(a)
+      l = lu.tril.tap { |nary| nary[nary.diag_indices] = 1 }[true, 0...k].dup
+      u = lu.triu[0...k, 0...n].dup
+      perm = a.class.eye(m).tap do |nary|
+        piv.to_a.each_with_index { |i, j| nary[true, [i - 1, j]] = nary[true, [j, i - 1]].dup }
+      end
+
+      permute_l ? [perm.dot(l), u] : [perm, l, u]
     end
 
     # Computes the LU decomposition of a matrix using partial pivoting.
