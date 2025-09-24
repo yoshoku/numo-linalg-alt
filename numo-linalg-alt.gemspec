@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   spec.files = Dir.chdir(__dir__) do
     `git ls-files -z`.split("\x0")
-                     .reject { |f| f.match(%r{\A(?:(?:test|doc|node_modules|pkg|tmp|\.git|\.github|\.husky)/)}) }
+                     .reject { |f| f.match(%r{\A(?:(?:test|doc|node_modules|pkg|tmp|bin|\.git|\.github|\.husky)/)}) }
                      .select { |f| f.match(/\.(?:rb|rbs|h|hpp|c|cpp|md|txt)$/) }
   end
   spec.files << 'vendor/tmp/.gitkeep'
