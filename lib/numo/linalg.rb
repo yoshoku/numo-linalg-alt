@@ -994,9 +994,29 @@ module Numo
       [w, left ? vl : nil, right ? vr : nil]
     end
 
-    # @!visibility private
-    def eigvals(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the eigenvalues of a general square matrix.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The eigenvalues.
+    def eigvals(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}geev"
+      if %w[z c].include?(bchr)
+        w, _vl, _vr, info = Numo::Linalg::Lapack.send(fnc, a.dup, jobvl: 'N', jobvr: 'N')
+      else
+        wr, wi, _vl, _vr, info = Numo::Linalg::Lapack.send(fnc, a.dup, jobvl: 'N', jobvr: 'N')
+        w = wr + (wi * 1.0i)
+      end
+
+      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
+
+      w
     end
 
     # Computes the eigenvalues of a symmetric / Hermitian matrix by solving an ordinary / generalized eigenvalue problem.
