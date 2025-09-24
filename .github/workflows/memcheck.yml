@@ -16,7 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install OpenBLAS, LAPACKE, and valgrind
-        run: sudo apt-get install -y libopenblas-dev liblapacke-dev valgrind
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libopenblas-dev liblapacke-dev valgrind
       - name: Set up Ruby 3.4
         uses: ruby/setup-ruby@v1
         with:

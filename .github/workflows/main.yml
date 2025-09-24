@@ -17,7 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Install BLAS and LAPACK
-      run: sudo apt-get install -y libopenblas-dev liblapacke-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libopenblas-dev liblapacke-dev
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
