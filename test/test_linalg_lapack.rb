@@ -319,6 +319,54 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_lapack_dgetrs
+    n = 5
+    a = Numo::DFloat.new(n, n).rand
+    b = Numo::DFloat.new(n).rand - 0.5
+    lu, piv, = Numo::Linalg::Lapack.dgetrf(a.dup)
+    x, info = Numo::Linalg::Lapack.dgetrs(lu, piv, b.dup)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_sgetrs
+    n = 5
+    a = Numo::SFloat.new(n, n).rand
+    b = Numo::SFloat.new(n).rand - 0.5
+    lu, piv, = Numo::Linalg::Lapack.sgetrf(a.dup)
+    x, info = Numo::Linalg::Lapack.sgetrs(lu, piv, b.dup)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-5)
+  end
+
+  def test_lapack_zgetrs
+    n = 5
+    a = Numo::DComplex.new(n, n).rand
+    b = Numo::DComplex.new(n).rand - 0.5
+    lu, piv, = Numo::Linalg::Lapack.zgetrf(a.dup)
+    x, info = Numo::Linalg::Lapack.zgetrs(lu, piv, b.dup)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_cgetrs
+    n = 5
+    a = Numo::SComplex.new(n, n).rand
+    b = Numo::SComplex.new(n).rand - 0.5
+    lu, piv, = Numo::Linalg::Lapack.cgetrf(a.dup)
+    x, info = Numo::Linalg::Lapack.cgetrs(lu, piv, b.dup)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_lapack_dtrtrs
     n = 5
     a = Numo::DFloat.new(n, n).rand.triu
