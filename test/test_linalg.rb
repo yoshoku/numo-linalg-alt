@@ -385,4 +385,14 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
 
     assert_operator(error, :<, 1e-7)
   end
+
+  def test_lu_solve
+    a = Numo::DFloat.new(3, 3).rand - 0.5
+    b = Numo::DFloat.new(3, 2).rand - 0.5
+    lu, piv = Numo::Linalg.lu_fact(a)
+    x = Numo::Linalg.lu_solve(lu, piv, b)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
 end

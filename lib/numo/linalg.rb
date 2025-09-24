@@ -866,9 +866,42 @@ module Numo
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
 
-    # @!visibility private
-    def lu_solve(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Solves linear equation `A * x = b` or `A * X = B` for `x` using the LU decomposition of `A`.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(3, 3).rand
+    #   b = Numo::DFloat.eye(3)
+    #   lu, ipiv = Numo::Linalg.lu_fact(a)
+    #   x = Numo::Linalg.lu_solve(lu, ipiv, b)
+    #
+    #   puts (b - a.dot(x)).abs.max
+    #   => 2.220446049250313e-16
+    #
+    # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.
+    # @param ipiv [Numo::Int32/Int64] The pivot indices from `lu_fact`.
+    # @param b [Numo::NArray] The n right-hand side vector, or n-by-nrhs right-hand side matrix.
+    # @param trans [String] The type of system to be solved.
+    #  - 'N': solve `A * x = b` (No transpose),
+    #  - 'T': solve `A^T * x = b` (Transpose),
+    #  - 'C': solve `A^H * x = b` (Conjugate transpose).
+    # @return [Numo::NArray] The solusion vector / matrix `X`.
+    def lu_solve(lu, ipiv, b, trans: 'N')
+      raise Numo::NArray::ShapeError, 'input array lu must be 2-dimensional' if lu.ndim != 2
+      raise ArgumentError, 'input array lu must be square' if lu.shape[0] != lu.shape[1]
+      raise ArgumentError, "incompatible dimensions: lu.shape[0] = #{lu.shape[0]} != b.shape[0] = #{b.shape[0]}" if lu.shape[0] != b.shape[0]
+      raise ArgumentError, 'trans must be "N", "T", or "C"' unless %w[N T C].include?(trans)
+
+      bchr = blas_char(lu)
+      raise ArgumentError, "invalid array type: #{lu.class}" if bchr == 'n'
+
+      getrs = :"#{bchr}getrs"
+      x, info = Numo::Linalg::Lapack.send(getrs, lu, ipiv, b.dup)
+
+      raise "the #{info.abs}-th argument of getrs had illegal value" if info.negative?
+
+      x
     end
 
     # @!visibility private
