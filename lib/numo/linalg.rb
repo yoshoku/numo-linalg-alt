@@ -946,9 +946,18 @@ module Numo
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
 
-    # @!visibility private
-    def eigvalsh(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the eigenvalues of a symmetric / Hermitian matrix by solving an ordinary / generalized eigenvalue problem.
+    #
+    # @param a [Numo::NArray] The n-by-n symmetric / Hermitian matrix.
+    # @param b [Numo::NArray] The n-by-n symmetric / Hermitian matrix. If nil, identity matrix is assumed.
+    # @param vals_range [Range/Array]
+    #   The range of indices of the eigenvalues (in ascending order) and corresponding eigenvectors to be returned.
+    #   If nil, all eigenvalues and eigenvectors are computed.
+    # @param uplo [String] This argument is for compatibility with Numo::Linalg.solver, and is not used.
+    # @param turbo [Bool] The flag indicating whether to use a divide and conquer algorithm. If vals_range is given, this flag is ignored.
+    # @return [Numo::NArray] The eigenvalues.
+    def eigvalsh(a, b = nil, vals_range: nil, uplo: 'U', turbo: false)
+      eigh(a, b, vals_only: true, vals_range: vals_range, uplo: uplo, turbo: turbo)[0]
     end
 
     # @!visibility private

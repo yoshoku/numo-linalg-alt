@@ -411,4 +411,15 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
 
     assert_operator(error, :<, 1e-5)
   end
+
+  def test_eigvalsh
+    m = 3
+    n = 5
+    x = Numo::DFloat.new(m, n).rand - 0.5
+    a = x.dot(x.transpose)
+    v = Numo::Linalg.eigvalsh(a)
+    r = Numo::Linalg.eigh(a)[0]
+
+    assert_operator((v - r).abs.max, :<, 1e-7)
+  end
 end
