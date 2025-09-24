@@ -412,6 +412,29 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_eig
+    a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
+    w, vl, vr = Numo::Linalg.eig(a)
+    error = (a.dot(vr) - vr.dot(w.diag)).abs.max
+
+    assert_nil(vl)
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat.new(5, 5).rand - 0.5
+    w, vl, vr = Numo::Linalg.eig(a)
+    error = (a.dot(vr) - vr.dot(w.diag)).abs.max
+
+    assert_nil(vl)
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::SFloat.new(5, 5).rand - 0.5
+    w, vl, vr = Numo::Linalg.eig(a, left: true, right: false)
+    error = (vl.transpose.conjugate.dot(a) - w.diag.dot(vl.transpose.conjugate)).abs.max
+
+    assert_nil(vr)
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_eigvalsh
     m = 3
     n = 5

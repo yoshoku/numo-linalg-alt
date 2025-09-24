@@ -936,9 +936,62 @@ module Numo
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
 
-    # @!visibility private
-    def eig(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the eigenvalues and right and/or left eigenvectors of a general square matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(5, 5).rand - 0.5
+    #   w, _vl, vr = Numo::Linalg.eig(a)
+    #   error = (a.dot(vr) - vr.dot(w.diag)).abs.max
+    #   pp error
+    #   # => 4.718447854656915e-16
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @param left [Boolean] The flag indicating whether to compute the left eigenvectors.
+    # @param right [Boolean] The flag indicating whether to compute the right eigenvectors.
+    # @return [Array<Numo::NArray>] The eigenvalues, left eigenvectors, and right eigenvectors.
+    def eig(a, left: false, right: true) # rubocop:disable  Metrics/AbcSize, Metrics/PerceivedComplexity
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      jobvl = left ? 'V' : 'N'
+      jobvr = right ? 'V' : 'N'
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}geev"
+      if %w[z c].include?(bchr)
+        w, vl, vr, info = Numo::Linalg::Lapack.send(fnc, a.dup, jobvl: jobvl, jobvr: jobvr)
+      else
+        wr, wi, vl, vr, info = Numo::Linalg::Lapack.send(fnc, a.dup, jobvl: jobvl, jobvr: jobvr)
+      end
+
+      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
+
+      if %w[d s].include?(bchr)
+        w = wr + (wi * 1.0i)
+        ids = wi.gt(0).where
+        unless ids.empty?
+          cast_class = bchr == 'd' ? Numo::DComplex : Numo::SComplex
+          if left
+            tmp = cast_class.cast(vl)
+            tmp[true, ids].imag = vl[true, ids + 1]
+            tmp[true, ids + 1] = tmp[true, ids].conj
+            vl = tmp
+          end
+          if right
+            tmp = cast_class.cast(vr)
+            tmp[true, ids].imag = vr[true, ids + 1]
+            tmp[true, ids + 1] = tmp[true, ids].conj
+            vr = tmp
+          end
+        end
+      end
+
+      [w, left ? vl : nil, right ? vr : nil]
     end
 
     # @!visibility private
