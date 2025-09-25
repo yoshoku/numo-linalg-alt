@@ -52,6 +52,7 @@
 #include "blas/nrm2.h"
 
 #include "lapack/geev.h"
+#include "lapack/gelsd.h"
 #include "lapack/geqrf.h"
 #include "lapack/gesdd.h"
 #include "lapack/gesv.h"

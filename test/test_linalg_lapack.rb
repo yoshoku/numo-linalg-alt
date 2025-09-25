@@ -974,4 +974,88 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_f, :<, 1e-5)
     assert_operator(error_m, :<, 1e-5)
   end
+
+  def test_lapack_dgelsd
+    a = Numo::DFloat.new(3, 8).rand
+    b = Numo::DFloat.new(3).rand
+    x = Numo::DFloat.zeros(a.shape[1])
+    x[0...b.size] = b
+    s, rank, info = Numo::Linalg::Lapack.dgelsd(a.dup, x)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(1, s.ndim)
+    assert_equal(3, s.size)
+    assert_equal(0, info)
+    assert_equal(3, rank)
+    assert_operator(error, :<, 1e-7)
+
+    b = Numo::DFloat.new(3, 2).rand
+    x = Numo::DFloat.zeros(a.shape[1], b.shape[1])
+    x[0...b.shape[0], 0...b.shape[1]] = b
+    s, rank, info = Numo::Linalg::Lapack.dgelsd(a.dup, x)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(1, s.ndim)
+    assert_equal(3, s.size)
+    assert_equal(0, info)
+    assert_equal(3, rank)
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_sgelsd
+    a = Numo::SFloat.new(3, 8).rand
+    b = Numo::SFloat.new(3).rand
+    x = Numo::SFloat.zeros(a.shape[1])
+    x[0...b.size] = b
+    s, rank, info = Numo::Linalg::Lapack.sgelsd(a.dup, x)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(1, s.ndim)
+    assert_equal(3, s.size)
+    assert_equal(0, info)
+    assert_equal(3, rank)
+    assert_operator(error, :<, 1e-5)
+  end
+
+  def test_lapack_zgelsd
+    a = Numo::DComplex.new(3, 8).rand
+    b = Numo::DComplex.new(3).rand
+    x = Numo::DComplex.zeros(a.shape[1])
+    x[0...b.size] = b
+    s, rank, info = Numo::Linalg::Lapack.zgelsd(a.dup, x)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(1, s.ndim)
+    assert_equal(3, s.size)
+    assert_equal(0, info)
+    assert_equal(3, rank)
+    assert_operator(error, :<, 1e-7)
+
+    b = Numo::DComplex.new(3, 2).rand
+    x = Numo::DComplex.zeros(a.shape[1], b.shape[1])
+    x[0...b.shape[0], 0...b.shape[1]] = b
+    s, rank, info = Numo::Linalg::Lapack.zgelsd(a.dup, x)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(1, s.ndim)
+    assert_equal(3, s.size)
+    assert_equal(0, info)
+    assert_equal(3, rank)
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_cgelsd
+    a = Numo::SComplex.new(3, 8).rand
+    b = Numo::SComplex.new(3).rand
+    x = Numo::SComplex.zeros(a.shape[1])
+    x[0...b.size] = b
+    s, rank, info = Numo::Linalg::Lapack.cgelsd(a.dup, x)
+    error = (b - a.dot(x)).abs.max
+
+    assert_equal(1, s.ndim)
+    assert_equal(3, s.size)
+    assert_equal(0, info)
+    assert_equal(3, rank)
+    assert_operator(error, :<, 1e-5)
+  end
 end
