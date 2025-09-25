@@ -1,13 +1,13 @@
 #include "heevr.h"
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fLapackFunc)                                                                                        \
-  struct _heevr_option_##tRtType {                                                                                                                                     \
+#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)                                                                                       \
+  struct _heevr_option_##tRtDType {                                                                                                                                    \
     int matrix_layout;                                                                                                                                                 \
     char jobz;                                                                                                                                                         \
     char range;                                                                                                                                                        \
     char uplo;                                                                                                                                                         \
-    tRtType vl;                                                                                                                                                        \
-    tRtType vu;                                                                                                                                                        \
+    tRtDType vl;                                                                                                                                                       \
+    tRtDType vu;                                                                                                                                                       \
     lapack_int il;                                                                                                                                                     \
     lapack_int iu;                                                                                                                                                     \
   };                                                                                                                                                                   \
@@ -15,15 +15,15 @@
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                                                                               \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                                               \
     int* m = (int*)NDL_PTR(lp, 1);                                                                                                                                     \
-    tRtType* w = (tRtType*)NDL_PTR(lp, 2);                                                                                                                             \
+    tRtDType* w = (tRtDType*)NDL_PTR(lp, 2);                                                                                                                           \
     tDType* z = (tDType*)NDL_PTR(lp, 3);                                                                                                                               \
     int* isuppz = (int*)NDL_PTR(lp, 4);                                                                                                                                \
     int* info = (int*)NDL_PTR(lp, 5);                                                                                                                                  \
-    struct _heevr_option_##tRtType* opt = (struct _heevr_option_##tRtType*)(lp->opt_ptr);                                                                              \
+    struct _heevr_option_##tRtDType* opt = (struct _heevr_option_##tRtDType*)(lp->opt_ptr);                                                                            \
     const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[1];                                                                                                              \
     const lapack_int lda = (lapack_int)NDL_SHAPE(lp, 0)[0];                                                                                                            \
     const lapack_int ldz = opt->range != 'I' ? n : opt->iu - opt->il + 1;                                                                                              \
-    const tRtType abstol = 0.0;                                                                                                                                        \
+    const tRtDType abstol = 0.0;                                                                                                                                       \
     const lapack_int i = LAPACKE_##fLapackFunc(                                                                                                                        \
       opt->matrix_layout, opt->jobz, opt->range, opt->uplo, n, a, lda,                                                                                                 \
       opt->vl, opt->vu, opt->il, opt->iu, abstol, m, w, z, ldz, isuppz);                                                                                               \
@@ -41,8 +41,8 @@
     const char jobz = kw_values[0] != Qundef ? get_jobz(kw_values[0]) : 'V';                                                                                           \
     const char range = kw_values[1] != Qundef ? get_range(kw_values[1]) : 'A';                                                                                         \
     const char uplo = kw_values[2] != Qundef ? get_uplo(kw_values[2]) : 'U';                                                                                           \
-    const tRtType vl = kw_values[3] != Qundef ? NUM2DBL(kw_values[3]) : 0.0;                                                                                           \
-    const tRtType vu = kw_values[4] != Qundef ? NUM2DBL(kw_values[4]) : 0.0;                                                                                           \
+    const tRtDType vl = kw_values[3] != Qundef ? NUM2DBL(kw_values[3]) : 0.0;                                                                                          \
+    const tRtDType vu = kw_values[4] != Qundef ? NUM2DBL(kw_values[4]) : 0.0;                                                                                          \
     const lapack_int il = kw_values[5] != Qundef ? NUM2INT(kw_values[5]) : 0;                                                                                          \
     const lapack_int iu = kw_values[6] != Qundef ? NUM2INT(kw_values[6]) : 0;                                                                                          \
     const int matrix_layout = kw_values[7] != Qundef ? get_matrix_layout(kw_values[7]) : LAPACK_ROW_MAJOR;                                                             \
@@ -91,7 +91,7 @@
     ndfunc_arg_in_t ain[1] = { { OVERWRITE, 2 } };                                                                                                                     \
     ndfunc_arg_out_t aout[5] = { { numo_cInt32, 0 }, { tRtNAryClass, 1, w_shape }, { tNAryClass, 2, z_shape }, { numo_cInt32, 1, isuppz_shape }, { numo_cInt32, 0 } }; \
     ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 1, 5, ain, aout };                                                                                    \
-    struct _heevr_option_##tRtType opt = { matrix_layout, jobz, range, uplo, vl, vu, il, iu };                                                                         \
+    struct _heevr_option_##tRtDType opt = { matrix_layout, jobz, range, uplo, vl, vu, il, iu };                                                                        \
     VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                                                                                    \
     VALUE ret = rb_ary_new3(6, a_vnary, rb_ary_entry(res, 0), rb_ary_entry(res, 1), rb_ary_entry(res, 2),                                                              \
                             rb_ary_entry(res, 3), rb_ary_entry(res, 4));                                                                                               \

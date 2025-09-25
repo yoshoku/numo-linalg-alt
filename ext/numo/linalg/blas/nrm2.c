@@ -1,11 +1,11 @@
 #include "nrm2.h"
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fBlasFunc)     \
+#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fBlasFunc)    \
   static void _iter_##fBlasFunc(na_loop_t* const lp) {                            \
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                          \
-    tRtType* d = (tRtType*)NDL_PTR(lp, 1);                                        \
+    tRtDType* d = (tRtDType*)NDL_PTR(lp, 1);                                      \
     const blasint n = (blasint)NDL_SHAPE(lp, 0)[0];                               \
-    tRtType ret = cblas_##fBlasFunc(n, x, 1);                                     \
+    tRtDType ret = cblas_##fBlasFunc(n, x, 1);                                    \
     *d = ret;                                                                     \
   }                                                                               \
                                                                                   \

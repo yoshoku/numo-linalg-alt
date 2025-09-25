@@ -5,10 +5,10 @@ struct _gesdd_option {
   char jobz;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fLapackFunc)                                                               \
+#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)                                                              \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                                                      \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                      \
-    tRtType* s = (tRtType*)NDL_PTR(lp, 1);                                                                                                    \
+    tRtDType* s = (tRtDType*)NDL_PTR(lp, 1);                                                                                                  \
     tDType* u = (tDType*)NDL_PTR(lp, 2);                                                                                                      \
     tDType* vt = (tDType*)NDL_PTR(lp, 3);                                                                                                     \
     int* info = (int*)NDL_PTR(lp, 4);                                                                                                         \

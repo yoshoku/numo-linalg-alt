@@ -6,10 +6,10 @@ struct _gesvd_option {
   char jobvt;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fLapackFunc)                                                               \
+#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)                                                              \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                                                      \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                                                      \
-    tRtType* s = (tRtType*)NDL_PTR(lp, 1);                                                                                                    \
+    tRtDType* s = (tRtDType*)NDL_PTR(lp, 1);                                                                                                  \
     tDType* u = (tDType*)NDL_PTR(lp, 2);                                                                                                      \
     tDType* vt = (tDType*)NDL_PTR(lp, 3);                                                                                                     \
     int* info = (int*)NDL_PTR(lp, 4);                                                                                                         \
@@ -22,7 +22,7 @@ struct _gesvd_option {
     const lapack_int ldu = opt->jobu == 'A' ? m : min_mn;                                                                                     \
     const lapack_int ldvt = n;                                                                                                                \
                                                                                                                                               \
-    tRtType* superb = (tRtType*)ruby_xmalloc(min_mn * sizeof(tRtType));                                                                       \
+    tRtDType* superb = (tRtDType*)ruby_xmalloc(min_mn * sizeof(tRtDType));                                                                    \
                                                                                                                                               \
     lapack_int i = LAPACKE_##fLapackFunc(opt->matrix_order, opt->jobu, opt->jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, superb);                \
     *info = (int)i;                                                                                                                           \

@@ -7,11 +7,11 @@ struct _hegvd_option {
   char uplo;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fLapackFunc)                            \
+#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)                           \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                   \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
     tDType* b = (tDType*)NDL_PTR(lp, 1);                                                                   \
-    tRtType* w = (tRtType*)NDL_PTR(lp, 2);                                                                 \
+    tRtDType* w = (tRtDType*)NDL_PTR(lp, 2);                                                               \
     int* info = (int*)NDL_PTR(lp, 3);                                                                      \
     struct _hegvd_option* opt = (struct _hegvd_option*)(lp->opt_ptr);                                      \
     const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[1];                                                  \

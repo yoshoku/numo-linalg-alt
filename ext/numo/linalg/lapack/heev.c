@@ -6,10 +6,10 @@ struct _heev_option {
   char uplo;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtType, tNAryClass, tRtNAryClass, fLapackFunc)                            \
+#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)                           \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                                   \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                                   \
-    tRtType* w = (tRtType*)NDL_PTR(lp, 1);                                                                 \
+    tRtDType* w = (tRtDType*)NDL_PTR(lp, 1);                                                               \
     int* info = (int*)NDL_PTR(lp, 2);                                                                      \
     struct _heev_option* opt = (struct _heev_option*)(lp->opt_ptr);                                        \
     const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[1];                                                  \
