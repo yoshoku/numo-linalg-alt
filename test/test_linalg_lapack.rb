@@ -1058,4 +1058,156 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal(3, rank)
     assert_operator(error, :<, 1e-5)
   end
+
+  def test_lapack_dsytrf
+    n = 10
+    a = Numo::DFloat.new(n, n).rand - 0.5
+    a = 0.5 * (a.transpose + a)
+
+    # --- uplo: 'U'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.dsytrf(lud)
+    u, d = sytrf_permutation_u(lud, ipiv)
+    error = (a - u.dot(d).dot(u.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(0, info)
+
+    # --- uplo: 'L'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.dsytrf(lud, uplo: 'L')
+    l, d = sytrf_permutation_l(lud, ipiv)
+    error = (a - l.dot(d).dot(l.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(0, info)
+  end
+
+  def test_lapack_ssytrf
+    n = 10
+    a = Numo::SFloat.new(n, n).rand - 0.5
+    a = 0.5 * (a.transpose + a)
+
+    # --- uplo: 'U'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.ssytrf(lud)
+    u, d = sytrf_permutation_u(lud, ipiv)
+    error = (a - u.dot(d).dot(u.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+    assert_equal(0, info)
+
+    # --- uplo: 'L'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.ssytrf(lud, uplo: 'L')
+    l, d = sytrf_permutation_l(lud, ipiv)
+    error = (a - l.dot(d).dot(l.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+    assert_equal(0, info)
+  end
+
+  def test_lapack_zsytrf
+    n = 10
+    a = Numo::DComplex.new(n, n).rand - 0.5
+    a = 0.5 * (a.transpose + a)
+
+    # --- uplo: 'U'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.zsytrf(lud)
+    u, d = sytrf_permutation_u(lud, ipiv)
+    error = (a - u.dot(d).dot(u.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(0, info)
+
+    # --- uplo: 'L'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.zsytrf(lud, uplo: 'L')
+    l, d = sytrf_permutation_l(lud, ipiv)
+    error = (a - l.dot(d).dot(l.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(0, info)
+  end
+
+  def test_lapack_csytrf
+    n = 10
+    a = Numo::SComplex.new(n, n).rand - 0.5
+    a = 0.5 * (a.transpose + a)
+
+    # --- uplo: 'U'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.csytrf(lud)
+    u, d = sytrf_permutation_u(lud, ipiv)
+    error = (a - u.dot(d).dot(u.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+    assert_equal(0, info)
+
+    # --- uplo: 'L'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.csytrf(lud, uplo: 'L')
+    l, d = sytrf_permutation_l(lud, ipiv)
+    error = (a - l.dot(d).dot(l.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+    assert_equal(0, info)
+  end
+
+  def sytrf_permutation_u(lud, ipiv)
+    n = lud.shape[0]
+    u = lud.triu.tap { |m| m[m.diag_indices] = 1 }
+    d = lud.class.zeros(n, n)
+    # If IPIV(k) > 0, then rows and columns k and IPIV(k) were interchanged
+    # and D(k,k) is a 1-by-1 diagonal block.
+    # IF UPLO = 'U' and If IPIV(k) = IPIV(k-1) < 0, then
+    # rows and columns k-1 and -IPIV(k) were interchanged
+    # and D(k-1:k,k-1:k) is a 2-by-2 diagonal block.
+    skip = false
+    n.times do |k|
+      d[k, k] = lud[k, k]
+      if ipiv[k].positive?
+        i = ipiv[k] - 1
+        u[[i, k], 0..k] = u[[k, i], 0..k].dup
+      elsif k.positive? && ipiv[k].negative? && ipiv[k] == ipiv[k - 1] && !skip
+        i = -ipiv[k] - 1
+        d[k - 1, k] = lud[k - 1, k]
+        d[k, k - 1] = d[k - 1, k]
+        u[k - 1, k] = 0
+        u[[i, k - 1], 0..k] = u[[k - 1, i], 0..k].dup
+        skip = true
+        next
+      end
+      skip = false if skip
+    end
+    [u, d]
+  end
+
+  def sytrf_permutation_l(lud, ipiv)
+    n = lud.shape[0]
+    l = lud.tril.tap { |m| m[m.diag_indices] = 1 }
+    d = lud.class.zeros(n, n)
+    # If UPLO = 'L' and IPIV(k) = IPIV(k+1) < 0, then
+    # rows and columns k+1 and -IPIV(k) were interchanged
+    # and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
+    skip = false
+    (n - 1).downto(0) do |k|
+      d[k, k] = lud[k, k]
+      if ipiv[k].positive?
+        i = ipiv[k] - 1
+        l[[i, k], k...n] = l[[k, i], k...n].dup
+      elsif k < n - 1 && ipiv[k].negative? && ipiv[k] == ipiv[k + 1] && !skip
+        i = -ipiv[k] - 1
+        d[k + 1, k] = lud[k + 1, k]
+        d[k, k + 1] = d[k + 1, k]
+        l[k + 1, k] = 0
+        l[[i, k + 1], k...n] = l[[k + 1, i], k...n].dup
+        skip = true
+        next
+      end
+      skip = false if skip
+    end
+    [l, d]
+  end
 end

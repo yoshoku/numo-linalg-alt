@@ -76,6 +76,7 @@
 #include "lapack/sygv.h"
 #include "lapack/sygvd.h"
 #include "lapack/sygvx.h"
+#include "lapack/sytrf.h"
 #include "lapack/trtrs.h"
 #include "lapack/ungqr.h"
 
