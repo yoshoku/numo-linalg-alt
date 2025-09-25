@@ -454,4 +454,16 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
 
     assert_operator((v - r).abs.max, :<, 1e-7)
   end
+
+  def test_lu_inv
+    assert_match(/lu_inv is not supported/, assert_raises(NotImplementedError) do
+      Numo::Linalg.lu_inv(nil, nil)
+    end.message)
+  end
+
+  def test_cho_inv
+    assert_match(/cho_inv is not supported/, assert_raises(NotImplementedError) do
+      Numo::Linalg.cho_inv(nil)
+    end.message)
+  end
 end

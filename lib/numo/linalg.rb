@@ -861,11 +861,6 @@ module Numo
       [lu, piv]
     end
 
-    # @!visibility private
-    def lu_inv(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
-    end
-
     # Solves linear equation `A * x = b` or `A * X = B` for `x` using the LU decomposition of `A`.
     #
     # @example
@@ -904,11 +899,6 @@ module Numo
       x
     end
 
-    # @!visibility private
-    def ldl(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
-    end
-
     # Computes the Cholesky decomposition of a symmetric / Hermitian positive-definite matrix.
     #
     # @param a [Numo::NArray] The n-by-n symmetric / Hermitian positive-definite matrix.
@@ -929,11 +919,6 @@ module Numo
       raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
 
       c
-    end
-
-    # @!visibility private
-    def cho_inv(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
 
     # Computes the eigenvalues and right and/or left eigenvectors of a general square matrix.
@@ -1034,6 +1019,11 @@ module Numo
     end
 
     # @!visibility private
+    def ldl(*args)
+      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    end
+
+    # @!visibility private
     def cond(*args)
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
@@ -1056,6 +1046,20 @@ module Numo
     # @!visibility private
     def expm(*args)
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    end
+
+    # It is not supported in the Numo::Linalg Alternative.
+    # @deprecated Use `inv` instead.
+    def lu_inv(lu, ipiv)
+      raise NotImplementedError,
+            'Sorry, lu_inv is not supported in the Numo::Linalg Alternative. Please use inv instead.'
+    end
+
+    # It is not supported in the Numo::Linalg Alternative.
+    # @deprecated Use `inv` instead.
+    def cho_inv(a, uplo: 'U')
+      raise NotImplementedError,
+            'Sorry, cho_inv is not supported in the Numo::Linalg Alternative. Please use inv instead.'
     end
   end
 end
