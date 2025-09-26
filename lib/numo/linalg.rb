@@ -1093,9 +1093,18 @@ module Numo
       [sign, logdet]
     end
 
-    # @!visibility private
-    def matrix_rank(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the rank of a matrix using SVD.
+    #
+    # @param a [Numo::NArray] The input matrix.
+    # @param tol [Float] The threshold value for small singular values of `a`.
+    # @param driver [String] The LAPACK driver to be used ('svd' or 'sdd').
+    # @return [Integer] The rank of the matrix.
+    def matrix_rank(a, tol: nil, driver: 'svd')
+      return a.ne(0).any? ? 1 : 0 if a.ndim < 2
+
+      s = svdvals(a, driver: driver)
+      tol ||= s.max(axis: -1, keepdims: true) * (a.shape[-2..].max * s.class::EPSILON)
+      s.gt(tol).count(axis: -1)
     end
 
     # @!visibility private

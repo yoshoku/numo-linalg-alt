@@ -517,6 +517,20 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_logdet, :<, 1e-5)
   end
 
+  def test_matrix_rank
+    m = Numo::DFloat.new(6, 2).rand - 0.5
+    n = Numo::DFloat.new(2, 3).rand - 0.5
+    a = m.dot(n)
+
+    assert_equal(2, Numo::Linalg.matrix_rank(a))
+
+    m = Numo::DComplex.new(6, 2).rand - 0.5
+    n = Numo::DComplex.new(2, 3).rand - 0.5
+    a = m.dot(n)
+
+    assert_equal(2, Numo::Linalg.matrix_rank(a))
+  end
+
   def test_lu_inv
     assert_match(/lu_inv is not supported/, assert_raises(NotImplementedError) do
       Numo::Linalg.lu_inv(nil, nil)
