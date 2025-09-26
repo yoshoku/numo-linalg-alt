@@ -1067,7 +1067,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'U'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.dsytrf(lud)
-    u, d = sytrf_permutation_u(lud, ipiv)
+    u, d = xtrf_permutation_u(lud, ipiv)
     error = (a - u.dot(d).dot(u.transpose)).abs.max
 
     assert_operator(error, :<, 1e-7)
@@ -1076,7 +1076,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'L'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.dsytrf(lud, uplo: 'L')
-    l, d = sytrf_permutation_l(lud, ipiv)
+    l, d = xtrf_permutation_l(lud, ipiv)
     error = (a - l.dot(d).dot(l.transpose)).abs.max
 
     assert_operator(error, :<, 1e-7)
@@ -1091,7 +1091,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'U'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.ssytrf(lud)
-    u, d = sytrf_permutation_u(lud, ipiv)
+    u, d = xtrf_permutation_u(lud, ipiv)
     error = (a - u.dot(d).dot(u.transpose)).abs.max
 
     assert_operator(error, :<, 1e-5)
@@ -1100,7 +1100,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'L'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.ssytrf(lud, uplo: 'L')
-    l, d = sytrf_permutation_l(lud, ipiv)
+    l, d = xtrf_permutation_l(lud, ipiv)
     error = (a - l.dot(d).dot(l.transpose)).abs.max
 
     assert_operator(error, :<, 1e-5)
@@ -1115,7 +1115,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'U'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.zsytrf(lud)
-    u, d = sytrf_permutation_u(lud, ipiv)
+    u, d = xtrf_permutation_u(lud, ipiv)
     error = (a - u.dot(d).dot(u.transpose)).abs.max
 
     assert_operator(error, :<, 1e-7)
@@ -1124,7 +1124,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'L'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.zsytrf(lud, uplo: 'L')
-    l, d = sytrf_permutation_l(lud, ipiv)
+    l, d = xtrf_permutation_l(lud, ipiv)
     error = (a - l.dot(d).dot(l.transpose)).abs.max
 
     assert_operator(error, :<, 1e-7)
@@ -1139,7 +1139,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'U'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.csytrf(lud)
-    u, d = sytrf_permutation_u(lud, ipiv)
+    u, d = xtrf_permutation_u(lud, ipiv)
     error = (a - u.dot(d).dot(u.transpose)).abs.max
 
     assert_operator(error, :<, 1e-5)
@@ -1148,14 +1148,74 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # --- uplo: 'L'
     lud = a.dup
     ipiv, info = Numo::Linalg::Lapack.csytrf(lud, uplo: 'L')
-    l, d = sytrf_permutation_l(lud, ipiv)
+    l, d = xtrf_permutation_l(lud, ipiv)
     error = (a - l.dot(d).dot(l.transpose)).abs.max
 
     assert_operator(error, :<, 1e-5)
     assert_equal(0, info)
   end
 
-  def sytrf_permutation_u(lud, ipiv)
+  def test_lapack_zhetrf
+    n = 10
+    a = Numo::DFloat.new(n, n).rand - 0.5
+    a = 0.5 * (a.transpose + a)
+    b = Numo::DFloat.new(n, n).rand
+    b = 0.5 * (b.transpose + b)
+    b = (b.triu - b.tril)
+    b[b.diag_indices] = 0.0
+    a += b * Complex::I
+
+    # --- uplo: 'U'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.zhetrf(lud)
+    u, d = xtrf_permutation_u(lud, ipiv, hermitian: true)
+    error = (a - u.dot(d).dot(u.transpose.conj)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(0, info)
+
+    # --- uplo: 'L'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.zhetrf(lud, uplo: 'L')
+    l, d = xtrf_permutation_l(lud, ipiv, hermitian: true)
+    error = (a - l.dot(d).dot(l.transpose.conj)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(0, info)
+  end
+
+  def test_lapack_chetrf
+    n = 10
+    a = Numo::SFloat.new(n, n).rand - 0.5
+    a = 0.5 * (a.transpose + a)
+    b = Numo::SFloat.new(n, n).rand
+    b = 0.5 * (b.transpose + b)
+    b = (b.triu - b.tril)
+    b[b.diag_indices] = 0.0
+    a += b * Complex::I
+
+    assert_kind_of(Numo::SComplex, a)
+
+    # --- uplo: 'U'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.chetrf(lud)
+    u, d = xtrf_permutation_u(lud, ipiv, hermitian: true)
+    error = (a - u.dot(d).dot(u.transpose.conj)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+    assert_equal(0, info)
+
+    # --- uplo: 'L'
+    lud = a.dup
+    ipiv, info = Numo::Linalg::Lapack.chetrf(lud, uplo: 'L')
+    l, d = xtrf_permutation_l(lud, ipiv, hermitian: true)
+    error = (a - l.dot(d).dot(l.transpose.conj)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+    assert_equal(0, info)
+  end
+
+  def xtrf_permutation_u(lud, ipiv, hermitian: false)
     n = lud.shape[0]
     u = lud.triu.tap { |m| m[m.diag_indices] = 1 }
     d = lud.class.zeros(n, n)
@@ -1173,7 +1233,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
       elsif k.positive? && ipiv[k].negative? && ipiv[k] == ipiv[k - 1] && !skip
         i = -ipiv[k] - 1
         d[k - 1, k] = lud[k - 1, k]
-        d[k, k - 1] = d[k - 1, k]
+        d[k, k - 1] = hermitian ? d[k - 1, k].conj : d[k - 1, k]
         u[k - 1, k] = 0
         u[[i, k - 1], 0..k] = u[[k - 1, i], 0..k].dup
         skip = true
@@ -1184,7 +1244,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     [u, d]
   end
 
-  def sytrf_permutation_l(lud, ipiv)
+  def xtrf_permutation_l(lud, ipiv, hermitian: false)
     n = lud.shape[0]
     l = lud.tril.tap { |m| m[m.diag_indices] = 1 }
     d = lud.class.zeros(n, n)
@@ -1200,7 +1260,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
       elsif k < n - 1 && ipiv[k].negative? && ipiv[k] == ipiv[k + 1] && !skip
         i = -ipiv[k] - 1
         d[k + 1, k] = lud[k + 1, k]
-        d[k, k + 1] = d[k + 1, k]
+        d[k, k + 1] = hermitian ? d[k + 1, k].conj : d[k + 1, k]
         l[k + 1, k] = 0
         l[[i, k + 1], k...n] = l[[k + 1, i], k...n].dup
         skip = true
