@@ -499,6 +499,24 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_inf, :<, 1e-5)
   end
 
+  def test_slogdet
+    a = Numo::DFloat[[1, 2], [3, 4]]
+    sign, logdet = Numo::Linalg.slogdet(a)
+    error_sign = (sign - -1.0).abs
+    error_logdet = (logdet - 0.693147).abs
+
+    assert_operator(error_sign, :<, 1e-5)
+    assert_operator(error_logdet, :<, 1e-5)
+
+    b = Numo::DComplex[[1 - 2i, 2 + 1i], [3 + 4i, 4 - 3i]]
+    sign, logdet = Numo::Linalg.slogdet(b)
+    error_sign = (sign - (-0.178885 - 0.983869i)).abs
+    error_logdet = (logdet - 3.107304).abs
+
+    assert_operator(error_sign, :<, 1e-5)
+    assert_operator(error_logdet, :<, 1e-5)
+  end
+
   def test_lu_inv
     assert_match(/lu_inv is not supported/, assert_raises(NotImplementedError) do
       Numo::Linalg.lu_inv(nil, nil)

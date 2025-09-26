@@ -1075,9 +1075,22 @@ module Numo
       end
     end
 
-    # @!visibility private
-    def slogdet(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the sign and natural logarithm of the determinant of a matrix.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Array<Float/Complex>] The sign and natural logarithm of the determinant of `a` ([sign, logdet]).
+    def slogdet(a)
+      lu, ipiv = lu_fact(a)
+      dg = lu.diagonal
+      return 0, (-Float::INFINITY) if dg.eq(0).any?
+
+      idx = ipiv.class.new(ipiv.shape[-1]).seq(1)
+      n_nonzero = ipiv.ne(idx).count(axis: -1)
+      sign = ((-1.0)**(n_nonzero % 2)) * (dg / dg.abs).prod
+
+      logdet = Numo::NMath.log(dg.abs).sum(axis: -1)
+
+      [sign, logdet]
     end
 
     # @!visibility private
