@@ -455,6 +455,35 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator((v - r).abs.max, :<, 1e-7)
   end
 
+  def test_ldl
+    n = 5
+    a = Numo::DFloat.new(n, n).rand - 0.5
+    a = 0.5 * (a + a.transpose)
+    u, d, perm = Numo::Linalg.ldl(a)
+    error_u = (a - u.dot(d).dot(u.transpose)).abs.max
+    sum_lower = u[perm, true].tril.sum
+
+    assert_operator(error_u, :<, 1e-7)
+    assert_equal(n, sum_lower)
+
+    l, d, perm = Numo::Linalg.ldl(a, uplo: 'L')
+    error_l = (a - l.dot(d).dot(l.transpose)).abs.max
+    sum_upper = l[perm, true].triu.sum
+
+    assert_operator(error_l, :<, 1e-7)
+    assert_equal(n, sum_upper)
+
+    b = Numo::DFloat.new(n, n).rand
+    b = 0.5 * (b.transpose + b)
+    b = (b.triu - b.tril)
+    b[b.diag_indices] = 0.0
+    a += b * Complex::I
+    u, d, = Numo::Linalg.ldl(a)
+    error = (a - u.dot(d).dot(u.transpose.conj)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
+
   def test_lu_inv
     assert_match(/lu_inv is not supported/, assert_raises(NotImplementedError) do
       Numo::Linalg.lu_inv(nil, nil)

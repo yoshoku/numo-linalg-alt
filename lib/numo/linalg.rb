@@ -1018,9 +1018,41 @@ module Numo
       eigh(a, b, vals_only: true, vals_range: vals_range, uplo: uplo, turbo: turbo)[0]
     end
 
-    # @!visibility private
-    def ldl(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the Bunch-Kaufman decomposition of a symmetric / Hermitian matrix.
+    # The factorization has the form `A = U * D * U^T` or `A = L * D * L^T`,
+    # where `U` (or `L`) is a product of permutation and unit upper
+    # (lower) triangular matrices, and `D` is a block diagonal matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(5, 5).rand
+    #   a = 0.5 * (a + a.transpose)
+    #   u, d, _perm = Numo::Linalg.ldl(a)
+    #   error = (a - u.dot(d).dot(u.transpose)).abs.max
+    #   pp error
+    #   # => 5.551115123125783e-17
+    #
+    # @param a [Numo::NArray] The n-by-n symmetric / Hermitian matrix.
+    # @param uplo [String] The part of the matrix to be used ('U' or 'L').
+    # @param hermitian [Boolean] The flag indicating whether `a` is Hermitian.
+    # @return [Array<Numo::NArray>] The permutated upper (lower) triangular matrix, the block diagonal matrix, and the permutation indices.
+    def ldl(a, uplo: 'U', hermitian: true)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      complex = bchr =~ /c|z/
+      fnc = complex && hermitian ? :"#{bchr}hetrf" : :"#{bchr}sytrf"
+      lud = a.dup
+      ipiv, info = Numo::Linalg::Lapack.send(fnc, lud, uplo: uplo)
+
+      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise 'the factorization has been completed' if info.positive?
+
+      _lud_permutation(lud, ipiv, uplo: uplo, hermitian: hermitian)
     end
 
     # @!visibility private
@@ -1061,5 +1093,67 @@ module Numo
       raise NotImplementedError,
             'Sorry, cho_inv is not supported in the Numo::Linalg Alternative. Please use inv instead.'
     end
+
+    # @!visibility private
+    def _lud_permutation(lud, ipiv, uplo: 'U', hermitian: true) # rubocop:disable Metrics/AbcSize,  Metrics/MethodLength, Metrics/PerceivedComplexity
+      n = lud.shape[0]
+      d = lud.class.zeros(n, n)
+      perm = Numo::Int32.new(n).seq
+      if uplo == 'U'
+        u = lud.triu.tap { |m| m[m.diag_indices] = 1 }
+        # If IPIV(k) > 0, then rows and columns k and IPIV(k) were interchanged
+        # and D(k,k) is a 1-by-1 diagonal block.
+        # IF UPLO = 'U' and If IPIV(k) = IPIV(k-1) < 0, then
+        # rows and columns k-1 and -IPIV(k) were interchanged
+        # and D(k-1:k,k-1:k) is a 2-by-2 diagonal block.
+        changed_2x2 = false
+        n.times do |k|
+          d[k, k] = lud[k, k]
+          if ipiv[k].positive?
+            i = ipiv[k] - 1
+            u[[i, k], 0..k] = u[[k, i], 0..k].dup
+            perm[[i, k]] = perm[[k, i]].dup
+          elsif k.positive? && ipiv[k].negative? && ipiv[k] == ipiv[k - 1] && !changed_2x2
+            i = -ipiv[k] - 1
+            d[k - 1, k] = lud[k - 1, k]
+            d[k, k - 1] = hermitian ? d[k - 1, k].conj : d[k - 1, k]
+            u[k - 1, k] = 0
+            u[[i, k - 1], 0..k] = u[[k - 1, i], 0..k].dup
+            perm[[i, k - 1]] = perm[[k - 1, i]].dup
+            changed_2x2 = true
+            next
+          end
+          changed_2x2 = false if changed_2x2
+        end
+        [u, d, perm.sort_index]
+      else
+        l = lud.tril.tap { |m| m[m.diag_indices] = 1 }
+        # If UPLO = 'L' and IPIV(k) = IPIV(k+1) < 0, then
+        # rows and columns k+1 and -IPIV(k) were interchanged
+        # and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
+        changed_2x2 = false
+        (n - 1).downto(0) do |k|
+          d[k, k] = lud[k, k]
+          if ipiv[k].positive?
+            i = ipiv[k] - 1
+            l[[i, k], k...n] = l[[k, i], k...n].dup
+            perm[[i, k]] = perm[[k, i]].dup
+          elsif k < n - 1 && ipiv[k].negative? && ipiv[k] == ipiv[k + 1] && !changed_2x2
+            i = -ipiv[k] - 1
+            d[k + 1, k] = lud[k + 1, k]
+            d[k, k + 1] = hermitian ? d[k + 1, k].conj : d[k + 1, k]
+            l[k + 1, k] = 0
+            l[[i, k + 1], k...n] = l[[k + 1, i], k...n].dup
+            perm[[i, k + 1]] = perm[[k + 1, i]].dup
+            changed_2x2 = true
+            next
+          end
+          changed_2x2 = false if changed_2x2
+        end
+        [l, d, perm.sort_index]
+      end
+    end
+
+    private_class_method :_lud_permutation
   end
 end
