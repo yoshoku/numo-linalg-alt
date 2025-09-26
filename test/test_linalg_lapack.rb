@@ -1224,22 +1224,22 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # IF UPLO = 'U' and If IPIV(k) = IPIV(k-1) < 0, then
     # rows and columns k-1 and -IPIV(k) were interchanged
     # and D(k-1:k,k-1:k) is a 2-by-2 diagonal block.
-    skip = false
+    changed_2x2 = false
     n.times do |k|
       d[k, k] = lud[k, k]
       if ipiv[k].positive?
         i = ipiv[k] - 1
         u[[i, k], 0..k] = u[[k, i], 0..k].dup
-      elsif k.positive? && ipiv[k].negative? && ipiv[k] == ipiv[k - 1] && !skip
+      elsif k.positive? && ipiv[k].negative? && ipiv[k] == ipiv[k - 1] && !changed_2x2
         i = -ipiv[k] - 1
         d[k - 1, k] = lud[k - 1, k]
         d[k, k - 1] = hermitian ? d[k - 1, k].conj : d[k - 1, k]
         u[k - 1, k] = 0
         u[[i, k - 1], 0..k] = u[[k - 1, i], 0..k].dup
-        skip = true
+        changed_2x2 = true
         next
       end
-      skip = false if skip
+      changed_2x2 = false if changed_2x2
     end
     [u, d]
   end
@@ -1251,22 +1251,22 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # If UPLO = 'L' and IPIV(k) = IPIV(k+1) < 0, then
     # rows and columns k+1 and -IPIV(k) were interchanged
     # and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
-    skip = false
+    changed_2x2 = false
     (n - 1).downto(0) do |k|
       d[k, k] = lud[k, k]
       if ipiv[k].positive?
         i = ipiv[k] - 1
         l[[i, k], k...n] = l[[k, i], k...n].dup
-      elsif k < n - 1 && ipiv[k].negative? && ipiv[k] == ipiv[k + 1] && !skip
+      elsif k < n - 1 && ipiv[k].negative? && ipiv[k] == ipiv[k + 1] && !changed_2x2
         i = -ipiv[k] - 1
         d[k + 1, k] = lud[k + 1, k]
         d[k, k + 1] = hermitian ? d[k + 1, k].conj : d[k + 1, k]
         l[k + 1, k] = 0
         l[[i, k + 1], k...n] = l[[k + 1, i], k...n].dup
-        skip = true
+        changed_2x2 = true
         next
       end
-      skip = false if skip
+      changed_2x2 = false if changed_2x2
     end
     [l, d]
   end
