@@ -48,11 +48,11 @@ module Numo
     # @return [Array<Numo::NArray>] The eigenvalues and eigenvectors.
     def eigh(a, b = nil, vals_only: false, vals_range: nil, uplo: 'U', turbo: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/ParameterLists, Metrics/PerceivedComplexity, Lint/UnusedMethodArgument
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       b_given = !b.nil?
       raise Numo::NArray::ShapeError, 'input array b must be 2-dimensional' if b_given && b.ndim != 2
-      raise ArgumentError, 'input array b must be square' if b_given && b.shape[0] != b.shape[1]
+      raise Numo::NArray::ShapeError, 'input array b must be square' if b_given && b.shape[0] != b.shape[1]
       raise ArgumentError, "invalid array type: #{b.class}" if b_given && blas_char(b) == 'n'
 
       bchr = blas_char(a)
@@ -294,7 +294,7 @@ module Numo
     # @return [Numo::NArray] The upper- or lower-triangular Cholesky factor of a.
     def cholesky(a, uplo: 'U')
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
@@ -333,8 +333,8 @@ module Numo
     # @return [Numo::NArray] The solution vector or matrix `X`.
     def cho_solve(a, b, uplo: 'U')
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
-      raise ArgumentError, "incompatible dimensions: a.shape[0] = #{a.shape[0]} != b.shape[0] = #{b.shape[0]}" if a.shape[0] != b.shape[0]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, "incompatible dimensions: a.shape[0] = #{a.shape[0]} != b.shape[0] = #{b.shape[0]}" if a.shape[0] != b.shape[0]
 
       bchr = blas_char(a, b)
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
@@ -357,7 +357,7 @@ module Numo
     # @return [Float/Complex] The determinant of `a`.
     def det(a)
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
@@ -398,7 +398,7 @@ module Numo
     # @return [Numo::NArray] The inverse matrix of `a`.
     def inv(a, driver: 'getrf', uplo: 'U') # rubocop:disable Lint/UnusedMethodArgument
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
@@ -539,7 +539,7 @@ module Numo
     # @return [Numo::NArray] The solusion vector / matrix `X`.
     def solve(a, b, driver: 'gen', uplo: 'U') # rubocop:disable Lint/UnusedMethodArgument
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a, b)
       raise ArgumentError, "invalid array type: #{a.class}, #{b.class}" if bchr == 'n'
@@ -574,7 +574,7 @@ module Numo
     # @return [Numo::NArray] The solusion vector / matrix `X`.
     def solve_triangular(a, b, lower: false)
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a, b)
       raise ArgumentError, "invalid array type: #{a.class}, #{b.class}" if bchr == 'n'
@@ -682,7 +682,7 @@ module Numo
     # @return [Numo::NArray] The matrix `a` raised to the power of `n`.
     def matrix_power(a, n)
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
       raise ArgumentError, "exponent n must be an integer: #{n}" unless n.is_a?(Integer)
 
       if n.zero?
@@ -884,8 +884,8 @@ module Numo
     # @return [Numo::NArray] The solusion vector / matrix `X`.
     def lu_solve(lu, ipiv, b, trans: 'N')
       raise Numo::NArray::ShapeError, 'input array lu must be 2-dimensional' if lu.ndim != 2
-      raise ArgumentError, 'input array lu must be square' if lu.shape[0] != lu.shape[1]
-      raise ArgumentError, "incompatible dimensions: lu.shape[0] = #{lu.shape[0]} != b.shape[0] = #{b.shape[0]}" if lu.shape[0] != b.shape[0]
+      raise Numo::NArray::ShapeError, 'input array lu must be square' if lu.shape[0] != lu.shape[1]
+      raise Numo::NArray::ShapeError, "incompatible dimensions: lu.shape[0] = #{lu.shape[0]} != b.shape[0] = #{b.shape[0]}" if lu.shape[0] != b.shape[0]
       raise ArgumentError, 'trans must be "N", "T", or "C"' unless %w[N T C].include?(trans)
 
       bchr = blas_char(lu)
@@ -906,7 +906,7 @@ module Numo
     # @return [Numo::NArray] The upper- / lower-triangular matrix `U` / `L`.
     def cho_fact(a, uplo: 'U')
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
       raise ArgumentError, 'uplo must be "U" or "L"' unless %w[U L].include?(uplo)
 
       bchr = blas_char(a)
@@ -985,7 +985,7 @@ module Numo
     # @return [Numo::NArray] The eigenvalues.
     def eigvals(a)
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
@@ -1039,7 +1039,7 @@ module Numo
     # @return [Array<Numo::NArray>] The permutated upper (lower) triangular matrix, the block diagonal matrix, and the permutation indices.
     def ldl(a, uplo: 'U', hermitian: true)
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
 
       bchr = blas_char(a)
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
@@ -1117,7 +1117,7 @@ module Numo
     #   the sum of squared residuals, the effective rank of `a`, and the singular values of `a`.
     def lstsq(a, b, driver: 'lsd', rcond: nil) # rubocop:disable Lint/UnusedMethodArgument, Metrics/AbcSize
       raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
-      raise ArgumentError, "incompatible dimensions: a.shape[0] = #{a.shape[0]} != b.shape[0] = #{b.shape[0]}" if a.shape[0] != b.shape[0]
+      raise Numo::NArray::ShapeError, "incompatible dimensions: a.shape[0] = #{a.shape[0]} != b.shape[0] = #{b.shape[0]}" if a.shape[0] != b.shape[0]
 
       bchr = blas_char(a)
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'

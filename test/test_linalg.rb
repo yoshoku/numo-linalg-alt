@@ -322,7 +322,7 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_match(/must be 2-d/, assert_raises(Numo::NArray::ShapeError) do
       Numo::Linalg.matrix_power(Numo::DFloat[1, 2, 3], 2)
     end.message)
-    assert_match(/must be square/, assert_raises(ArgumentError) do
+    assert_match(/must be square/, assert_raises(Numo::NArray::ShapeError) do
       Numo::Linalg.matrix_power(Numo::DFloat[[1, 2, 3], [4, 5, 6]], 2)
     end.message)
     assert_match(/must be an integer/, assert_raises(ArgumentError) do
