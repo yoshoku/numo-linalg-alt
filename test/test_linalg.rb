@@ -531,6 +531,67 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal(2, Numo::Linalg.matrix_rank(a))
   end
 
+  def test_lstsq
+    # --- vec
+    a = Numo::DFloat.new(5, 8).rand - 0.5
+    b = Numo::DFloat.new(5).rand - 0.5
+    x, r, rank, s = Numo::Linalg.lstsq(a, b)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(1, x.ndim)
+    assert_equal(8, x.size)
+    assert_empty(r)
+    assert_equal(5, rank)
+    assert_equal(5, s.size)
+
+    # --- mat
+    a = Numo::DFloat.new(5, 8).rand - 0.5
+    b = Numo::DFloat.new(5, 2).rand - 0.5
+    x, r, rank, s = Numo::Linalg.lstsq(a, b)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(2, x.ndim)
+    assert_equal(8, x.shape[0])
+    assert_equal(2, x.shape[1])
+    assert_empty(r)
+    assert_equal(5, rank)
+    assert_equal(5, s.size)
+
+    # --- m > n
+    # --- vec
+    a = Numo::DFloat.new(5, 3).rand - 0.5
+    b = Numo::DFloat.new(5).rand - 0.5
+    x, r, rank, s = Numo::Linalg.lstsq(a, b)
+    diff = b - a.dot(x)
+    error = r - diff.dot(diff)
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(1, x.ndim)
+    assert_equal(3, x.size)
+    assert_kind_of(Float, r)
+    assert_equal(3, rank)
+    assert_equal(3, s.size)
+
+    # --- mat
+    a = Numo::DFloat.new(5, 3).rand - 0.5
+    b = Numo::DFloat.new(5, 2).rand - 0.5
+    x, r, rank, s = Numo::Linalg.lstsq(a, b)
+    diff = b - a.dot(x)
+    error = (r - (diff * diff).sum(axis: 0)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_equal(2, x.ndim)
+    assert_equal(3, x.shape[0])
+    assert_equal(2, x.shape[1])
+    assert_kind_of(Numo::DFloat, r)
+    assert_equal(1, r.ndim)
+    assert_equal(2, r.size)
+    assert_equal(3, rank)
+    assert_equal(3, s.size)
+  end
+
   def test_lu_inv
     assert_match(/lu_inv is not supported/, assert_raises(NotImplementedError) do
       Numo::Linalg.lu_inv(nil, nil)

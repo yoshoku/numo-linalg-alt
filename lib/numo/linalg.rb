@@ -1107,9 +1107,57 @@ module Numo
       s.gt(tol).count(axis: -1)
     end
 
-    # @!visibility private
-    def lstsq(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the least-squares solution to a linear matrix equation.
+    #
+    # @param a [Numo::NArray] The m-by-n input matrix.
+    # @param b [Numo::NArray] The m-dimensional right-hand side vector or the m-by-nrhs right-hand side matrix.
+    # @param driver [String] The LAPACK driver to be used (This argument is ignored, 'lsd' is always used).
+    # @param rcond [Float] The threshold value for small singular values of `a`.
+    # @return [Array<Numo::NArray, Float/Complex, Integer, Numo::NArray>] The least-squares solution matrix / vector `x`,
+    #   the sum of squared residuals, the effective rank of `a`, and the singular values of `a`.
+    def lstsq(a, b, driver: 'lsd', rcond: nil) # rubocop:disable Lint/UnusedMethodArgument, Metrics/AbcSize
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArgumentError, "incompatible dimensions: a.shape[0] = #{a.shape[0]} != b.shape[0] = #{b.shape[0]}" if a.shape[0] != b.shape[0]
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      m, n = a.shape
+      if m < n
+        if b.ndim == 1
+          x = Numo::DFloat.zeros(n)
+          x[0...b.size] = b
+        else
+          x = Numo::DFloat.zeros(n, b.shape[1])
+          x[0...b.shape[0], 0...b.shape[1]] = b
+        end
+      else
+        x = b.dup
+      end
+
+      fnc = :"#{bchr}gelsd"
+      s, rank, info = Numo::Linalg::Lapack.send(fnc, a.dup, x, rcond: rcond)
+
+      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise 'the algorithm for computing the SVD failed to converge' if info.positive?
+
+      resids = x.class[]
+      if m > n
+        if rank == n
+          resids = if b.ndim == 1
+                     (x[n..].abs**2).sum(axis: 0)
+                   else
+                     (x[n..-1, true].abs**2).sum(axis: 0)
+                   end
+        end
+        x = if b.ndim == 1
+              x[false, 0...n]
+            else
+              x[false, 0...n, true]
+            end
+      end
+
+      [x, resids, rank, s]
     end
 
     # @!visibility private
