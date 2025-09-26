@@ -1055,9 +1055,24 @@ module Numo
       _lud_permutation(lud, ipiv, uplo: uplo, hermitian: hermitian)
     end
 
-    # @!visibility private
-    def cond(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Compute the condition number of a matrix.
+    #
+    # @param a [Numo::NArray] The input matrix.
+    # @param ord [String/Symbol/Integer] The order of the norm.
+    # nil or 2: 2-norm using singular values, 'fro': Frobenius norm, 'info': infinity norm, and 1: 1-norm.
+    # @return [Numo::NArray] The condition number of the matrix.
+    def cond(a, ord = nil)
+      if ord.nil? || ord == 2 || ord == -2
+        svals = svdvals(a)
+        if ord == -2
+          svals[false, -1] / svals[false, 0]
+        else
+          svals[false, 0] / svals[false, -1]
+        end
+      else
+        inv_a = inv(a)
+        norm(a, ord, axis: [-2, -1]) * norm(inv_a, ord, axis: [-2, -1])
+      end
     end
 
     # @!visibility private

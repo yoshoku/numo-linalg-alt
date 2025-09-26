@@ -484,6 +484,21 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_cond
+    a = Numo::DFloat[[1, 2], [3, 4]]
+    error_l2 = (Numo::Linalg.cond(a) - 14.933034).abs
+    error_m2 = (Numo::Linalg.cond(a, -2) - 1.fdiv(14.933034)).abs
+    error_fro = (Numo::Linalg.cond(a, 'fro') - 14.999999).abs
+    error_l1 = (Numo::Linalg.cond(a, 1) - 20.999999).abs
+    error_inf = (Numo::Linalg.cond(a, 'inf') - 20.999999).abs
+
+    assert_operator(error_l2, :<, 1e-5)
+    assert_operator(error_m2, :<, 1e-5)
+    assert_operator(error_fro, :<, 1e-5)
+    assert_operator(error_l1, :<, 1e-5)
+    assert_operator(error_inf, :<, 1e-5)
+  end
+
   def test_lu_inv
     assert_match(/lu_inv is not supported/, assert_raises(NotImplementedError) do
       Numo::Linalg.lu_inv(nil, nil)
