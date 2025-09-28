@@ -70,6 +70,7 @@
 #include "lapack/lange.h"
 #include "lapack/orgqr.h"
 #include "lapack/potrf.h"
+#include "lapack/potri.h"
 #include "lapack/potrs.h"
 #include "lapack/syev.h"
 #include "lapack/syevd.h"

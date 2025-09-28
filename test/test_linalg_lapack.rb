@@ -539,6 +539,58 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_lapack_dpotri
+    n = 5
+    a = Numo::DFloat.new(n, n).rand - 0.5
+    b = a.transpose.dot(a)
+    c, = Numo::Linalg::Lapack.dpotrf(b.dup)
+    tri_b_inv, info = Numo::Linalg::Lapack.dpotri(c.triu)
+    b_inv = tri_b_inv + tri_b_inv.transpose - tri_b_inv.diagonal.diag
+    error = (Numo::DFloat.eye(n) - b_inv.dot(b)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_spotri
+    n = 5
+    a = Numo::SFloat.new(n, n).rand - 0.5
+    b = a.transpose.dot(a)
+    c, = Numo::Linalg::Lapack.spotrf(b.dup)
+    tri_b_inv, info = Numo::Linalg::Lapack.spotri(c.triu)
+    b_inv = tri_b_inv + tri_b_inv.transpose - tri_b_inv.diagonal.diag
+    error = (Numo::SFloat.eye(n) - b_inv.dot(b)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-5)
+  end
+
+  def test_lapack_zpotri
+    n = 5
+    a = Numo::DComplex.new(n, n).rand - 0.5
+    b = a.dot(a.transpose.conjugate)
+    c, = Numo::Linalg::Lapack.zpotrf(b.dup)
+    tri_b_inv, info = Numo::Linalg::Lapack.zpotri(c.triu)
+    b_inv = tri_b_inv + tri_b_inv.transpose.conjugate - tri_b_inv.diagonal.diag
+    error = (Numo::DComplex.eye(n) - b_inv.dot(b)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_cpotri
+    n = 5
+    a = Numo::SComplex.new(n, n).rand - 0.5
+    b = a.dot(a.transpose.conjugate)
+    c, = Numo::Linalg::Lapack.cpotrf(b.dup)
+    tri_b_inv, info = Numo::Linalg::Lapack.cpotri(c.triu)
+    b_inv = tri_b_inv + tri_b_inv.transpose.conjugate - tri_b_inv.diagonal.diag
+    error = (Numo::SComplex.eye(n) - b_inv.dot(b)).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_lapack_dpotrs
     n = 5
     a = Numo::DFloat.new(n, n).rand
