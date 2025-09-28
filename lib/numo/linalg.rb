@@ -1165,11 +1165,22 @@ module Numo
       raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
     end
 
-    # It is not supported in the Numo::Linalg Alternative.
-    # @deprecated Use `inv` instead.
+    # Computes the inverse of a matrix using its LU decomposition.
+    #
+    # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.
+    # @param ipiv [Numo::Int32] The pivot indices from `lu_fact`.
+    # @return [Numo::NArray] The inverse of the matrix `A`.
     def lu_inv(lu, ipiv)
-      raise NotImplementedError,
-            'Sorry, lu_inv is not supported in the Numo::Linalg Alternative. Please use inv instead.'
+      bchr = blas_char(lu)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}getri"
+      inv, info = Numo::Linalg::Lapack.send(fnc, lu, ipiv)
+
+      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise 'the matrix is singular and its inverse could not be computed' if info.positive?
+
+      inv
     end
 
     # It is not supported in the Numo::Linalg Alternative.
