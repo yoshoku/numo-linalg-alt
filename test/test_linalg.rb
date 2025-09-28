@@ -602,8 +602,14 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_cho_inv
-    assert_match(/cho_inv is not supported/, assert_raises(NotImplementedError) do
-      Numo::Linalg.cho_inv(nil)
-    end.message)
+    a = Numo::DFloat.new(5, 5).rand - 0.5
+    b = a.transpose.dot(a)
+    u = Numo::Linalg.cho_fact(b)
+    tri_b_inv = Numo::Linalg.cho_inv(u)
+    tri_b_inv = tri_b_inv.triu
+    b_inv = tri_b_inv + tri_b_inv.transpose - tri_b_inv.diagonal.diag
+    error = (Numo::DFloat.eye(5) - b_inv.dot(b)).abs.max
+
+    assert_operator(error, :<, 1e-7)
   end
 end

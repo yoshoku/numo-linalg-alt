@@ -1175,7 +1175,7 @@ module Numo
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
 
       fnc = :"#{bchr}getri"
-      inv, info = Numo::Linalg::Lapack.send(fnc, lu, ipiv)
+      inv, info = Numo::Linalg::Lapack.send(fnc, lu.dup, ipiv)
 
       raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the matrix is singular and its inverse could not be computed' if info.positive?
@@ -1183,11 +1183,35 @@ module Numo
       inv
     end
 
-    # It is not supported in the Numo::Linalg Alternative.
-    # @deprecated Use `inv` instead.
+    # Computes the inverse of a symmetric / Hermitian positive-definite matrix using its Cholesky decomposition.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(3, 5).rand - 0.5
+    #   a = a.dot(a.transpose)
+    #   c = Numo::Linalg.cho_fact(a)
+    #   tri_inv_a = Numo::Linalg.cho_inv(c)
+    #   tri_inv_a = tri_inv_a.triu
+    #   inv_a = tri_inv_a + tri_inv_a.transpose - tri_inv_a.diagonal.diag
+    #   error = (inv_a.dot(a) - Numo::DFloat.eye(3)).abs.max
+    #   pp error
+    #   # => 1.923726113137665e-15
+    #
+    # @param a [Numo::NArray] The Cholesky decomposition of the n-by-n symmetric / Hermitian positive-definite matrix.
+    # @param uplo [String] The part of the matrix to be used ('U' or 'L').
+    # @return [Numo::NArray] The upper- / lower-triangular matrix of the inverse of `a`.
     def cho_inv(a, uplo: 'U')
-      raise NotImplementedError,
-            'Sorry, cho_inv is not supported in the Numo::Linalg Alternative. Please use inv instead.'
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}potri"
+      inv, info = Numo::Linalg::Lapack.send(fnc, a.dup, uplo: uplo)
+
+      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise "the (#{info}, #info)-th element of the factor U or L is zero, and the inverse could not be computed." if info.positive?
+
+      inv
     end
 
     # @!visibility private
