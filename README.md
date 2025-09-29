@@ -10,6 +10,9 @@ Please note that this gem was forked from [Numo::TinyLinalg](https://github.com/
 not Numo::Linalg, and therefore it does not support changing backend libraries for BLAS and LAPACK.
 In addition, the version numbering rule is not compatible with that of Numo::Linalg.
 
+The project owner has the utmost respect for Numo::Linalg and its creator, Prof. [Masahiro Tanaka](https://github.com/masa16).
+This project is in no way intended to adversely affect the development of the original Numo::Linalg.
+
 ## Installation
 
 Unlike Numo::Linalg, numo-linalg-alt only supports [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS)
