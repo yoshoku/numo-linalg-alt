@@ -5,14 +5,15 @@
 
 Numo::Linalg Alternative (numo-linalg-alt) is an alternative to [Numo::Linalg](https://github.com/ruby-numo/numo-linalg).
 Unlike Numo::Linalg, numo-linalg-alt depends on [Numo::NArray Alterntive](https://github.com/yoshoku/numo-narray-alt).
-Please note that this gem was forked from [Numo::TinyLinalg](https://github.com/yoshoku/numo-tiny_linalg),
-not Numo::Linalg, and therefore may be missing some method implementations.
 
-Note that the version numbering rule of Numo::Linalg Alternative is not compatible with that of Numo::Linalg.
+Please note that this gem was forked from [Numo::TinyLinalg](https://github.com/yoshoku/numo-tiny_linalg),
+not Numo::Linalg, and therefore it does not support changing backend libraries for BLAS and LAPACK.
+In addition, the version numbering rule is not compatible with that of Numo::Linalg.
 
 ## Installation
+
 Unlike Numo::Linalg, numo-linalg-alt only supports [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS)
-as a backend library for BLAS and LAPACK.
+as a backend library.
 
 Install the OpenBLAS.
 
