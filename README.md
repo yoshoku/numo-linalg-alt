@@ -1,7 +1,9 @@
 # Numo::Linalg Alternative
 
+[![Gem Version](https://badge.fury.io/rb/numo-linalg-alt.svg)](https://badge.fury.io/rb/numo-linalg-alt)
 [![Build Status](https://github.com/yoshoku/numo-linalg-alt/actions/workflows/main.yml/badge.svg)](https://github.com/yoshoku/numo-linalg-alt/actions/workflows/main.yml)
 [![BSD 3-Clause License](https://img.shields.io/badge/License-BSD%203--Clause-orange.svg)](https://github.com/yoshoku/numo-linalg-alt/blob/main/LICENSE.txt)
+[![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://gemdocs.org/gems/numo-linalg-alt/)
 
 Numo::Linalg Alternative (numo-linalg-alt) is an alternative to [Numo::Linalg](https://github.com/ruby-numo/numo-linalg).
 Unlike Numo::Linalg, numo-linalg-alt depends on [Numo::NArray Alterntive](https://github.com/yoshoku/numo-narray-alt).
