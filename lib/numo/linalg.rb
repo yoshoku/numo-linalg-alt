@@ -6,7 +6,7 @@ require_relative 'linalg/linalg'
 
 # Ruby/Numo (NUmerical MOdules)
 module Numo
-  # Numo::Linalg is a subset library from Numo::Linalg consisting only of methods used in Machine Learning algorithms.
+  # Numo::Linalg Alternative (numo-linalg-alt) is an alternative to Numo::Linalg.
   module Linalg # rubocop:disable Metrics/ModuleLength
     module_function
 
