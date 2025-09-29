@@ -592,6 +592,31 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal(3, s.size)
   end
 
+  def test_expm
+    error = (Numo::Linalg.expm(Numo::DFloat.zeros(3, 3)) - Numo::DFloat.eye(3)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat[1, 2, 3]
+    expected = Numo::NMath.exp(a).diag
+    error = (expected - Numo::Linalg.expm(a.diag)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat[[1, 2], [0, 1]]
+    e_one = Math.exp(1)
+    expected = Numo::DFloat[[e_one, 2 * e_one], [0, e_one]]
+    error = (expected - Numo::Linalg.expm(a)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat[[-156, 78], [-189, 95]]
+    expected = Numo::DFloat[[-5.16765957, 4.29962817], [-10.41832981, 8.6683234]]
+    error = (expected - Numo::Linalg.expm(a)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
+
   def test_lu_inv
     a = Numo::DFloat.new(5, 5).rand - 0.5
     lu, ipiv = Numo::Linalg.lu_fact(a)

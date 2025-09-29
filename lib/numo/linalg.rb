@@ -1160,9 +1160,39 @@ module Numo
       [x, resids, rank, s]
     end
 
-    # @!visibility private
-    def expm(*args)
-      raise NotImplementedError, "#{__method__} is not yet implemented in Numo::Linalg"
+    # Computes the matrix exponential using a scaling and squaring algorithm with a Pade approximation.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @param ord [Integer] The order of the Padé approximation.
+    # @return [Numo::NArray] The matrix exponential of `a`.
+    #
+    # Reference:
+    # - C. Moler and C. Van Loan, "Nineteen Dubious Ways to Compute the Exponential of a Matrix, Twenty-Five Years Later," SIAM Review, vol. 45, no. 1, pp. 3-49, 2003.
+    def expm(a, ord = 8) # rubocop:disable Metrics/AbcSize
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      norm = a.abs.max
+      n_sqr = norm.positive? ? [0, Math.log2(norm).to_i + 1].max : 0
+      a /= 2**n_sqr
+
+      x = a.dup
+      c = 0.5
+      sgn = 1
+      nume = a.class.eye(a.shape[0]) + (c * a)
+      deno = a.class.eye(a.shape[0]) - (c * a)
+      (2..ord).each do |k|
+        c *= (ord - k + 1).fdiv(k * ((2 * ord) - k + 1))
+        x = a.dot(x)
+        c_x = c * x
+        nume += c_x
+        deno += sgn * c_x
+        sgn = -sgn
+      end
+
+      a_expm = Numo::Linalg.solve(deno, nume)
+      n_sqr.times { a_expm = a_expm.dot(a_expm) }
+      a_expm
     end
 
     # Computes the inverse of a matrix using its LU decomposition.
