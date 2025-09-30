@@ -101,7 +101,7 @@ This project is intended to be a safe, welcoming space for collaboration, and co
 
 ## Code of Conduct
 
-Everyone interacting in the Numo::TinyLinalg project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/yoshoku/numo-linalg-alt/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Numo::Linalg Alternative project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/yoshoku/numo-linalg-alt/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
