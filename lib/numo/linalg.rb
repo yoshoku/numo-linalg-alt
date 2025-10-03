@@ -444,6 +444,54 @@ module Numo
       u.dot(vh[0...rank, true]).conj.transpose
     end
 
+    # Computes the polar decomposition of a matrix.
+    #
+    # https://en.wikipedia.org/wiki/Polar_decomposition
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[0.5, 1, 2], [1.5, 3, 4]]
+    #   u, p = Numo::Linalg.polar(a)
+    #   pp u.dot(p)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,3]
+    #   # [[0.5, 1, 2],
+    #   #  [1.5, 3, 4]]
+    #   pp u.dot(u.transpose)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,2]
+    #   # [[1, -1.68043e-16],
+    #   #  [-1.68043e-16, 1]]
+    #
+    #   u, p = Numo::Linalg.polar(a, side: 'left')
+    #   pp p.dot(u)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,3]
+    #   # [[0.5, 1, 2],
+    #   #  [1.5, 3, 4]]
+    #
+    # @param a [Numo::NArray] The m-by-n matrix to be decomposed.
+    # @param side [String] The side of polar decomposition ('right' or 'left').
+    # @return [Array<Numo::NArray>] The unitary matrix `U` and the positive-semidefinite Hermitian matrix `P`
+    #   such that `A = U * P` if side='right', or `A = P * U` if side='left'.
+    def polar(a, side: 'right')
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArugumentError, "invalid side: #{side}" unless %w[left right].include?(side)
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      s, w, vh = svd(a, driver: 'svd', job: 'S')
+      u = w.dot(vh)
+      p_mat = if side == 'right'
+                vh.transpose.conj.dot(s.diag).dot(vh)
+              else
+                w.dot(s.diag).dot(w.transpose.conj)
+              end
+      [u, p_mat]
+    end
+
     # Computes the QR decomposition of a matrix.
     #
     # @example

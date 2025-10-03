@@ -219,6 +219,25 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_polar
+    a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
+    u, pmat = Numo::Linalg.polar(a)
+    error_r = (a - u.dot(pmat)).abs.max
+    u, pmat = Numo::Linalg.polar(a, side: 'left')
+    error_l = (a - pmat.dot(u)).abs.max
+
+    assert_operator(error_r, :<, 1e-7)
+    assert_operator(error_l, :<, 1e-7)
+
+    a = Numo::DFloat.new(2, 3).rand - 0.5
+    u, pmat = Numo::Linalg.polar(a)
+    error_r = (a - u.dot(pmat)).abs.max
+    error = (u.dot(u.transpose) - Numo::DFloat.eye(2)).abs.sum
+
+    assert_operator(error_r, :<, 1e-7)
+    assert_operator(error, :<, 1e-7)
+  end
+
   def test_qr
     ma = 5
     na = 3
