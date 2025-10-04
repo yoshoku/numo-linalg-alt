@@ -431,6 +431,19 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_orthogonal_procrustes
+    a = Numo::DComplex.new(2, 3).rand - (0.5 + 0.2i)
+    b = a.fliplr.dup
+    r, scale = Numo::Linalg.orthogonal_procrustes(a, b)
+    error = (b - a.dot(r)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Float, scale)
+    assert_kind_of(Numo::DComplex, r)
+    assert_equal(3, r.shape[0])
+    assert_equal(3, r.shape[1])
+  end
+
   def test_eig
     a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
     w, vl, vr = Numo::Linalg.eig(a)

@@ -969,6 +969,46 @@ module Numo
       c
     end
 
+    # Computes the orthogonal Procrustes problem.
+    #
+    # https://en.wikipedia.org/wiki/Orthogonal_Procrustes_problem
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[2, 0, 1], [-2, 0, 0]]
+    #   b = a.fliplr
+    #   r, scale = Numo::Linalg.orthogonal_procrustes(a, b)
+    #
+    #   pp b
+    #   # =>
+    #   # Numo::DFloat(view)#shape=[2,3]
+    #   # [[1, 0, 2],
+    #   #  [0, 0, -2]]
+    #   pp a.dot(r)
+    #   # =>
+    #   # Numo::DFloat#shape=[2,3]
+    #   # [[1, 0, 2],
+    #   #  [1.58669e-16, 0, -2]]
+    #   pp (b - a.dot(r)).abs.max
+    #   # =>
+    #   # 2.220446049250313e-16
+    #
+    # @param a [Numo::NArray] The first input matrix.
+    # @param b [Numo::NArray] The second input matrix.
+    # @return [Array<Numo::NArray, Float>] The orthogonal matrix `R` and the scale factor `scale`.
+    def orthogonal_procrustes(a, b)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array b must be 2-dimensional' if b.ndim != 2
+      raise Numo::NArray::ShapeError, "incompatible dimensions: a.shape = #{a.shape} != b.shape = #{b.shape}" if a.shape != b.shape
+
+      m = b.transpose.dot(a.conj).transpose
+      s, u, vt = svd(m, driver: 'svd', job: 'S')
+      r = u.dot(vt)
+      scale = s.sum
+      [r, scale]
+    end
+
     # Computes the eigenvalues and right and/or left eigenvectors of a general square matrix.
     #
     # @example
