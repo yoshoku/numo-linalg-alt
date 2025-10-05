@@ -674,6 +674,31 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_kind_of(Numo::DComplex, a_sinm)
   end
 
+  def test_cosm
+    a = Numo::DFloat[[1, 2], [-2, 1]]
+    a_cosm = Numo::Linalg.cosm(a)
+    error = (Numo::DFloat[[2.032723, -3.0518978], [3.0518978, 2.032723]] - a_cosm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DFloat, a_cosm)
+
+    a = Numo::DFloat[[1, 2], [-3, 2]]
+    error = (Numo::DFloat[[1.5268037, -4.5381036], [6.8071554, -0.742248]] - Numo::Linalg.cosm(a)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat[[1, 2], [3, 2]] + (Numo::DFloat[[2, 3], [2, 1]] * Complex::I)
+    expected = (Numo::DFloat[[-10.6722586, -11.5059886],
+                             [-7.1775936, -6.3438635]] +
+                (Numo::DFloat[[7.9637316, 8.9526293],
+                              [12.6893458, 11.70044808]] * Complex::I))
+    a_cosm = Numo::Linalg.cosm(a)
+    error = (expected - a_cosm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DComplex, a_cosm)
+  end
+
   def test_lu_inv
     a = Numo::DFloat.new(5, 5).rand - 0.5
     lu, ipiv = Numo::Linalg.lu_fact(a)
