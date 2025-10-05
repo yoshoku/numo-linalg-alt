@@ -1283,6 +1283,25 @@ module Numo
       a_expm
     end
 
+    # Computes the matrix sine using the matrix exponential.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The matrix sine of `a`.
+    def sinm(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      b = a * 1.0i
+      if %w[z c].include?(bchr)
+        -0.5i * (expm(b) - expm(-b))
+      else
+        expm(b).imag
+      end
+    end
+
     # Computes the inverse of a matrix using its LU decomposition.
     #
     # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.

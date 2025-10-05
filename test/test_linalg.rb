@@ -649,6 +649,31 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_sinm
+    a = Numo::DFloat[[1, 2], [-2, 1]]
+    a_sinm = Numo::Linalg.sinm(a)
+    error = (Numo::DFloat[[3.1657785, 1.959601], [-1.959601, 3.1657785]] - a_sinm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DFloat, a_sinm)
+
+    a = Numo::DFloat[[1, 2], [-3, 2]]
+    error = (Numo::DFloat[[5.4512198, 0.3218189], [-0.4827283, 5.6121293]] - Numo::Linalg.sinm(a)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat[[1, 2], [3, 2]] + (Numo::DFloat[[2, 3], [2, 1]] * Complex::I)
+    expected = (Numo::DFloat[[-9.2624065, -7.9639489],
+                             [-11.4045322, -12.7029898]] +
+                (Numo::DFloat[[-11.1732702, -10.5383063],
+                              [-6.66461, -7.2995739]] * Complex::I))
+    a_sinm = Numo::Linalg.sinm(a)
+    error = (expected - a_sinm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DComplex, a_sinm)
+  end
+
   def test_lu_inv
     a = Numo::DFloat.new(5, 5).rand - 0.5
     lu, ipiv = Numo::Linalg.lu_fact(a)
