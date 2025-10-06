@@ -1,3 +1,8 @@
+## [[0.3.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.2.0...v0.3.0)] - 2025-10-06
+
+- add `schur`, `cosm`, `sinm`, `orthogonal_procrustes`, and `polar` module functions to Numo::Linalg.
+- fix version specifier for numo-narray-alt.
+
 ## [[0.2.0](https://github.com/yoshoku/numo-linalg-alt/compare/d010476...ea50089)] - 2025-09-29
 
 - fork from [Numo::TinyLinalg main branch](https://github.com/yoshoku/numo-tiny_linalg/tree/d0104765c560e9664a868b7a3e2f3144bd32c428)
