@@ -99,6 +99,62 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_b, :<, 1e-5)
   end
 
+  def test_lapack_dgees
+    a = Numo::DFloat.new(5, 5).rand - 0.5
+    b = a.dup
+    wr, wi, v, _sdim, info = Numo::Linalg::Lapack.dgees(b)
+    error = (a - v.dot(b).dot(v.transpose)).abs.max
+    w_gees = wr + (wi * 1.0i)
+    wr, wi, _vl, _vr, _info = Numo::Linalg::Lapack.dgeev(a.dup, jobvl: 'N', jobvr: 'N')
+    w_geev = wr + (wi * 1.0i)
+    error_w = (w_gees - w_geev).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-7)
+    assert_operator(error_w, :<, 1e-7)
+  end
+
+  def test_lapack_sgees
+    a = Numo::SFloat.new(5, 5).rand - 0.5
+    b = a.dup
+    wr, wi, v, _sdim, info = Numo::Linalg::Lapack.sgees(b)
+    error = (a - v.dot(b).dot(v.transpose)).abs.max
+    w_gees = wr + (wi * 1.0i)
+    wr, wi, _vl, _vr, _info = Numo::Linalg::Lapack.sgeev(a.dup, jobvl: 'N', jobvr: 'N')
+    w_geev = wr + (wi * 1.0i)
+    error_w = (w_gees - w_geev).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-5)
+    assert_operator(error_w, :<, 1e-5)
+  end
+
+  def test_lapack_zgees
+    a = Numo::DComplex.new(5, 5).rand - (0.5 + 0.2i)
+    b = a.dup
+    w, v, _sdim, info = Numo::Linalg::Lapack.zgees(b)
+    error = (a - v.dot(b).dot(v.transpose.conj)).abs.max
+    w_geev, _vl, _vr, _info = Numo::Linalg::Lapack.zgeev(a.dup, jobvl: 'N', jobvr: 'N')
+    error_w = (w - w_geev).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-7)
+    assert_operator(error_w, :<, 1e-7)
+  end
+
+  def test_lapack_cgees
+    a = Numo::SComplex.new(5, 5).rand - (0.5 + 0.2i)
+    b = a.dup
+    w, v, _sdim, info = Numo::Linalg::Lapack.cgees(b)
+    error = (a - v.dot(b).dot(v.transpose.conj)).abs.max
+    w_geev, _vl, _vr, _info = Numo::Linalg::Lapack.cgeev(a.dup, jobvl: 'N', jobvr: 'N')
+    error_w = (w - w_geev).abs.max
+
+    assert_equal(0, info)
+    assert_operator(error, :<, 1e-5)
+    assert_operator(error_w, :<, 1e-5)
+  end
+
   def test_lapack_dgeev
     a = Numo::DFloat.new(5, 5).rand - 0.5
     wr, wi, vl, vr, info = Numo::Linalg::Lapack.dgeev(a.dup, jobvl: 'V', jobvr: 'V')
