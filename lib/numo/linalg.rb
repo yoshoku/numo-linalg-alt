@@ -560,6 +560,66 @@ module Numo
       [q, r]
     end
 
+    # Computes the Schur decomposition of a square matrix.
+    # The Schur decomposition is given by `A = Z * T * Z^H`,
+    # where `A` is the input matrix, `Z` is a unitary matrix,
+    # and `T` is an upper triangular matrix (or quasi-upper triangular matrix in real case).
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[0, 2, 3], [4, 5, 6], [7, 8, 9]]
+    #   t, z, sdim = Numo::Linalg.schur(a)
+    #   pp t
+    #   # =>
+    #   # Numo::DFloat#shape=[3,3]
+    #   # [[16.0104, 4.81155, 0.920982],
+    #   #  [0, -1.91242, 0.0274406],
+    #   #  [0, 0, -0.0979794]]
+    #   pp z
+    #   # =>
+    #   # Numo::DFloat#shape=[3,3]
+    #   # [[-0.219668, -0.94667, 0.235716],
+    #   #  [-0.527141, -0.0881306, -0.845195],
+    #   #  [-0.820895, 0.309918, 0.479669]]
+    #   pp sdim
+    #   # => 0
+    #   pp (a - z.dot(t).dot(z.transpose)).abs.max
+    #   # => 1.0658141036401503e-14
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @param sort [String/Nil] The option for sorting eigenvalues ('lhp', 'rhp', 'iuc', 'ouc', or nil).
+    #   - 'lhp': eigenvalue.real < 0
+    #   - 'rhp': eigenvalue.real >= 0
+    #   - 'iuc': eigenvalue.abs <= 1
+    #   - 'ouc': eigenvalue.abs > 1
+    # @return [Array<Numo::NArray, Numo::NArray, Integer>] The Schur form `T`, the unitary matrix `Z`,
+    #   and the number of eigenvalues for which the sorting condition is true.
+    def schur(a, sort: nil)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise ArgumentError, "invalid sort: #{sort}" unless sort.nil? || %w[lhp rhp iuc ouc].include?(sort)
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}gees"
+      b = a.dup
+      if %w[d s].include?(bchr)
+        _wr, _wi, v, sdim, info = Numo::Linalg::Lapack.send(fnc, b, jobvs: 'V', sort: sort)
+      else
+        _w, v, sdim, info = Numo::Linalg::Lapack.send(fnc, b, jobvs: 'V', sort: sort)
+      end
+
+      n = a.shape[0]
+      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+      raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive? && info <= n
+      raise 'the eigenvalues could not be reordered.' if info == n + 1
+      raise 'after reordering, roundoff changed values of some complex eigenvalues.' if info == n + 2
+
+      [b, v, sdim]
+    end
+
     # Solves linear equation `A * x = b` or `A * X = B` for `x` from square matrix `A`.
     #
     # @example
