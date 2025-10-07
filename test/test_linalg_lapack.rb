@@ -217,8 +217,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
 
   def test_lapack_dgees
     a = Numo::DFloat.new(5, 5).rand - 0.5
-    b = a.dup
-    wr, wi, v, _sdim, info = Numo::Linalg::Lapack.dgees(b)
+    b, wr, wi, v, _sdim, info = Numo::Linalg::Lapack.dgees(a.dup)
     error = (a - v.dot(b).dot(v.transpose)).abs.max
     w_gees = wr + (wi * 1.0i)
     wr, wi, _vl, _vr, _info = Numo::Linalg::Lapack.dgeev(a.dup, jobvl: 'N', jobvr: 'N')
@@ -232,8 +231,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
 
   def test_lapack_sgees
     a = Numo::SFloat.new(5, 5).rand - 0.5
-    b = a.dup
-    wr, wi, v, _sdim, info = Numo::Linalg::Lapack.sgees(b)
+    b, wr, wi, v, _sdim, info = Numo::Linalg::Lapack.sgees(a.dup)
     error = (a - v.dot(b).dot(v.transpose)).abs.max
     w_gees = wr + (wi * 1.0i)
     wr, wi, _vl, _vr, _info = Numo::Linalg::Lapack.sgeev(a.dup, jobvl: 'N', jobvr: 'N')
@@ -247,8 +245,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
 
   def test_lapack_zgees
     a = Numo::DComplex.new(5, 5).rand - (0.5 + 0.2i)
-    b = a.dup
-    w, v, _sdim, info = Numo::Linalg::Lapack.zgees(b)
+    b, w, v, _sdim, info = Numo::Linalg::Lapack.zgees(a.dup)
     error = (a - v.dot(b).dot(v.transpose.conj)).abs.max
     w_geev, _vl, _vr, _info = Numo::Linalg::Lapack.zgeev(a.dup, jobvl: 'N', jobvr: 'N')
     error_w = (w - w_geev).abs.max
@@ -260,8 +257,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
 
   def test_lapack_cgees
     a = Numo::SComplex.new(5, 5).rand - (0.5 + 0.2i)
-    b = a.dup
-    w, v, _sdim, info = Numo::Linalg::Lapack.cgees(b)
+    b, w, v, _sdim, info = Numo::Linalg::Lapack.cgees(a.dup)
     error = (a - v.dot(b).dot(v.transpose.conj)).abs.max
     w_geev, _vl, _vr, _info = Numo::Linalg::Lapack.cgeev(a.dup, jobvl: 'N', jobvr: 'N')
     error_w = (w - w_geev).abs.max

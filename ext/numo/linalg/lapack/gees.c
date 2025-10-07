@@ -149,7 +149,8 @@ char _get_jobvs(VALUE val) {
       rb_raise(rb_eArgError, "invalid value for sort option");                                                                                                    \
       return Qnil;                                                                                                                                                \
     }                                                                                                                                                             \
-    VALUE ret = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                                                                               \
+    VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                                                                               \
+    VALUE ret = rb_ary_concat(rb_ary_new3(1, a_vnary), res);                                                                                                      \
                                                                                                                                                                   \
     RB_GC_GUARD(sort_val);                                                                                                                                        \
     RB_GC_GUARD(a_vnary);                                                                                                                                         \
@@ -221,7 +222,8 @@ char _get_jobvs(VALUE val) {
       rb_raise(rb_eArgError, "invalid value for sort option");                                                                      \
       return Qnil;                                                                                                                  \
     }                                                                                                                               \
-    VALUE ret = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                                                 \
+    VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                                                 \
+    VALUE ret = rb_ary_concat(rb_ary_new3(1, a_vnary), res);                                                                        \
                                                                                                                                     \
     RB_GC_GUARD(sort_val);                                                                                                          \
     RB_GC_GUARD(a_vnary);                                                                                                           \

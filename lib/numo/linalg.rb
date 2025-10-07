@@ -679,11 +679,10 @@ module Numo
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
 
       fnc = :"#{bchr}gees"
-      b = a.dup
       if %w[d s].include?(bchr)
-        _wr, _wi, v, sdim, info = Numo::Linalg::Lapack.send(fnc, b, jobvs: 'V', sort: sort)
+        b, _wr, _wi, v, sdim, info = Numo::Linalg::Lapack.send(fnc, a.dup, jobvs: 'V', sort: sort)
       else
-        _w, v, sdim, info = Numo::Linalg::Lapack.send(fnc, b, jobvs: 'V', sort: sort)
+        b, _w, v, sdim, info = Numo::Linalg::Lapack.send(fnc, a.dup, jobvs: 'V', sort: sort)
       end
 
       n = a.shape[0]
