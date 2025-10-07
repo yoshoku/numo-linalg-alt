@@ -47,7 +47,8 @@ struct _gerqf_option {
     ndfunc_arg_out_t aout[2] = { { tNAryClass, 1, shape }, { numo_cInt32, 0 } };                           \
     ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 1, 2, ain, aout };                        \
     struct _gerqf_option opt = { matrix_layout };                                                          \
-    VALUE ret = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                        \
+    VALUE res = na_ndloop3(&ndf, &opt, 1, a_vnary);                                                        \
+    VALUE ret = rb_ary_concat(rb_ary_new3(1, a_vnary), res);                                               \
                                                                                                            \
     RB_GC_GUARD(a_vnary);                                                                                  \
     return ret;                                                                                            \

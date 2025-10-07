@@ -103,11 +103,10 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     ma = 4
     na = 2
     a = Numo::DFloat.new(ma, na).rand
-    rq = a.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.dgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.dgerqf(a.dup)
     r = rq.triu(na - ma)
-    q = rq[(ma - na)...ma, 0...na].dup
-    info_orgrq = Numo::Linalg::Lapack.dorgrq(q, tau)
+    tmp = rq[(ma - na)...ma, 0...na].dup
+    q, info_orgrq = Numo::Linalg::Lapack.dorgrq(tmp, tau)
     error_a = (a - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)
@@ -117,12 +116,11 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     mb = 2
     nb = 4
     b = Numo::DFloat.new(mb, nb).rand
-    rq = b.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.dgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.dgerqf(b.dup)
     r = rq.triu(nb - mb)
-    q = Numo::DFloat.zeros(nb, nb)
-    q[(nb - mb)...nb, 0...nb] = rq
-    info_orgrq = Numo::Linalg::Lapack.dorgrq(q, tau)
+    tmp = Numo::DFloat.zeros(nb, nb)
+    tmp[(nb - mb)...nb, 0...nb] = rq
+    q, info_orgrq = Numo::Linalg::Lapack.dorgrq(tmp, tau)
     error_b = (b - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)
@@ -134,11 +132,10 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     ma = 4
     na = 2
     a = Numo::SFloat.new(ma, na).rand
-    rq = a.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.sgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.sgerqf(a.dup)
     r = rq.triu(na - ma)
-    q = rq[(ma - na)...ma, 0...na].dup
-    info_orgrq = Numo::Linalg::Lapack.sorgrq(q, tau)
+    tmp = rq[(ma - na)...ma, 0...na].dup
+    q, info_orgrq = Numo::Linalg::Lapack.sorgrq(tmp, tau)
     error_a = (a - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)
@@ -148,12 +145,11 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     mb = 2
     nb = 4
     b = Numo::SFloat.new(mb, nb).rand
-    rq = b.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.sgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.sgerqf(b.dup)
     r = rq.triu(nb - mb)
-    q = Numo::SFloat.zeros(nb, nb)
-    q[(nb - mb)...nb, 0...nb] = rq
-    info_orgrq = Numo::Linalg::Lapack.sorgrq(q, tau)
+    tmp = Numo::SFloat.zeros(nb, nb)
+    tmp[(nb - mb)...nb, 0...nb] = rq
+    q, info_orgrq = Numo::Linalg::Lapack.sorgrq(tmp, tau)
     error_b = (b - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)
@@ -165,11 +161,10 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     ma = 4
     na = 2
     a = Numo::DComplex.new(ma, na).rand
-    rq = a.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.zgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.zgerqf(a.dup)
     r = rq.triu(na - ma)
-    q = rq[(ma - na)...ma, 0...na].dup
-    info_ungrq = Numo::Linalg::Lapack.zungrq(q, tau)
+    tmp = rq[(ma - na)...ma, 0...na].dup
+    q, info_ungrq = Numo::Linalg::Lapack.zungrq(tmp, tau)
     error_a = (a - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)
@@ -179,12 +174,11 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     mb = 2
     nb = 4
     b = Numo::DComplex.new(mb, nb).rand
-    rq = b.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.zgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.zgerqf(b.dup)
     r = rq.triu(nb - mb)
-    q = Numo::DComplex.zeros(nb, nb)
-    q[(nb - mb)...nb, 0...nb] = rq
-    info_ungrq = Numo::Linalg::Lapack.zungrq(q, tau)
+    tmp = Numo::DComplex.zeros(nb, nb)
+    tmp[(nb - mb)...nb, 0...nb] = rq
+    q, info_ungrq = Numo::Linalg::Lapack.zungrq(tmp, tau)
     error_b = (b - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)
@@ -196,11 +190,10 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     ma = 4
     na = 2
     a = Numo::SComplex.new(ma, na).rand
-    rq = a.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.cgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.cgerqf(a.dup)
     r = rq.triu(na - ma)
-    q = rq[(ma - na)...ma, 0...na].dup
-    info_ungrq = Numo::Linalg::Lapack.cungrq(q, tau)
+    tmp = rq[(ma - na)...ma, 0...na].dup
+    q, info_ungrq = Numo::Linalg::Lapack.cungrq(tmp, tau)
     error_a = (a - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)
@@ -210,12 +203,11 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     mb = 2
     nb = 4
     b = Numo::SComplex.new(mb, nb).rand
-    rq = b.dup
-    tau, info_gerqf = Numo::Linalg::Lapack.cgerqf(rq)
+    rq, tau, info_gerqf = Numo::Linalg::Lapack.cgerqf(b.dup)
     r = rq.triu(nb - mb)
-    q = Numo::SComplex.zeros(nb, nb)
-    q[(nb - mb)...nb, 0...nb] = rq
-    info_ungrq = Numo::Linalg::Lapack.cungrq(q, tau)
+    tmp = Numo::SComplex.zeros(nb, nb)
+    tmp[(nb - mb)...nb, 0...nb] = rq
+    q, info_ungrq = Numo::Linalg::Lapack.cungrq(tmp, tau)
     error_b = (b - r.dot(q)).abs.max
 
     assert_equal(0, info_gerqf)

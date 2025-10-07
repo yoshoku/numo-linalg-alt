@@ -611,8 +611,7 @@ module Numo
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
 
       fnc = :"#{bchr}gerqf"
-      rq = a.dup
-      tau, info = Numo::Linalg::Lapack.send(fnc, rq)
+      rq, tau, info = Numo::Linalg::Lapack.send(fnc, a.dup)
       raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
 
       m, n = rq.shape
@@ -622,15 +621,15 @@ module Numo
       return r if mode == 'r'
 
       fnc = %w[d s].include?(bchr) ? :"#{bchr}orgrq" : :"#{bchr}ungrq"
-      q = if n < m
-            rq[(m - n)...m, 0...n].dup
-          elsif mode == 'economic'
-            rq.dup
-          else
-            rq.class.zeros(n, n).tap { |mat| mat[(n - m)...n, true] = rq }
-          end
+      tmp = if n < m
+              rq[(m - n)...m, 0...n].dup
+            elsif mode == 'economic'
+              rq.dup
+            else
+              rq.class.zeros(n, n).tap { |mat| mat[(n - m)...n, true] = rq }
+            end
 
-      info = Numo::Linalg::Lapack.send(fnc, q, tau)
+      q, info = Numo::Linalg::Lapack.send(fnc, tmp, tau)
       raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
 
       [r, q]

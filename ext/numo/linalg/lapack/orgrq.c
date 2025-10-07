@@ -58,7 +58,8 @@ struct _orgrq_option {
     ndfunc_arg_out_t aout[1] = { { numo_cInt32, 0 } };                                                     \
     ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 2, 1, ain, aout };                        \
     struct _orgrq_option opt = { matrix_layout };                                                          \
-    VALUE ret = na_ndloop3(&ndf, &opt, 2, a_vnary, tau_vnary);                                             \
+    VALUE res = na_ndloop3(&ndf, &opt, 2, a_vnary, tau_vnary);                                             \
+    VALUE ret = rb_ary_new3(2, a_vnary, res);                                                              \
                                                                                                            \
     RB_GC_GUARD(a_vnary);                                                                                  \
     RB_GC_GUARD(tau_vnary);                                                                                \
