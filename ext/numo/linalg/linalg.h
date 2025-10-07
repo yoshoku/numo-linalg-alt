@@ -62,6 +62,7 @@
 #include "lapack/getrf.h"
 #include "lapack/getri.h"
 #include "lapack/getrs.h"
+#include "lapack/gges.h"
 #include "lapack/heev.h"
 #include "lapack/heevd.h"
 #include "lapack/heevr.h"
