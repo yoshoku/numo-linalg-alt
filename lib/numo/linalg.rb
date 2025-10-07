@@ -635,6 +635,52 @@ module Numo
       [r, q]
     end
 
+    # Computes the QZ decomposition (generalized Schur decomposition) of a pair of square matrices.
+    #
+    # The QZ decomposition is given by `A = Q * AA * Z^H` and `B = Q * BB * Z^H`,
+    # where `A` and `B` are the input matrices, `Q` and `Z` are unitary matrices,
+    # and `AA` and `BB` are upper triangular matrices (or quasi-upper triangular matrices in real case).
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(5, 5).rand
+    #   b = Numo::DFloat.new(5, 5).rand
+    #
+    #   aa, bb, q, z = Numo::Linalg.qz(a, b)
+    #
+    #   pp (a - q.dot(aa).dot(z.transpose)).abs.max
+    #   # => 1.7763568394002505e-15
+    #   pp (b - q.dot(bb).dot(z.transpose)).abs.max
+    #   # => 1.1102230246251565e-15
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @param b [Numo::NArray] The n-by-n square matrix.
+    # @return [Array<Numo::NArray, Numo::NArray, Numo::NArray, Numo::NArray>]
+    #   The matrices `AA`, `BB`, `Q`, and `Z` such that `A = Q * AA * Z^H` and `B = Q * BB * Z^H`.
+    def qz(a, b) # rubocop:disable Metrics/AbcSize
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array b must be 2-dimensional' if b.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+      raise Numo::NArray::ShapeError, 'input array b must be square' if b.shape[0] != b.shape[1]
+      raise Numo::NArray::ShapeError, "incompatible dimensions: a.shape = #{a.shape} != b.shape = #{b.shape}" if a.shape != b.shape
+
+      bchr = blas_char(a, b)
+      raise ArgumentError, "invalid array type: #{a.class}, #{b.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}gges"
+      if %w[d s].include?(bchr)
+        aa, bb, _ar, _ai, _beta, q, z, _sdim, info = Numo::Linalg::Lapack.send(fnc, a.dup, b.dup)
+      else
+        aa, bb, _alpha, _beta, q, z, _sdim, info = Numo::Linalg::Lapack.send(fnc, a.dup, b.dup)
+      end
+
+      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+      raise 'the QZ algorithm failed.' if info.positive?
+
+      [aa, bb, q, z]
+    end
+
     # Computes the Schur decomposition of a square matrix.
     # The Schur decomposition is given by `A = Z * T * Z^H`,
     # where `A` is the input matrix, `Z` is a unitary matrix,

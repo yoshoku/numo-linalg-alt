@@ -323,6 +323,18 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal([mb, nb], r.shape)
   end
 
+  def test_qz
+    a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
+    b = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
+    aa, bb, q, z = Numo::Linalg.qz(a, b)
+
+    error_a = (a - q.dot(aa).dot(z.transpose.conjugate)).abs.max
+    error_b = (b - q.dot(bb).dot(z.transpose.conjugate)).abs.max
+
+    assert_operator(error_a, :<, 1e-7)
+    assert_operator(error_b, :<, 1e-7)
+  end
+
   def test_schur
     a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
     t, z, = Numo::Linalg.schur(a)
