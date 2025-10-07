@@ -20,6 +20,14 @@ char get_jobz(VALUE val) {
   return jobz;
 }
 
+char get_jobvs(VALUE val) {
+  const char jobvs = NUM2CHR(val);
+  if (jobvs != 'N' && jobvs != 'V') {
+    rb_raise(rb_eArgError, "jobvs must be 'N' or 'V'");
+  }
+  return jobvs;
+}
+
 char get_range(VALUE val) {
   const char range = NUM2CHR(val);
 

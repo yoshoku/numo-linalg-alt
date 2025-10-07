@@ -1,13 +1,5 @@
 #include "gees.h"
 
-char _get_jobvs(VALUE val) {
-  const char jobvs = NUM2CHR(val);
-  if (jobvs != 'N' && jobvs != 'V') {
-    rb_raise(rb_eArgError, "jobvs must be 'N' or 'V'");
-  }
-  return jobvs;
-}
-
 #define DEF_GEES_OPTION(fLapackFunc, tSelectFunc) \
   struct _gees_option_##fLapackFunc {             \
     int matrix_layout;                            \
@@ -108,7 +100,7 @@ char _get_jobvs(VALUE val) {
     VALUE kw_values[3] = { Qundef, Qundef, Qundef };                                                                                                              \
     rb_get_kwargs(kw_args, kw_table, 0, 3, kw_values);                                                                                                            \
     const int matrix_layout = kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;                                                        \
-    const char jobvs = kw_values[1] != Qundef ? _get_jobvs(kw_values[1]) : 'V';                                                                                   \
+    const char jobvs = kw_values[1] != Qundef ? get_jobvs(kw_values[1]) : 'V';                                                                                    \
     VALUE sort_val = kw_values[2] != Qundef ? kw_values[2] : Qnil;                                                                                                \
     const char sort_ch = NIL_P(sort_val) ? 'N' : 'S';                                                                                                             \
                                                                                                                                                                   \
@@ -182,7 +174,7 @@ char _get_jobvs(VALUE val) {
     VALUE kw_values[3] = { Qundef, Qundef, Qundef };                                                                                \
     rb_get_kwargs(kw_args, kw_table, 0, 3, kw_values);                                                                              \
     const int matrix_layout = kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;                          \
-    const char jobvs = kw_values[1] != Qundef ? _get_jobvs(kw_values[1]) : 'V';                                                     \
+    const char jobvs = kw_values[1] != Qundef ? get_jobvs(kw_values[1]) : 'V';                                                      \
     VALUE sort_val = kw_values[2] != Qundef ? kw_values[2] : Qnil;                                                                  \
     const char sort_ch = NIL_P(sort_val) ? 'N' : 'S';                                                                               \
                                                                                                                                     \
