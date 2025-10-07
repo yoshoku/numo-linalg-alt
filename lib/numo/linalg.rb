@@ -1501,6 +1501,22 @@ module Numo
       end
     end
 
+    # Computes the matrix tangent.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The matrix tangent of `a`.
+    def tanm(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      a_sin = sinm(a)
+      a_cos = cosm(a)
+      a_sin.dot(Numo::Linalg.inv(a_cos))
+    end
+
     # Computes the inverse of a matrix using its LU decomposition.
     #
     # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.

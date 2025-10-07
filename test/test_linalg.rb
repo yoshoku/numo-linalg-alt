@@ -770,6 +770,26 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_kind_of(Numo::DComplex, a_cosm)
   end
 
+  def test_tanm
+    a = Numo::DFloat[[1, 2], [-2, 1]]
+    a_tanm = Numo::Linalg.tanm(a)
+    error = (Numo::DFloat[[0.0338128, 1.0147936], [-1.0147936, 0.0338128]] - a_tanm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DFloat, a_tanm)
+
+    a = Numo::DFloat[[1, 2], [3, 2]] + (Numo::DFloat[[2, 3], [2, 1]] * Complex::I)
+    expected = (Numo::DFloat[[-0.3439464, -0.0721939],
+                             [0.3446103,  0.0728577]] +
+               (Numo::DFloat[[-0.0146713, 1.0692520],
+                             [1.0147687, -0.0691546]] * Complex::I))
+    a_tanm = Numo::Linalg.tanm(a)
+    error = (expected - a_tanm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DComplex, a_tanm)
+  end
+
   def test_lu_inv
     a = Numo::DFloat.new(5, 5).rand - 0.5
     lu, ipiv = Numo::Linalg.lu_fact(a)
