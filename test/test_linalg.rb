@@ -273,6 +273,56 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal(r.shape, [ma, na])
   end
 
+  def test_rq
+    ma = 5
+    na = 3
+    a = Numo::DFloat.new(ma, na).rand - 0.5
+    r, q = Numo::Linalg.rq(a)
+    error_a = (a - r.dot(q)).abs.max
+
+    assert_equal([ma, na], r.shape)
+    assert_equal([na, na], q.shape)
+    assert_operator(error_a, :<, 1e-7)
+
+    mb = 3
+    nb = 5
+    b = Numo::DFloat.new(mb, nb).rand - 0.5
+    r, q = Numo::Linalg.rq(b)
+    error_b = (b - r.dot(q)).abs.max
+
+    assert_equal([mb, nb], r.shape)
+    assert_equal([nb, nb], q.shape)
+    assert_operator(error_b, :<, 1e-7)
+
+    mc = 5
+    nc = 3
+    c = Numo::DFloat.new(mc, nc).rand - 0.5
+    r, q = Numo::Linalg.rq(c, mode: 'economic')
+    error_c = (c - r.dot(q)).abs.max
+
+    assert_equal([mc, nc], r.shape)
+    assert_equal([nc, nc], q.shape)
+    assert_operator(error_c, :<, 1e-7)
+
+    md = 3
+    nd = 5
+    d = Numo::DFloat.new(md, nd).rand - 0.5
+    r, q = Numo::Linalg.rq(d, mode: 'economic')
+    error_d = (d - r.dot(q)).abs.max
+
+    assert_equal([md, md], r.shape)
+    assert_equal([md, nd], q.shape)
+    assert_operator(error_d, :<, 1e-7)
+
+    r = Numo::Linalg.rq(a, mode: 'r')
+
+    assert_equal([ma, na], r.shape)
+
+    r = Numo::Linalg.rq(b, mode: 'r')
+
+    assert_equal([mb, nb], r.shape)
+  end
+
   def test_schur
     a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
     t, z, = Numo::Linalg.schur(a)

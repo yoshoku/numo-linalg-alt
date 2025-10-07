@@ -560,6 +560,82 @@ module Numo
       [q, r]
     end
 
+    # Computes the RQ decomposition of a matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(2, 3).rand
+    #   r, q = Numo::Linalg.rq(a)
+    #   pp r
+    #   # =>
+    #   # Numo::DFloat#shape=[2,3]
+    #   # [[0, -0.381748, -0.79309],
+    #   #  [0, 0, -0.41502]]
+    #   pp q
+    #   # =>
+    #   # Numo::DFloat#shape=[3,3]
+    #   # [[0.227957, 0.874475, -0.428169],
+    #   #  [0.844617, -0.396377, -0.359872],
+    #   #  [-0.484416, -0.279603, -0.828953]]
+    #   puts (a - r.dot(q)).abs.max
+    #   # => 5.551115123125783e-17
+    #
+    #   r, q = Numo::Linalg.rq(a, mode: 'economic')
+    #   pp r
+    #   # =>
+    #   # Numo::DFloat#shape=[2,2]
+    #   # [[-0.381748, -0.79309],
+    #   #  [0, -0.41502]]
+    #   pp q
+    #   # =>
+    #   # Numo::DFloat#shape=[2,3]
+    #   # [[0.844617, -0.396377, -0.359872],
+    #   #  [-0.484416, -0.279603, -0.828953]]
+    #   puts (a - r.dot(q)).abs.max
+    #   # => 5.551115123125783e-17
+    #
+    # @param a [Numo::NArray] The m-by-n matrix to be decomposed.
+    # @param mode [String] The mode of decomposition.
+    #   - "full"     -- returns both R [m, n] and Q [n, n],
+    #   - "r"        -- returns only R,
+    #   - "economic" -- returns both R [m, k] and Q [k, n], where k = min(m, n).
+    # @return [Array<Numo::NArray>/Numo::NArray]
+    #   if mode='full' or 'economic', returns [R, Q].
+    #   if mode='r', returns R.
+    def rq(a, mode: 'full') # rubocop:disable  Metrics/AbcSize
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise ArgumentError, "invalid mode: #{mode}" unless %w[full r economic].include?(mode)
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}gerqf"
+      rq = a.dup
+      tau, info = Numo::Linalg::Lapack.send(fnc, rq)
+      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+
+      m, n = rq.shape
+      r = rq.triu(n - m).dup
+      r = r[true, (n - m)...n].dup if mode == 'economic' && n > m
+
+      return r if mode == 'r'
+
+      fnc = %w[d s].include?(bchr) ? :"#{bchr}orgrq" : :"#{bchr}ungrq"
+      q = if n < m
+            rq[(m - n)...m, 0...n].dup
+          elsif mode == 'economic'
+            rq.dup
+          else
+            rq.class.zeros(n, n).tap { |mat| mat[(n - m)...n, true] = rq }
+          end
+
+      info = Numo::Linalg::Lapack.send(fnc, q, tau)
+      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+
+      [r, q]
+    end
+
     # Computes the Schur decomposition of a square matrix.
     # The Schur decomposition is given by `A = Z * T * Z^H`,
     # where `A` is the input matrix, `Z` is a unitary matrix,
