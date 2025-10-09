@@ -42,9 +42,11 @@ char blas_char(VALUE nary_arr) {
     if (RB_TYPE_P(arg, T_ARRAY)) {
       arg = rb_funcall(numo_cNArray, rb_intern("asarray"), 1, arg);
     }
-    if (CLASS_OF(arg) == numo_cBit || CLASS_OF(arg) == numo_cInt64 || CLASS_OF(arg) == numo_cInt32 ||
-        CLASS_OF(arg) == numo_cInt16 || CLASS_OF(arg) == numo_cInt8 || CLASS_OF(arg) == numo_cUInt64 ||
-        CLASS_OF(arg) == numo_cUInt32 || CLASS_OF(arg) == numo_cUInt16 || CLASS_OF(arg) == numo_cUInt8) {
+    if (CLASS_OF(arg) == numo_cBit || CLASS_OF(arg) == numo_cInt64 ||
+        CLASS_OF(arg) == numo_cInt32 || CLASS_OF(arg) == numo_cInt16 ||
+        CLASS_OF(arg) == numo_cInt8 || CLASS_OF(arg) == numo_cUInt64 ||
+        CLASS_OF(arg) == numo_cUInt32 || CLASS_OF(arg) == numo_cUInt16 ||
+        CLASS_OF(arg) == numo_cUInt8) {
       if (type == 'n') {
         type = 'd';
       }
@@ -97,8 +99,7 @@ static VALUE linalg_blas_call(int argc, VALUE* argv, VALUE self) {
   }
 
   char fn_str[256];
-  snprintf(fn_str, sizeof(fn_str), "%c%s",
-           type, rb_id2name(rb_to_id(rb_to_symbol(fn_name))));
+  snprintf(fn_str, sizeof(fn_str), "%c%s", type, rb_id2name(rb_to_id(rb_to_symbol(fn_name))));
   ID fn_id = rb_intern(fn_str);
   size_t n = RARRAY_LEN(nary_arr);
   VALUE ret = Qnil;
@@ -146,7 +147,8 @@ static VALUE linalg_dot(VALUE self, VALUE a_, VALUE b_) {
       ret = rb_funcall(rb_mLinalgBlas, rb_intern("call"), 3, ID2SYM(fn_id), a, b);
     } else {
       VALUE kw_args = rb_hash_new();
-      if (!RTEST(nary_check_contiguous(b)) && RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
+      if (!RTEST(nary_check_contiguous(b)) &&
+          RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
         b = rb_funcall(b, rb_intern("transpose"), 0);
         rb_hash_aset(kw_args, ID2SYM(rb_intern("trans")), rb_str_new_cstr("N"));
       } else {
@@ -160,7 +162,8 @@ static VALUE linalg_dot(VALUE self, VALUE a_, VALUE b_) {
   } else {
     if (b_ndim == 1) {
       VALUE kw_args = rb_hash_new();
-      if (!RTEST(nary_check_contiguous(a)) && RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
+      if (!RTEST(nary_check_contiguous(a)) &&
+          RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
         a = rb_funcall(a, rb_intern("transpose"), 0);
         rb_hash_aset(kw_args, ID2SYM(rb_intern("trans")), rb_str_new_cstr("T"));
       } else {
@@ -172,13 +175,15 @@ static VALUE linalg_dot(VALUE self, VALUE a_, VALUE b_) {
       ret = rb_funcallv_kw(rb_mLinalgBlas, rb_intern(fn_name), 3, argv, RB_PASS_KEYWORDS);
     } else {
       VALUE kw_args = rb_hash_new();
-      if (!RTEST(nary_check_contiguous(a)) && RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
+      if (!RTEST(nary_check_contiguous(a)) &&
+          RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
         a = rb_funcall(a, rb_intern("transpose"), 0);
         rb_hash_aset(kw_args, ID2SYM(rb_intern("transa")), rb_str_new_cstr("T"));
       } else {
         rb_hash_aset(kw_args, ID2SYM(rb_intern("transa")), rb_str_new_cstr("N"));
       }
-      if (!RTEST(nary_check_contiguous(b)) && RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
+      if (!RTEST(nary_check_contiguous(b)) &&
+          RTEST(rb_funcall(b, rb_intern("fortran_contiguous?"), 0))) {
         b = rb_funcall(b, rb_intern("transpose"), 0);
         rb_hash_aset(kw_args, ID2SYM(rb_intern("transb")), rb_str_new_cstr("T"));
       } else {
@@ -202,7 +207,8 @@ void Init_linalg(void) {
 
   /**
    * Document-module: Numo::Linalg
-   * Numo::Linalg is a subset library from Numo::Linalg consisting only of methods used in Machine Learning algorithms.
+   * Numo::Linalg is a subset library from Numo::Linalg consisting only of methods used
+   * in Machine Learning algorithms.
    */
   rb_mLinalg = rb_define_module_under(rb_mNumo, "Linalg");
   /**
