@@ -1,12 +1,12 @@
 #include "gges.h"
 
-#define DEF_GGES_OPTION(fLapackFunc, tSelectFunc) \
-  struct _gges_option_##fLapackFunc {             \
-    int matrix_layout;                            \
-    char jobvsl;                                  \
-    char jobvsr;                                  \
-    char sort;                                    \
-    tSelectFunc select;                           \
+#define DEF_GGES_OPTION(fLapackFunc, tSelectFunc)                                              \
+  struct _gges_option_##fLapackFunc {                                                          \
+    int matrix_layout;                                                                         \
+    char jobvsl;                                                                               \
+    char jobvsr;                                                                               \
+    char sort;                                                                                 \
+    tSelectFunc select;                                                                        \
   };
 
 #define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                       \
