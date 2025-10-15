@@ -49,6 +49,7 @@ jobs:
 
   build-win:
     runs-on: windows-latest
+    timeout-minutes: 5
     name: Ruby 3.4 (Windows)
     steps:
       - uses: actions/checkout@v5
@@ -63,7 +64,7 @@ jobs:
       - name: Run the default task
         run: |
           bundle install
-          bundle exec rake compile -- --with-opt-lib="C:\hostedtoolcache\windows\Ruby\3.4.6\x64\msys64\ucrt64\lib" --with-opt-include="C:\hostedtoolcache\windows\Ruby\3.4.6\x64\msys64\ucrt64\include\openblas"
+          bundle exec rake compile -- --with-opt-lib="C:\hostedtoolcache\windows\Ruby\3.4.7\x64\msys64\ucrt64\lib" --with-opt-include="C:\hostedtoolcache\windows\Ruby\3.4.7\x64\msys64\ucrt64\include\openblas"
           bundle exec rake test
 
   build-mac:
