@@ -1,3 +1,7 @@
+## [[0.4.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.3.0...v0.4.0)] - 2025-10-16
+
+- add `rq`, `qz`, and `tanm` module functions to Numo::Linalg.
+
 ## [[0.3.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.2.0...v0.3.0)] - 2025-10-06
 
 - add `schur`, `cosm`, `sinm`, `orthogonal_procrustes`, and `polar` module functions to Numo::Linalg.
