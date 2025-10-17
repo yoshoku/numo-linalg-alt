@@ -96,8 +96,8 @@ DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, cgels
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_gelsd(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgelsd", RUBY_METHOD_FUNC(_linalg_lapack_dgelsd), -1);
-  rb_define_module_function(mLapack, "sgelsd", RUBY_METHOD_FUNC(_linalg_lapack_sgelsd), -1);
-  rb_define_module_function(mLapack, "zgelsd", RUBY_METHOD_FUNC(_linalg_lapack_zgelsd), -1);
-  rb_define_module_function(mLapack, "cgelsd", RUBY_METHOD_FUNC(_linalg_lapack_cgelsd), -1);
+  rb_define_module_function(mLapack, "dgelsd", _linalg_lapack_dgelsd, -1);
+  rb_define_module_function(mLapack, "sgelsd", _linalg_lapack_sgelsd, -1);
+  rb_define_module_function(mLapack, "zgelsd", _linalg_lapack_zgelsd, -1);
+  rb_define_module_function(mLapack, "cgelsd", _linalg_lapack_cgelsd, -1);
 }

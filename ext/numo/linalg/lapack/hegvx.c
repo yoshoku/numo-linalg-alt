@@ -140,6 +140,6 @@ DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, chegv
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_hegvx(VALUE mLapack) {
-  rb_define_module_function(mLapack, "zhegvx", RUBY_METHOD_FUNC(_linalg_lapack_zhegvx), -1);
-  rb_define_module_function(mLapack, "chegvx", RUBY_METHOD_FUNC(_linalg_lapack_chegvx), -1);
+  rb_define_module_function(mLapack, "zhegvx", _linalg_lapack_zhegvx, -1);
+  rb_define_module_function(mLapack, "chegvx", _linalg_lapack_chegvx, -1);
 }

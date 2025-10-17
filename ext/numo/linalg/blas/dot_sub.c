@@ -66,6 +66,6 @@ DEF_LINALG_FUNC(float, numo_cSComplex, cdotu_sub)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_blas_dot_sub(VALUE mBlas) {
-  rb_define_module_function(mBlas, "zdotu", RUBY_METHOD_FUNC(_linalg_blas_zdotu_sub), 2);
-  rb_define_module_function(mBlas, "cdotu", RUBY_METHOD_FUNC(_linalg_blas_cdotu_sub), 2);
+  rb_define_module_function(mBlas, "zdotu", _linalg_blas_zdotu_sub, 2);
+  rb_define_module_function(mBlas, "cdotu", _linalg_blas_cdotu_sub, 2);
 }

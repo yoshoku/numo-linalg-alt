@@ -67,6 +67,6 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, chetrf)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_hetrf(VALUE mLapack) {
-  rb_define_module_function(mLapack, "zhetrf", RUBY_METHOD_FUNC(_linalg_lapack_zhetrf), -1);
-  rb_define_module_function(mLapack, "chetrf", RUBY_METHOD_FUNC(_linalg_lapack_chetrf), -1);
+  rb_define_module_function(mLapack, "zhetrf", _linalg_lapack_zhetrf, -1);
+  rb_define_module_function(mLapack, "chetrf", _linalg_lapack_chetrf, -1);
 }

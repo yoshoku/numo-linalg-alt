@@ -60,8 +60,8 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, clange)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_lange(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dlange", RUBY_METHOD_FUNC(_linalg_lapack_dlange), -1);
-  rb_define_module_function(mLapack, "slange", RUBY_METHOD_FUNC(_linalg_lapack_slange), -1);
-  rb_define_module_function(mLapack, "zlange", RUBY_METHOD_FUNC(_linalg_lapack_zlange), -1);
-  rb_define_module_function(mLapack, "clange", RUBY_METHOD_FUNC(_linalg_lapack_clange), -1);
+  rb_define_module_function(mLapack, "dlange", _linalg_lapack_dlange, -1);
+  rb_define_module_function(mLapack, "slange", _linalg_lapack_slange, -1);
+  rb_define_module_function(mLapack, "zlange", _linalg_lapack_zlange, -1);
+  rb_define_module_function(mLapack, "clange", _linalg_lapack_clange, -1);
 }

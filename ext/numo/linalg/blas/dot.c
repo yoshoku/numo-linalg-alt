@@ -67,6 +67,6 @@ DEF_LINALG_FUNC(float, numo_cSFloat, sdot)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_blas_dot(VALUE mBlas) {
-  rb_define_module_function(mBlas, "ddot", RUBY_METHOD_FUNC(_linalg_blas_ddot), 2);
-  rb_define_module_function(mBlas, "sdot", RUBY_METHOD_FUNC(_linalg_blas_sdot), 2);
+  rb_define_module_function(mBlas, "ddot", _linalg_blas_ddot, 2);
+  rb_define_module_function(mBlas, "sdot", _linalg_blas_sdot, 2);
 }

@@ -60,8 +60,8 @@ DEF_LINALG_FUNC(scomplex, float, numo_cSComplex, numo_cSFloat, scnrm2)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_blas_nrm2(VALUE mBlas) {
-  rb_define_module_function(mBlas, "dnrm2", RUBY_METHOD_FUNC(_linalg_blas_dnrm2), -1);
-  rb_define_module_function(mBlas, "snrm2", RUBY_METHOD_FUNC(_linalg_blas_snrm2), -1);
-  rb_define_module_function(mBlas, "dznrm2", RUBY_METHOD_FUNC(_linalg_blas_dznrm2), -1);
-  rb_define_module_function(mBlas, "scnrm2", RUBY_METHOD_FUNC(_linalg_blas_scnrm2), -1);
+  rb_define_module_function(mBlas, "dnrm2", _linalg_blas_dnrm2, -1);
+  rb_define_module_function(mBlas, "snrm2", _linalg_blas_snrm2, -1);
+  rb_define_module_function(mBlas, "dznrm2", _linalg_blas_dznrm2, -1);
+  rb_define_module_function(mBlas, "scnrm2", _linalg_blas_scnrm2, -1);
 }

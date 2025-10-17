@@ -94,8 +94,8 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, cgesv)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_gesv(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgesv", RUBY_METHOD_FUNC(_linalg_lapack_dgesv), -1);
-  rb_define_module_function(mLapack, "sgesv", RUBY_METHOD_FUNC(_linalg_lapack_sgesv), -1);
-  rb_define_module_function(mLapack, "zgesv", RUBY_METHOD_FUNC(_linalg_lapack_zgesv), -1);
-  rb_define_module_function(mLapack, "cgesv", RUBY_METHOD_FUNC(_linalg_lapack_cgesv), -1);
+  rb_define_module_function(mLapack, "dgesv", _linalg_lapack_dgesv, -1);
+  rb_define_module_function(mLapack, "sgesv", _linalg_lapack_sgesv, -1);
+  rb_define_module_function(mLapack, "zgesv", _linalg_lapack_zgesv, -1);
+  rb_define_module_function(mLapack, "cgesv", _linalg_lapack_cgesv, -1);
 }

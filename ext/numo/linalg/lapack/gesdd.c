@@ -111,8 +111,8 @@ DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, cgesd
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_gesdd(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgesdd", RUBY_METHOD_FUNC(_linalg_lapack_dgesdd), -1);
-  rb_define_module_function(mLapack, "sgesdd", RUBY_METHOD_FUNC(_linalg_lapack_sgesdd), -1);
-  rb_define_module_function(mLapack, "zgesdd", RUBY_METHOD_FUNC(_linalg_lapack_zgesdd), -1);
-  rb_define_module_function(mLapack, "cgesdd", RUBY_METHOD_FUNC(_linalg_lapack_cgesdd), -1);
+  rb_define_module_function(mLapack, "dgesdd", _linalg_lapack_dgesdd, -1);
+  rb_define_module_function(mLapack, "sgesdd", _linalg_lapack_sgesdd, -1);
+  rb_define_module_function(mLapack, "zgesdd", _linalg_lapack_zgesdd, -1);
+  rb_define_module_function(mLapack, "cgesdd", _linalg_lapack_cgesdd, -1);
 }

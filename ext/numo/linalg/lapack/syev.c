@@ -68,6 +68,6 @@ DEF_LINALG_FUNC(float, numo_cSFloat, ssyev)
 #undef DEFINE_LINALG_FUNC
 
 void define_linalg_lapack_syev(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dsyev", RUBY_METHOD_FUNC(_linalg_lapack_dsyev), -1);
-  rb_define_module_function(mLapack, "ssyev", RUBY_METHOD_FUNC(_linalg_lapack_ssyev), -1);
+  rb_define_module_function(mLapack, "dsyev", _linalg_lapack_dsyev, -1);
+  rb_define_module_function(mLapack, "ssyev", _linalg_lapack_ssyev, -1);
 }

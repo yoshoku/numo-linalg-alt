@@ -80,8 +80,8 @@ DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, cgeba
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_gebal(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgebal", RUBY_METHOD_FUNC(_linalg_lapack_dgebal), -1);
-  rb_define_module_function(mLapack, "sgebal", RUBY_METHOD_FUNC(_linalg_lapack_sgebal), -1);
-  rb_define_module_function(mLapack, "zgebal", RUBY_METHOD_FUNC(_linalg_lapack_zgebal), -1);
-  rb_define_module_function(mLapack, "cgebal", RUBY_METHOD_FUNC(_linalg_lapack_cgebal), -1);
+  rb_define_module_function(mLapack, "dgebal", _linalg_lapack_dgebal, -1);
+  rb_define_module_function(mLapack, "sgebal", _linalg_lapack_sgebal, -1);
+  rb_define_module_function(mLapack, "zgebal", _linalg_lapack_zgebal, -1);
+  rb_define_module_function(mLapack, "cgebal", _linalg_lapack_cgebal, -1);
 }
