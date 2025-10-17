@@ -1189,6 +1189,102 @@ module Numo
       [r, scale]
     end
 
+    # Computes a diagonal similarity transformation that balances a square matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[1, 0, 0], [1, 2, 0], [1, 2, 3]]
+    #   b, h = Numo::Linalg.matrix_balance(a)
+    #   pp b
+    #   # =>
+    #   # Numo::DFloat#shape=[3,3]
+    #   # [[3, 2, 1],
+    #   #  [0, 2, 1],
+    #   #  [0, 0, 1]]
+    #   pp h
+    #   # =>
+    #   # Numo::DFloat#shape=[3,3]
+    #   # [[0, 0, 1],
+    #   #  [0, 1, 0],
+    #   #  [1, 0, 0]]
+    #   pp (Numo::Linalg.inv(h).dot(a).dot(h) - b).abs.max
+    #   # => 0.0
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @param permute [Boolean] The flag indicating whether to permute the matrix.
+    # @param scale [Boolean] The flag indicating whether to scale the matrix.
+    # @param separate [Boolean] The flag indicating whether to return scaling factors and permutation indices
+    #   separately.
+    # @return [Array<Numo::NArray, Numo::NArray>] if `separate` is `false`, the balanced matrix and the
+    #   similarity transformation matrix `H` ([b, h]). if `separate` is `true`, the balanced matrix, the
+    #   scaling factors, and the permutation indices ([b, scaler, perm]).
+    def matrix_balance(a, permute: true, scale: true, separate: false) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+
+      n = a.shape[0]
+      raise ArgumentError, 'input array a must be square' if a.shape[1] != n
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      job = if permute && scale
+              'B'
+            elsif permute && !scale
+              'P'
+            elsif !permute && scale
+              'S'
+            else
+              'N'
+            end
+      fnc = :"#{bchr}gebal"
+      b, lo, hi, prm_scl, info = Numo::Linalg::Lapack.send(fnc, a.dup, job: job)
+
+      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+
+      # convert from Fortran style index to Ruby style index.
+      lo -= 1
+      hi -= 1
+      iprm_scl = Numo::Int32.cast(prm_scl) - 1
+
+      # extract scaling factors
+      scaler = prm_scl.class.ones(n)
+      scaler[lo...(hi + 1)] = prm_scl[lo...(hi + 1)]
+
+      # extract permutation indices
+      perm = Numo::Int32.new(n).seq
+      if hi < n - 1
+        iprm_scl[(hi + 1)...n].to_a.reverse.each.with_index(1) do |s, i|
+          j = n - i
+          next if s == j
+
+          tmp_ls, tmp_lj = perm[[s, j]].to_a
+          tmp_rj, tmp_rs = perm[[j, s]].to_a
+          perm[[s, j]] = [tmp_rj, tmp_rs]
+          perm[[j, s]] = [tmp_ls, tmp_lj]
+        end
+      end
+      if lo > 0 # rubocop:disable Style/NumericPredicate
+        iprm_scl[0...lo].to_a.each_with_index do |s, j|
+          next if s == j
+
+          tmp_ls, tmp_lj = perm[[s, j]].to_a
+          tmp_rj, tmp_rs = perm[[j, s]].to_a
+          perm[[s, j]] = [tmp_rj, tmp_rs]
+          perm[[j, s]] = [tmp_ls, tmp_lj]
+        end
+      end
+
+      return [b, scaler, perm] if separate
+
+      # construct inverse permutation matrix
+      inv_perm = Numo::Int32.zeros(n)
+      inv_perm[perm] = Numo::Int32.new(n).seq
+      h = scaler.diag[inv_perm, true].dup
+
+      [b, h]
+    end
+
     # Computes the eigenvalues and right and/or left eigenvectors of a general square matrix.
     #
     # @example

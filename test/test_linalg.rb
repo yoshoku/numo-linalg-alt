@@ -515,6 +515,28 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal(3, r.shape[1])
   end
 
+  def test_matrix_balance
+    a = Numo::DFloat[[1, 0, 0], [1, 2, 0], [1, 2, 3]]
+
+    b, h = Numo::Linalg.matrix_balance(a)
+    error = (b - Numo::Linalg.inv(h).dot(a).dot(h)).abs.max
+
+    assert_kind_of(Numo::DFloat, b)
+    assert_kind_of(Numo::DFloat, h)
+    assert_operator(error, :<, 1e-7)
+
+    _, sc, pm = Numo::Linalg.matrix_balance(a, permute: true, scale: true, separate: true)
+
+    assert_kind_of(Numo::DFloat, sc)
+    assert_equal(Numo::DFloat[1, 1, 1], sc)
+    assert_kind_of(Numo::Int32, pm)
+    assert_equal(Numo::Int32[2, 1, 0], pm)
+
+    _, _, pm = Numo::Linalg.matrix_balance(a, permute: false, scale: true, separate: true)
+
+    assert_equal(Numo::Int32[0, 1, 2], pm)
+  end
+
   def test_eig
     a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
     w, vl, vr = Numo::Linalg.eig(a)
