@@ -267,6 +267,74 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_b, :<, 1e-5)
   end
 
+  def test_lapack_dgebal
+    a = Numo::DFloat[[1, 0, 0, 0], [1, 2, 0, 0], [1, 2, 3, 0], [1, 2, 3, 4]]
+    b, lo, hi, sc, info = Numo::Linalg::Lapack.dgebal(a.dup)
+
+    assert_kind_of(Numo::DFloat, b)
+    assert_equal(Numo::DFloat[[4, 3, 2, 1], [0, 3, 2, 1], [0, 0, 2, 1], [0, 0, 0, 1]], b)
+    assert_equal(1, lo)
+    assert_equal(1, hi)
+    assert_kind_of(Numo::DFloat, sc)
+    assert_equal(Numo::DFloat[1, 2, 2, 1], sc)
+    assert_equal(0, info)
+
+    b, lo, hi, sc, info = Numo::Linalg::Lapack.dgebal(a.dup, job: 'N')
+
+    assert_equal(a, b)
+    assert_equal(1, lo)
+    assert_equal(4, hi)
+    assert_equal(Numo::DFloat[1, 1, 1, 1], sc)
+    assert_equal(0, info)
+
+    b, lo, hi, sc, info = Numo::Linalg::Lapack.dgebal(a.dup, job: 'S')
+
+    assert_equal(a, b)
+    assert_equal(1, lo)
+    assert_equal(4, hi)
+    assert_equal(Numo::DFloat[1, 1, 1, 1], sc)
+    assert_equal(0, info)
+  end
+
+  def test_lapack_sgebal
+    a = Numo::SFloat[[1, 0, 0, 0], [1, 2, 0, 0], [1, 2, 3, 0], [1, 2, 3, 4]]
+    b, lo, hi, sc, info = Numo::Linalg::Lapack.sgebal(a.dup)
+
+    assert_kind_of(Numo::SFloat, b)
+    assert_equal(Numo::SFloat[[4, 3, 2, 1], [0, 3, 2, 1], [0, 0, 2, 1], [0, 0, 0, 1]], b)
+    assert_equal(1, lo)
+    assert_equal(1, hi)
+    assert_kind_of(Numo::SFloat, sc)
+    assert_equal(Numo::SFloat[1, 2, 2, 1], sc)
+    assert_equal(0, info)
+  end
+
+  def test_lapack_zgebal
+    a = Numo::DComplex[[1, 0, 0, 0], [1, 2, 0, 0], [1, 2, 3, 0], [1, 2, 3, 4]]
+    b, lo, hi, sc, info = Numo::Linalg::Lapack.zgebal(a.dup)
+
+    assert_kind_of(Numo::DComplex, b)
+    assert_equal(Numo::DComplex[[4, 3, 2, 1], [0, 3, 2, 1], [0, 0, 2, 1], [0, 0, 0, 1]], b)
+    assert_equal(1, lo)
+    assert_equal(1, hi)
+    assert_kind_of(Numo::DFloat, sc)
+    assert_equal(Numo::DFloat[1, 2, 2, 1], sc)
+    assert_equal(0, info)
+  end
+
+  def test_lapack_cgebal
+    a = Numo::SComplex[[1, 0, 0, 0], [1, 2, 0, 0], [1, 2, 3, 0], [1, 2, 3, 4]]
+    b, lo, hi, sc, info = Numo::Linalg::Lapack.cgebal(a.dup)
+
+    assert_kind_of(Numo::SComplex, b)
+    assert_equal(Numo::SComplex[[4, 3, 2, 1], [0, 3, 2, 1], [0, 0, 2, 1], [0, 0, 0, 1]], b)
+    assert_equal(1, lo)
+    assert_equal(1, hi)
+    assert_kind_of(Numo::SFloat, sc)
+    assert_equal(Numo::SFloat[1, 2, 2, 1], sc)
+    assert_equal(0, info)
+  end
+
   def test_lapack_dgees
     a = Numo::DFloat.new(5, 5).rand - 0.5
     b, wr, wi, v, _sdim, info = Numo::Linalg::Lapack.dgees(a.dup)
