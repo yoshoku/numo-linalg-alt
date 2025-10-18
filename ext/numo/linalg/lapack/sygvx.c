@@ -140,6 +140,6 @@ DEF_LINALG_FUNC(float, numo_cSFloat, ssygvx)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_sygvx(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dsygvx", RUBY_METHOD_FUNC(_linalg_lapack_dsygvx), -1);
-  rb_define_module_function(mLapack, "ssygvx", RUBY_METHOD_FUNC(_linalg_lapack_ssygvx), -1);
+  rb_define_module_function(mLapack, "dsygvx", _linalg_lapack_dsygvx, -1);
+  rb_define_module_function(mLapack, "ssygvx", _linalg_lapack_ssygvx, -1);
 }

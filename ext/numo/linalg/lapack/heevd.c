@@ -68,6 +68,6 @@ DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, cheev
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_heevd(VALUE mLapack) {
-  rb_define_module_function(mLapack, "zheevd", RUBY_METHOD_FUNC(_linalg_lapack_zheevd), -1);
-  rb_define_module_function(mLapack, "cheevd", RUBY_METHOD_FUNC(_linalg_lapack_cheevd), -1);
+  rb_define_module_function(mLapack, "zheevd", _linalg_lapack_zheevd, -1);
+  rb_define_module_function(mLapack, "cheevd", _linalg_lapack_cheevd, -1);
 }

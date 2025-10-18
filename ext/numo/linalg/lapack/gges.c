@@ -207,8 +207,8 @@ DEF_LINALG_FUNC_COMPLEX(lapack_complex_float, numo_cSComplex, cgges)
 #undef DEF_LINALG_FUNC_COMPLEX
 
 void define_linalg_lapack_gges(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgges", RUBY_METHOD_FUNC(_linalg_lapack_dgges), -1);
-  rb_define_module_function(mLapack, "sgges", RUBY_METHOD_FUNC(_linalg_lapack_sgges), -1);
-  rb_define_module_function(mLapack, "zgges", RUBY_METHOD_FUNC(_linalg_lapack_zgges), -1);
-  rb_define_module_function(mLapack, "cgges", RUBY_METHOD_FUNC(_linalg_lapack_cgges), -1);
+  rb_define_module_function(mLapack, "dgges", _linalg_lapack_dgges, -1);
+  rb_define_module_function(mLapack, "sgges", _linalg_lapack_sgges, -1);
+  rb_define_module_function(mLapack, "zgges", _linalg_lapack_zgges, -1);
+  rb_define_module_function(mLapack, "cgges", _linalg_lapack_cgges, -1);
 }

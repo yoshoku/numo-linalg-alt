@@ -234,7 +234,7 @@ void Init_linalg(void) {
    *   @param [Numo::NArray] a
    *   @return [String]
    */
-  rb_define_module_function(rb_mLinalg, "blas_char", RUBY_METHOD_FUNC(linalg_blas_char), -1);
+  rb_define_module_function(rb_mLinalg, "blas_char", linalg_blas_char, -1);
   /**
    * Calculates dot product of two vectors / matrices.
    *
@@ -243,7 +243,7 @@ void Init_linalg(void) {
    *   @param [Numo::NArray] b
    *   @return [Float|Complex|Numo::NArray]
    */
-  rb_define_module_function(rb_mLinalg, "dot", RUBY_METHOD_FUNC(linalg_dot), 2);
+  rb_define_module_function(rb_mLinalg, "dot", linalg_dot, 2);
   /**
    * Calls BLAS function prefixed with BLAS char.
    *
@@ -253,7 +253,7 @@ void Init_linalg(void) {
    * @example
    *   Numo::Linalg::Blas.call(:gemv, a, b)
    */
-  rb_define_singleton_method(rb_mLinalgBlas, "call", RUBY_METHOD_FUNC(linalg_blas_call), -1);
+  rb_define_singleton_method(rb_mLinalgBlas, "call", linalg_blas_call, -1);
 
   define_linalg_blas_dot(rb_mLinalgBlas);
   define_linalg_blas_dot_sub(rb_mLinalgBlas);

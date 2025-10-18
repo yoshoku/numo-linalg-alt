@@ -76,8 +76,8 @@ DEF_LINALG_FUNC(lapack_complex_double, numo_cDComplex, zgetri)
 DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, cgetri)
 
 void define_linalg_lapack_getri(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgetri", RUBY_METHOD_FUNC(_linalg_lapack_dgetri), -1);
-  rb_define_module_function(mLapack, "sgetri", RUBY_METHOD_FUNC(_linalg_lapack_sgetri), -1);
-  rb_define_module_function(mLapack, "zgetri", RUBY_METHOD_FUNC(_linalg_lapack_zgetri), -1);
-  rb_define_module_function(mLapack, "cgetri", RUBY_METHOD_FUNC(_linalg_lapack_cgetri), -1);
+  rb_define_module_function(mLapack, "dgetri", _linalg_lapack_dgetri, -1);
+  rb_define_module_function(mLapack, "sgetri", _linalg_lapack_sgetri, -1);
+  rb_define_module_function(mLapack, "zgetri", _linalg_lapack_zgetri, -1);
+  rb_define_module_function(mLapack, "cgetri", _linalg_lapack_cgetri, -1);
 }

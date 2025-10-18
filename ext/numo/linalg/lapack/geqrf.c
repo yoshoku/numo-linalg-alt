@@ -66,8 +66,8 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, cgeqrf)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_geqrf(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgeqrf", RUBY_METHOD_FUNC(_linalg_lapack_dgeqrf), -1);
-  rb_define_module_function(mLapack, "sgeqrf", RUBY_METHOD_FUNC(_linalg_lapack_sgeqrf), -1);
-  rb_define_module_function(mLapack, "zgeqrf", RUBY_METHOD_FUNC(_linalg_lapack_zgeqrf), -1);
-  rb_define_module_function(mLapack, "cgeqrf", RUBY_METHOD_FUNC(_linalg_lapack_cgeqrf), -1);
+  rb_define_module_function(mLapack, "dgeqrf", _linalg_lapack_dgeqrf, -1);
+  rb_define_module_function(mLapack, "sgeqrf", _linalg_lapack_sgeqrf, -1);
+  rb_define_module_function(mLapack, "zgeqrf", _linalg_lapack_zgeqrf, -1);
+  rb_define_module_function(mLapack, "cgeqrf", _linalg_lapack_cgeqrf, -1);
 }

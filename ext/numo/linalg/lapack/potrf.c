@@ -64,8 +64,8 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, cpotrf)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_potrf(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dpotrf", RUBY_METHOD_FUNC(_linalg_lapack_dpotrf), -1);
-  rb_define_module_function(mLapack, "spotrf", RUBY_METHOD_FUNC(_linalg_lapack_spotrf), -1);
-  rb_define_module_function(mLapack, "zpotrf", RUBY_METHOD_FUNC(_linalg_lapack_zpotrf), -1);
-  rb_define_module_function(mLapack, "cpotrf", RUBY_METHOD_FUNC(_linalg_lapack_cpotrf), -1);
+  rb_define_module_function(mLapack, "dpotrf", _linalg_lapack_dpotrf, -1);
+  rb_define_module_function(mLapack, "spotrf", _linalg_lapack_spotrf, -1);
+  rb_define_module_function(mLapack, "zpotrf", _linalg_lapack_zpotrf, -1);
+  rb_define_module_function(mLapack, "cpotrf", _linalg_lapack_cpotrf, -1);
 }

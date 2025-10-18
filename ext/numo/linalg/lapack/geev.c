@@ -162,8 +162,8 @@ DEF_LINALG_FUNC_COMPLEX(lapack_complex_float, numo_cSComplex, cgeev)
 #undef DEF_LINALG_FUNC_COMPLEX
 
 void define_linalg_lapack_geev(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dgeev", RUBY_METHOD_FUNC(_linalg_lapack_dgeev), -1);
-  rb_define_module_function(mLapack, "sgeev", RUBY_METHOD_FUNC(_linalg_lapack_sgeev), -1);
-  rb_define_module_function(mLapack, "zgeev", RUBY_METHOD_FUNC(_linalg_lapack_zgeev), -1);
-  rb_define_module_function(mLapack, "cgeev", RUBY_METHOD_FUNC(_linalg_lapack_cgeev), -1);
+  rb_define_module_function(mLapack, "dgeev", _linalg_lapack_dgeev, -1);
+  rb_define_module_function(mLapack, "sgeev", _linalg_lapack_sgeev, -1);
+  rb_define_module_function(mLapack, "zgeev", _linalg_lapack_zgeev, -1);
+  rb_define_module_function(mLapack, "cgeev", _linalg_lapack_cgeev, -1);
 }

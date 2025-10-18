@@ -158,8 +158,8 @@ DEF_LINALG_FUNC(scomplex, numo_cSComplex, cgemv)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_blas_gemv(VALUE mBlas) {
-  rb_define_module_function(mBlas, "dgemv", RUBY_METHOD_FUNC(_linalg_blas_dgemv), -1);
-  rb_define_module_function(mBlas, "sgemv", RUBY_METHOD_FUNC(_linalg_blas_sgemv), -1);
-  rb_define_module_function(mBlas, "zgemv", RUBY_METHOD_FUNC(_linalg_blas_zgemv), -1);
-  rb_define_module_function(mBlas, "cgemv", RUBY_METHOD_FUNC(_linalg_blas_cgemv), -1);
+  rb_define_module_function(mBlas, "dgemv", _linalg_blas_dgemv, -1);
+  rb_define_module_function(mBlas, "sgemv", _linalg_blas_sgemv, -1);
+  rb_define_module_function(mBlas, "zgemv", _linalg_blas_zgemv, -1);
+  rb_define_module_function(mBlas, "cgemv", _linalg_blas_cgemv, -1);
 }

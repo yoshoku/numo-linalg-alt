@@ -96,8 +96,8 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, ctrtrs)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_trtrs(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dtrtrs", RUBY_METHOD_FUNC(_linalg_lapack_dtrtrs), -1);
-  rb_define_module_function(mLapack, "strtrs", RUBY_METHOD_FUNC(_linalg_lapack_strtrs), -1);
-  rb_define_module_function(mLapack, "ztrtrs", RUBY_METHOD_FUNC(_linalg_lapack_ztrtrs), -1);
-  rb_define_module_function(mLapack, "ctrtrs", RUBY_METHOD_FUNC(_linalg_lapack_ctrtrs), -1);
+  rb_define_module_function(mLapack, "dtrtrs", _linalg_lapack_dtrtrs, -1);
+  rb_define_module_function(mLapack, "strtrs", _linalg_lapack_strtrs, -1);
+  rb_define_module_function(mLapack, "ztrtrs", _linalg_lapack_ztrtrs, -1);
+  rb_define_module_function(mLapack, "ctrtrs", _linalg_lapack_ctrtrs, -1);
 }

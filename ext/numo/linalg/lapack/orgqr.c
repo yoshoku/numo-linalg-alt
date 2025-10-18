@@ -75,6 +75,6 @@ DEF_LINALG_FUNC(float, numo_cSFloat, sorgqr)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_orgqr(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dorgqr", RUBY_METHOD_FUNC(_linalg_lapack_dorgqr), -1);
-  rb_define_module_function(mLapack, "sorgqr", RUBY_METHOD_FUNC(_linalg_lapack_sorgqr), -1);
+  rb_define_module_function(mLapack, "dorgqr", _linalg_lapack_dorgqr, -1);
+  rb_define_module_function(mLapack, "sorgqr", _linalg_lapack_sorgqr, -1);
 }

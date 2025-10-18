@@ -64,8 +64,8 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, cpotri)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_potri(VALUE mLapack) {
-  rb_define_module_function(mLapack, "dpotri", RUBY_METHOD_FUNC(_linalg_lapack_dpotri), -1);
-  rb_define_module_function(mLapack, "spotri", RUBY_METHOD_FUNC(_linalg_lapack_spotri), -1);
-  rb_define_module_function(mLapack, "zpotri", RUBY_METHOD_FUNC(_linalg_lapack_zpotri), -1);
-  rb_define_module_function(mLapack, "cpotri", RUBY_METHOD_FUNC(_linalg_lapack_cpotri), -1);
+  rb_define_module_function(mLapack, "dpotri", _linalg_lapack_dpotri, -1);
+  rb_define_module_function(mLapack, "spotri", _linalg_lapack_spotri, -1);
+  rb_define_module_function(mLapack, "zpotri", _linalg_lapack_zpotri, -1);
+  rb_define_module_function(mLapack, "cpotri", _linalg_lapack_cpotri, -1);
 }

@@ -75,6 +75,6 @@ DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, cungqr)
 #undef DEF_LINALG_FUNC
 
 void define_linalg_lapack_ungqr(VALUE mLapack) {
-  rb_define_module_function(mLapack, "zungqr", RUBY_METHOD_FUNC(_linalg_lapack_zungqr), -1);
-  rb_define_module_function(mLapack, "cungqr", RUBY_METHOD_FUNC(_linalg_lapack_cungqr), -1);
+  rb_define_module_function(mLapack, "zungqr", _linalg_lapack_zungqr, -1);
+  rb_define_module_function(mLapack, "cungqr", _linalg_lapack_cungqr, -1);
 }
