@@ -63,6 +63,11 @@ Ubuntu:
 $ gem install numo-linalg-alt
 ```
 
+## Documentation
+
+- [API Documentation](https://gemdocs.org/gems/numo-linalg-alt/0.4.1/)
+- [Comparison with scipy.linalg and numpy.linalg](https://github.com/yoshoku/numo-linalg-alt/wiki/Comparison-with-scipy.linalg-and-numpy.linalg)
+
 ## Usage
 
 An example of singular value decomposition.
