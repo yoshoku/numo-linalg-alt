@@ -7,6 +7,52 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     Numo::NArray.srand(53_196)
   end
 
+  def test_lapack_dgehrd_dorghr
+    a = Numo::DFloat.new(3, 3).rand - 0.5
+    b, ilo, ihi, = Numo::Linalg::Lapack.dgebal(a.dup)
+    hq, tau, info = Numo::Linalg::Lapack.dgehrd(b, ilo: ilo, ihi: ihi)
+    h = hq.triu(-1)
+
+    assert_kind_of(Numo::DFloat, hq)
+    assert_kind_of(Numo::DFloat, tau)
+    assert_equal([3, 3], hq.shape)
+    assert_equal([2], tau.shape)
+    assert_equal(0, info)
+
+    q, info = Numo::Linalg::Lapack.dorghr(hq, tau, ilo: ilo, ihi: ihi)
+
+    assert_kind_of(Numo::DFloat, q)
+    assert_equal([3, 3], q.shape)
+    assert_equal(0, info)
+
+    error = (a - q.dot(h).dot(q.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_sgehrd_sorghr
+    a = Numo::SFloat.new(3, 3).rand - 0.5
+    b, ilo, ihi, = Numo::Linalg::Lapack.sgebal(a.dup)
+    hq, tau, info = Numo::Linalg::Lapack.sgehrd(b, ilo: ilo, ihi: ihi)
+    h = hq.triu(-1)
+
+    assert_kind_of(Numo::SFloat, hq)
+    assert_kind_of(Numo::SFloat, tau)
+    assert_equal([3, 3], hq.shape)
+    assert_equal([2], tau.shape)
+    assert_equal(0, info)
+
+    q, info = Numo::Linalg::Lapack.sorghr(hq, tau, ilo: ilo, ihi: ihi)
+
+    assert_kind_of(Numo::SFloat, q)
+    assert_equal([3, 3], q.shape)
+    assert_equal(0, info)
+
+    error = (a - q.dot(h).dot(q.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_lapack_dgeqrf_dorgqr
     ma = 3
     na = 2

@@ -73,6 +73,7 @@
 #include "lapack/hegvx.h"
 #include "lapack/hetrf.h"
 #include "lapack/lange.h"
+#include "lapack/orghr.h"
 #include "lapack/orgqr.h"
 #include "lapack/orgrq.h"
 #include "lapack/potrf.h"
