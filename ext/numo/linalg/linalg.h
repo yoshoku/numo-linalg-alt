@@ -54,6 +54,7 @@
 #include "lapack/gebal.h"
 #include "lapack/gees.h"
 #include "lapack/geev.h"
+#include "lapack/gehrd.h"
 #include "lapack/gelsd.h"
 #include "lapack/geqrf.h"
 #include "lapack/gerqf.h"
