@@ -53,6 +53,52 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_lapack_zgehrd_zunghr
+    a = Numo::DComplex.new(3, 3).rand
+    b, ilo, ihi, = Numo::Linalg::Lapack.zgebal(a.dup)
+    hq, tau, info = Numo::Linalg::Lapack.zgehrd(b, ilo: ilo, ihi: ihi)
+    h = hq.triu(-1)
+
+    assert_kind_of(Numo::DComplex, hq)
+    assert_kind_of(Numo::DComplex, tau)
+    assert_equal([3, 3], hq.shape)
+    assert_equal([2], tau.shape)
+    assert_equal(0, info)
+
+    q, info = Numo::Linalg::Lapack.zunghr(hq, tau, ilo: ilo, ihi: ihi)
+
+    assert_kind_of(Numo::DComplex, q)
+    assert_equal([3, 3], q.shape)
+    assert_equal(0, info)
+
+    error = (a - q.dot(h).dot(q.conj.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
+
+  def test_lapack_cgehrd_cunghr
+    a = Numo::SComplex.new(3, 3).rand
+    b, ilo, ihi, = Numo::Linalg::Lapack.cgebal(a.dup)
+    hq, tau, info = Numo::Linalg::Lapack.cgehrd(b, ilo: ilo, ihi: ihi)
+    h = hq.triu(-1)
+
+    assert_kind_of(Numo::SComplex, hq)
+    assert_kind_of(Numo::SComplex, tau)
+    assert_equal([3, 3], hq.shape)
+    assert_equal([2], tau.shape)
+    assert_equal(0, info)
+
+    q, info = Numo::Linalg::Lapack.cunghr(hq, tau, ilo: ilo, ihi: ihi)
+
+    assert_kind_of(Numo::SComplex, q)
+    assert_equal([3, 3], q.shape)
+    assert_equal(0, info)
+
+    error = (a - q.dot(h).dot(q.conj.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_lapack_dgeqrf_dorgqr
     ma = 3
     na = 2

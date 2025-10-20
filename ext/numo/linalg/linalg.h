@@ -87,6 +87,7 @@
 #include "lapack/sygvx.h"
 #include "lapack/sytrf.h"
 #include "lapack/trtrs.h"
+#include "lapack/unghr.h"
 #include "lapack/ungqr.h"
 #include "lapack/ungrq.h"
 
