@@ -49,7 +49,7 @@ jobs:
 
   build-win:
     runs-on: windows-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     name: Ruby 3.4 (Windows)
     steps:
       - uses: actions/checkout@v5
