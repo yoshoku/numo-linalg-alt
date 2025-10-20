@@ -740,6 +740,63 @@ module Numo
       [b, v, sdim]
     end
 
+    # Computes the Hessenberg decomposition of a square matrix.
+    # The Hessenberg decomposition is given by `A = Q * H * Q^H`,
+    # where `A` is the input matrix, `Q` is a unitary matrix,
+    # and `H` is an upper Hessenberg matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat[[1, 2, 3], [4, 5, 6], [7, 8, 9]] * 0.5
+    #   h, q = Numo::Linalg.hessenberg(a, calc_q: true)
+    #
+    #   pp h
+    #   # => Numo::DFloat#shape=[3,3]
+    #   # [[0.5, -1.7985, -0.124035],
+    #   #  [-4.03113, 7.02308, 1.41538],
+    #   #  [0, 0.415385, -0.0230769]]
+    #   pp q
+    #   # => Numo::DFloat#shape=[3,3]
+    #   # [[1, 0, 0],
+    #   #  [0, -0.496139, -0.868243],
+    #   #  [0, -0.868243, 0.496139]]
+    #   pp (a - q.dot(h).dot(q.transpose)).abs.max
+    #   # => 1.7763568394002505e-15
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @param calc_q [Boolean] The flag indicating whether to calculate the unitary matrix `Q`.
+    # @return [Numo::NArray] if calc_q=false, the Hessenberg form `H`.
+    # @return [Array<Numo::NArray, Numo::NArray>] if calc_q=true,
+    #   the Hessenberg form `H` and the unitary matrix `Q`.
+    def hessenberg(a, calc_q: false)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      func = :"#{bchr}gebal"
+      b, ilo, ihi, _, info = Numo::Linalg::Lapack.send(func, a.dup)
+
+      raise "the #{-info}-th argument of #{func} had illegal value" if info.negative?
+
+      func = :"#{bchr}gehrd"
+      hq, tau, info = Numo::Linalg::Lapack.send(func, b, ilo: ilo, ihi: ihi)
+
+      raise "the #{-info}-th argument of #{func} had illegal value" if info.negative?
+
+      h = hq.triu(-1)
+      return h unless calc_q
+
+      func = %w[d s].include?(bchr) ? :"#{bchr}orghr" : :"#{bchr}unghr"
+      q, info = Numo::Linalg::Lapack.send(func, hq, tau, ilo: ilo, ihi: ihi)
+
+      raise "the #{-info}-th argument of #{func} had illegal value" if info.negative?
+
+      [h, q]
+    end
+
     # Solves linear equation `A * x = b` or `A * X = B` for `x` from square matrix `A`.
     #
     # @example

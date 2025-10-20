@@ -344,6 +344,28 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_hessenberg
+    a = Numo::DComplex.new(3, 3).rand - (0.5 + 0.2i)
+    h, q = Numo::Linalg.hessenberg(a, calc_q: true)
+
+    error = (a - q.dot(h).dot(q.transpose.conj)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    h_s = Numo::Linalg.hessenberg(a)
+
+    assert_kind_of(Numo::DComplex, h_s)
+    assert_equal([3, 3], h_s.shape)
+    assert_equal(h, h_s)
+
+    a = Numo::SFloat.new(3, 3).rand - 0.5
+    h, q = Numo::Linalg.hessenberg(a, calc_q: true)
+
+    error = (a - q.dot(h).dot(q.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_solve
     a = Numo::DComplex.new(3, 3).rand
     b = Numo::SFloat.new(3).rand
