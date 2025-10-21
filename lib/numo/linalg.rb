@@ -1670,6 +1670,17 @@ module Numo
       a_sin.dot(Numo::Linalg.inv(a_cos))
     end
 
+    # Computes the matrix hyperbolic sine using the matrix exponential.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The matrix hyperbolic sine of `a`.
+    def sinhm(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      0.5 * (expm(a) - expm(-a))
+    end
+
     # Computes the inverse of a matrix using its LU decomposition.
     #
     # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.
