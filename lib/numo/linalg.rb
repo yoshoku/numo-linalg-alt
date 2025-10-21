@@ -1692,6 +1692,19 @@ module Numo
       0.5 * (expm(a) + expm(-a))
     end
 
+    # Computes the matrix hyperbolic tangent.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The matrix hyperbolic tangent of `a`.
+    def tanhm(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      a_sinh = sinhm(a)
+      a_cosh = coshm(a)
+      a_sinh.dot(Numo::Linalg.inv(a_cosh))
+    end
+
     # Computes the inverse of a matrix using its LU decomposition.
     #
     # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.
