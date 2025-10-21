@@ -1681,6 +1681,17 @@ module Numo
       0.5 * (expm(a) - expm(-a))
     end
 
+    # Computes the matrix hyperbolic cosine using the matrix exponential.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The matrix hyperbolic cosine of `a`.
+    def coshm(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      0.5 * (expm(a) + expm(-a))
+    end
+
     # Computes the inverse of a matrix using its LU decomposition.
     #
     # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.

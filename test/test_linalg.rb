@@ -852,6 +852,24 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_kind_of(Numo::DComplex, a_sinhm)
   end
 
+  def test_coshm
+    a = Numo::DFloat[[1, 2], [-2, 1]]
+    a_coshm = Numo::Linalg.coshm(a)
+    expected = Numo::Linalg.cosm(1.0i * a)
+    error = (expected - a_coshm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DFloat, a_coshm)
+
+    a = Numo::DFloat[[1, 2], [3, 2]] + (Numo::DFloat[[2, 3], [2, 1]] * Complex::I)
+    a_coshm = Numo::Linalg.coshm(a)
+    expected = Numo::Linalg.cosm(1.0i * a)
+    error = (expected - a_coshm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+    assert_kind_of(Numo::DComplex, a_coshm)
+  end
+
   def test_lu_inv
     a = Numo::DFloat.new(5, 5).rand - 0.5
     lu, ipiv = Numo::Linalg.lu_fact(a)
