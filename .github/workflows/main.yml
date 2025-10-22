@@ -61,11 +61,14 @@ jobs:
         run: |
           pacman -Syu
           pacman -S --noconfirm mingw-w64-ucrt-x86_64-openblas mingw-w64-ucrt-x86_64-lapack
+      - name: Setting Ruby version to envrionment variable
+        run: |
+          $value = ruby -e 'puts RUBY_VERSION'
+          echo "RUBY_VER=$value" >> $env:GITHUB_ENV
       - name: Run the default task
         run: |
           bundle install
-          bundle exec rake compile -- --with-opt-lib="C:\hostedtoolcache\windows\Ruby\3.4.7\x64\msys64\ucrt64\lib" --with-opt-include="C:\hostedtoolcache\windows\Ruby\3.4.7\x64\msys64\ucrt64\include\openblas"
-          bundle exec rake test
+          bundle exec rake -- --with-opt-lib="C:\hostedtoolcache\windows\Ruby\${{ env.RUBY_VER }}\x64\msys64\ucrt64\lib" --with-opt-include="C:\hostedtoolcache\windows\Ruby\${{ env.RUBY_VER }}\x64\msys64\ucrt64\include\openblas"
 
   build-mac:
     runs-on: macos-latest
@@ -84,5 +87,4 @@ jobs:
         bundler-cache: true
     - name: Run the default task
       run: |
-        bundle exec rake compile -- --with-opt-dir=/opt/homebrew/opt/openblas
-        bundle exec rake test
+        bundle exec rake -- --with-opt-dir=/opt/homebrew/opt/openblas
