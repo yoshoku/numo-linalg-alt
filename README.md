@@ -99,6 +99,37 @@ puts (x - z).abs.max
 # => 4.440892098500626e-16
 ```
 
+## Development
+
+preparation:
+
+```shell
+$ git clone https://github.com/yoshoku/numo-narray-alt
+$ cd numo-narray-alt
+$ bundle install
+```
+
+build and test:
+
+```
+$ bundle exec rake compile
+$ bundle exec rake test
+```
+
+linter:
+
+```shell
+$ bundle exec rubocop
+$ clang-format --dry-run --Werror --style=file ext/**/*.h ext/**/*.c
+```
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+Please run `npm install` to set up husky and commitlint for commit message validation:
+
+```shell
+$ npm install
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/yoshoku/numo-linalg-alt.
