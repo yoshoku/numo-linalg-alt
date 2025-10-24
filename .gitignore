@@ -14,3 +14,5 @@
 *.o
 *.a
 mkmf.log
+Makefile
+extconf.h
