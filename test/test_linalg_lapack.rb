@@ -1367,10 +1367,14 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     a = Numo::DFloat.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.dlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose).trace)).abs
+
+    assert_kind_of(Float, norm)
+    assert_operator(error_f, :<, 1e-7)
+
     norm = Numo::Linalg::Lapack.dlange(a, norm: 'M')
     error_m = (norm - a.abs.max).abs
 
-    assert_operator(error_f, :<, 1e-7)
+    assert_kind_of(Float, norm)
     assert_operator(error_m, :<, 1e-7)
   end
 
@@ -1378,10 +1382,14 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     a = Numo::SFloat.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.dlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose).trace)).abs
+
+    assert_kind_of(Float, norm)
+    assert_operator(error_f, :<, 1e-5)
+
     norm = Numo::Linalg::Lapack.dlange(a, norm: 'M')
     error_m = (norm - a.abs.max).abs
 
-    assert_operator(error_f, :<, 1e-5)
+    assert_kind_of(Float, norm)
     assert_operator(error_m, :<, 1e-5)
   end
 
@@ -1389,10 +1397,14 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     a = Numo::DComplex.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.zlange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose.conjugate).trace)).abs
+
+    assert_kind_of(Float, norm)
+    assert_operator(error_f, :<, 1e-7)
+
     norm = Numo::Linalg::Lapack.zlange(a, norm: 'M')
     error_m = (norm - a.abs.max).abs
 
-    assert_operator(error_f, :<, 1e-7)
+    assert_kind_of(Float, norm)
     assert_operator(error_m, :<, 1e-7)
   end
 
@@ -1400,10 +1412,14 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     a = Numo::SComplex.new(4, 3).rand - 0.5
     norm = Numo::Linalg::Lapack.clange(a)
     error_f = (norm - Math.sqrt(a.dot(a.transpose.conjugate).trace)).abs
+
+    assert_kind_of(Float, norm)
+    assert_operator(error_f, :<, 1e-5)
+
     norm = Numo::Linalg::Lapack.clange(a, norm: 'M')
     error_m = (norm - a.abs.max).abs
 
-    assert_operator(error_f, :<, 1e-5)
+    assert_kind_of(Float, norm)
     assert_operator(error_m, :<, 1e-5)
   end
 
