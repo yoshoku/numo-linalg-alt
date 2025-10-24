@@ -111,6 +111,8 @@ if build_openblas
   abort('lapacke.h is not found.') unless find_header('lapacke.h', nil, "#{VENDOR_DIR}/include")
 end
 
+have_type('blasint', 'cblas.h')
+
 if RUBY_PLATFORM.include?('darwin') && Gem::Version.new('3.1.0') <= Gem::Version.new(RUBY_VERSION) &&
    try_link('int main(void){return 0;}', '-Wl,-undefined,dynamic_lookup')
   $LDFLAGS << ' -Wl,-undefined,dynamic_lookup'
