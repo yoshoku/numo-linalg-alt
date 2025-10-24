@@ -224,10 +224,8 @@ void Init_linalg(void) {
    */
   rb_mLinalgLapack = rb_define_module_under(rb_mLinalg, "Lapack");
 
-#ifdef HAVE_OPENBLAS_CONFIG_H
   /* The version of OpenBLAS used in background library. */
   rb_define_const(rb_mLinalg, "OPENBLAS_VERSION", rb_str_new_cstr(OPENBLAS_VERSION));
-#endif
 
   /**
    * Returns BLAS char ([sdcz]) defined by data-type of arguments.

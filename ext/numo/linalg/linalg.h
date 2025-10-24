@@ -37,15 +37,10 @@
 
 #include <cblas.h>
 #include <lapacke.h>
+#include <openblas_config.h>
 
 #include <numo/narray.h>
 #include <numo/template.h>
-
-#include "extconf.h"
-
-#ifdef HAVE_OPENBLAS_CONFIG_H
-#include <openblas_config.h>
-#endif
 
 #include "converter.h"
 #include "util.h"

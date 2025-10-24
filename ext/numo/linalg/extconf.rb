@@ -30,38 +30,14 @@ if on_windows
   abort 'libnarray.a is not found' unless have_library('narray', 'nary_new')
 end
 
-blas = with_config('blas')
-lapacke = with_config('lapacke')
-if blas.nil?
-  unless lapacke.nil?
-    abort("LAPACKE library '#{lapacke}' is not found.") unless have_library(lapacke)
-    abort("BLAS library 'openblas' is not found.") unless have_library('openblas')
-    abort('cblas.h is not found.') unless have_header('cblas.h')
-    abort('lapacke.h is not found.') unless have_header('lapacke.h')
-  end
-else
-  unless find_library(blas, 'LAPACKE_dsyevr')
-    abort("BLAS library '#{blas}' is not found.") unless have_library(blas)
-    if lapacke.nil?
-      abort("LAPACKE library 'lapacke' is not found.") unless have_library('lapacke')
-    else
-      abort("LAPACKE library '#{lapacke}' is not found.") unless have_library(lapacke)
-    end
-  end
-  abort('cblas.h is not found.') unless have_header('cblas.h')
-  abort('lapacke.h is not found.') unless have_header('lapacke.h')
-end
-
 build_openblas = false
-if blas.nil? && lapacke.nil?
-  unless find_library('openblas', 'LAPACKE_dsyevr')
-    build_openblas = true unless have_library('openblas')
-    build_openblas = true unless have_library('lapacke')
-  end
-  build_openblas = true unless have_header('cblas.h')
-  build_openblas = true unless have_header('lapacke.h')
+unless find_library('openblas', 'LAPACKE_dsyevr')
+  build_openblas = true unless have_library('openblas')
+  build_openblas = true unless have_library('lapacke')
 end
-have_header('openblas_config.h')
+build_openblas = true unless have_header('cblas.h')
+build_openblas = true unless have_header('lapacke.h')
+build_openblas = true unless have_header('openblas_config.h')
 
 if build_openblas
   warn 'BLAS and LAPACKE APIs are not found. Downloading and Building OpenBLAS...'
