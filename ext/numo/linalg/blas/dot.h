@@ -3,10 +3,12 @@
 
 #include <ruby.h>
 
-#include <cblas.h>
-
 #include <numo/narray.h>
 #include <numo/template.h>
+
+#include "../types.h"
+
+#include <cblas.h>
 
 void define_linalg_blas_dot(VALUE mBlas);
 
