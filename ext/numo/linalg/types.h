@@ -1,5 +1,5 @@
 #ifndef NUMO_LINALG_ALT_BLAS_TYPES_H
-#define NUMO_LINALG_ALT_BLAS_TYPES_H
+#define NUMO_LINALG_ALT_BLAS_TYPES_H 1
 
 #include "extconf.h"
 
@@ -13,6 +13,13 @@ typedef CBLAS_INT blasint;
 typedef int blasint;
 #endif
 #endif
+#endif
+
+#ifndef _DEFINED_SCOMPLEX
+#define _DEFINED_SCOMPLEX 1
+#endif
+#ifndef _DEFINED_DCOMPLEX
+#define _DEFINED_DCOMPLEX 1
 #endif
 
 #endif /* NUMO_LINALG_ALT_BLAS_TYPES_H */
