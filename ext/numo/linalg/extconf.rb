@@ -37,7 +37,7 @@ unless find_library('openblas', 'LAPACKE_dsyevr')
 end
 build_openblas = true unless have_header('cblas.h')
 build_openblas = true unless have_header('lapacke.h')
-build_openblas = true unless have_header('openblas_config.h')
+have_header('openblas_config.h')
 
 if build_openblas
   warn 'BLAS and LAPACKE APIs are not found. Downloading and Building OpenBLAS...'
