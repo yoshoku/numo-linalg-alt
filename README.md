@@ -104,8 +104,8 @@ puts (x - z).abs.max
 preparation:
 
 ```shell
-$ git clone https://github.com/yoshoku/numo-narray-alt
-$ cd numo-narray-alt
+$ git clone https://github.com/yoshoku/numo-linalg-alt
+$ cd numo-linalg-alt
 $ bundle install
 ```
 
