@@ -1,4 +1,10 @@
-## [[0.4.1](https://github.com/yoshoku/numo-linalg-alt/compare/v0.3.0...v0.4.0)] - 2025-10-19
+## [[0.5.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.4.1...v0.5.0)] - 2025-10-25
+
+- FIX: correct Numo::Linalg::Lapack.xlange return type to Float for Numo::DComplex and Numo::SComplex.
+- add `coshm`, `sinhm`, and `tanhm` module functions to Numo::Linalg.
+- add `hessenberg` module function to Numo::Linalg.
+
+## [[0.4.1](https://github.com/yoshoku/numo-linalg-alt/compare/v0.4.0...v0.4.1)] - 2025-10-19
 
 - FIX: remove incorrect usage of RUBY_METHOD_FUNC macro: [#2](https://github.com/yoshoku/numo-linalg-alt/pull/2)
 - add `matrix_balance` moudle function to Numo::Linalg.
