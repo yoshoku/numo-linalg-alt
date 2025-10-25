@@ -408,7 +408,11 @@ module Numo
       raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
       raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
 
-      Numo::Linalg::Lapack.send(getri, lu, piv)[0]
+      a_inv, info = Numo::Linalg::Lapack.send(getri, lu, piv)
+      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
+
+      a_inv
     end
 
     # Computes the (Moore-Penrose) pseudo-inverse of a matrix using singular value decomposition.
