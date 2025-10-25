@@ -441,7 +441,7 @@ module Numo
       rank = s.gt(rcond * s[0]).count
 
       u = u[true, 0...rank] / s[0...rank]
-      u.dot(vh[0...rank, true]).conj.transpose
+      u.dot(vh[0...rank, true]).conj.transpose.dup
     end
 
     # Computes the polar decomposition of a matrix.

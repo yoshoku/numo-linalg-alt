@@ -216,6 +216,7 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     a_inv = Numo::Linalg.pinv(a)
     error = (Numo::DComplex.eye(3) - a_inv.dot(a)).abs.max
 
+    assert_predicate(a_inv, :contiguous?)
     assert_operator(error, :<, 1e-7)
   end
 
