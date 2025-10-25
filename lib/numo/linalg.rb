@@ -366,17 +366,13 @@ module Numo
 
       getrf = :"#{bchr}getrf"
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
+      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
 
-      if info.zero?
-        det_l = 1
-        det_u = lu.diagonal.prod
-        det_p = piv.map_with_index { |v, i| v == i + 1 ? 1 : -1 }.prod
-        det_l * det_u * det_p
-      elsif info.positive?
-        raise 'the factor U is singular, and the inverse matrix could not be computed.'
-      else
-        raise "the #{-info}-th argument of getrf had illegal value"
-      end
+      det_l = 1
+      det_u = lu.diagonal.prod
+      det_p = piv.map_with_index { |v, i| v == i + 1 ? 1 : -1 }.prod
+      det_l * det_u * det_p
     end
 
     # Computes the inverse matrix of a square matrix.
@@ -409,13 +405,10 @@ module Numo
       getri = :"#{bchr}getri"
 
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
-      if info.zero?
-        Numo::Linalg::Lapack.send(getri, lu, piv)[0]
-      elsif info.positive?
-        raise 'the factor U is singular, and the inverse matrix could not be computed.'
-      else
-        raise "the #{-info}-th argument of getrf had illegal value"
-      end
+      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
+
+      Numo::Linalg::Lapack.send(getri, lu, piv)[0]
     end
 
     # Computes the (Moore-Penrose) pseudo-inverse of a matrix using singular value decomposition.
