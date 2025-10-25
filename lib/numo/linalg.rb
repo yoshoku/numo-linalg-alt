@@ -340,7 +340,9 @@ module Numo
       raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
 
       fnc = :"#{bchr}potrs"
-      x, _info = Numo::Linalg::Lapack.send(fnc, a, b.dup, uplo: uplo)
+      x, info = Numo::Linalg::Lapack.send(fnc, a, b.dup, uplo: uplo)
+      raise "the #{-info}-th argument of potrs had illegal value" if info.negative?
+
       x
     end
 
