@@ -829,7 +829,11 @@ module Numo
       raise ArgumentError, "invalid array type: #{a.class}, #{b.class}" if bchr == 'n'
 
       gesv = :"#{bchr}gesv"
-      Numo::Linalg::Lapack.send(gesv, a.dup, b.dup)[1]
+      _lu, x, _ipiv, info = Numo::Linalg::Lapack.send(gesv, a.dup, b.dup)
+      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise 'the factor U is singular, and the solution could not be computed.' if info.positive?
+
+      x
     end
 
     # Solves linear equation `A * x = b` or `A * X = B` for `x` assuming `A` is a triangular matrix.
