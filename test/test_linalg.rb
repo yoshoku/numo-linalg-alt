@@ -919,6 +919,26 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_signm
+    a = Numo::DFloat.new(5, 5).rand - 0.5
+    a_signm = Numo::Linalg.signm(a)
+    b = a_signm.dot(a_signm)
+    error = (Numo::DFloat.eye(5) - b).abs.max
+    sum_b = b.sum
+
+    assert_operator(error, :<, 1e-7)
+    assert_in_delta(5.0, sum_b, 1e-7)
+
+    a = Numo::DComplex.new(5, 5).rand - (0.5 + 0.3i)
+    a_signm = Numo::Linalg.signm(a)
+    b = a_signm.dot(a_signm)
+    error = (Numo::DComplex.eye(5) - b).abs.max
+    sum_b = b.sum
+
+    assert_operator(error, :<, 1e-7)
+    assert_in_delta(5.0, sum_b, 1e-7)
+  end
+
   def test_lu_inv
     a = Numo::DFloat.new(5, 5).rand - 0.5
     lu, ipiv = Numo::Linalg.lu_fact(a)

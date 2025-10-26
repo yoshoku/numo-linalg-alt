@@ -1740,6 +1740,19 @@ module Numo
       inv_v.dot(sqrt_ev.diag).dot(v)
     end
 
+    # Computes the matrix sign function using its inverse and square root matrices.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The matrix sign function of `a`.
+    def signm(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      a_sqrt = sqrtm(a.dot(a))
+      a_inv = Numo::Linalg.inv(a)
+      a_inv.dot(a_sqrt)
+    end
+
     # Computes the inverse of a matrix using its LU decomposition.
     #
     # @param lu [Numo::NArray] The LU decomposition of the n-by-n matrix `A`.
