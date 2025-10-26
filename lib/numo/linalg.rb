@@ -1619,6 +1619,22 @@ module Numo
       a_expm
     end
 
+    # Computes the matrix logarithm using its eigenvalue decomposition.
+    #
+    # @param a [Numo::NArray] The n-by-n square matrix.
+    # @return [Numo::NArray] The matrix logarithm of `a`.
+    def logm(a)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+      raise Numo::NArray::ShapeError, 'input array a must be square' if a.shape[0] != a.shape[1]
+
+      ev, vl, = eig(a, left: true, right: false)
+      v = vl.transpose.conj
+      inv_v = Numo::Linalg.inv(v)
+      log_ev = Numo::NMath.log(ev)
+
+      inv_v.dot(log_ev.diag).dot(v)
+    end
+
     # Computes the matrix sine using the matrix exponential.
     #
     # @param a [Numo::NArray] The n-by-n square matrix.

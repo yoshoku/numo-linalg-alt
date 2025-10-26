@@ -765,6 +765,22 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_logm
+    a = Numo::DFloat[[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    a_logm = Numo::Linalg.logm(a)
+    a_expm = Numo::Linalg.expm(a_logm)
+    error = (a - a_expm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat[[1, 2], [-2, 1]] + (Numo::DFloat[[2, 3], [2, 1]] * Complex::I)
+    a_logm = Numo::Linalg.logm(a)
+    a_expm = Numo::Linalg.expm(a_logm)
+    error = (a - a_expm).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
+
   def test_sinm
     a = Numo::DFloat[[1, 2], [-2, 1]]
     a_sinm = Numo::Linalg.sinm(a)
