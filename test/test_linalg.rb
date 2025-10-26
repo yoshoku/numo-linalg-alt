@@ -889,6 +889,20 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_kind_of(Numo::DComplex, a_tanhm)
   end
 
+  def test_sqrtm
+    a = Numo::DFloat[[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    b = Numo::Linalg.sqrtm(a)
+    error = (a - b.dot(b)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::DFloat[[1, 2], [3, 2]] + (Numo::DFloat[[2, 3], [2, 1]] * Complex::I)
+    b = Numo::Linalg.sqrtm(a)
+    error = (a - b.dot(b)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+  end
+
   def test_lu_inv
     a = Numo::DFloat.new(5, 5).rand - 0.5
     lu, ipiv = Numo::Linalg.lu_fact(a)
