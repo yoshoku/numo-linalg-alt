@@ -8,7 +8,7 @@
 #include <numo/narray.h>
 #include <numo/template.h>
 
-#include "../util.h"
+#include "lapack_util.h"
 
 void define_linalg_lapack_hegv(VALUE mLapack);
 

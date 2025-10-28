@@ -42,8 +42,6 @@
 #include <numo/narray.h>
 #include <numo/template.h>
 
-#include "util.h"
-
 #include "blas/dot.h"
 #include "blas/dot_sub.h"
 #include "blas/gemm.h"
