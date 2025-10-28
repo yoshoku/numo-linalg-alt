@@ -42,7 +42,6 @@
 #include <numo/narray.h>
 #include <numo/template.h>
 
-#include "converter.h"
 #include "util.h"
 
 #include "blas/dot.h"

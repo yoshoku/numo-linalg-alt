@@ -8,7 +8,8 @@
 #include <numo/narray.h>
 #include <numo/template.h>
 
-#include "../converter.h"
+#include "converter.h"
+
 #include "../util.h"
 
 void define_linalg_blas_gemv(VALUE mBlas);

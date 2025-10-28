@@ -3,8 +3,6 @@
 
 #include <ruby.h>
 
-#include <cblas.h>
-
 #include <numo/narray.h>
 
 double conv_double(VALUE val);
