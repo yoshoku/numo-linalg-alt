@@ -19,8 +19,8 @@ struct _geev_option {
       (lapack_int)(opt->matrix_layout == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[0]                \
                                                           : NDL_SHAPE(lp, 0)[1]);              \
     const lapack_int lda = n;                                                                  \
-    const lapack_int ldvl = (opt->jobvl == 'N') ? 1 : n;                                       \
-    const lapack_int ldvr = (opt->jobvr == 'N') ? 1 : n;                                       \
+    const lapack_int ldvl = n;                                                                 \
+    const lapack_int ldvr = n;                                                                 \
     lapack_int i = LAPACKE_##fLapackFunc(                                                      \
       opt->matrix_layout, opt->jobvl, opt->jobvr, n, a, lda, wr, wi, vl, ldvl, vr, ldvr        \
     );                                                                                         \
@@ -85,8 +85,8 @@ struct _geev_option {
       (lapack_int)(opt->matrix_layout == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[0]                \
                                                           : NDL_SHAPE(lp, 0)[1]);              \
     const lapack_int lda = n;                                                                  \
-    const lapack_int ldvl = (opt->jobvl == 'N') ? 1 : n;                                       \
-    const lapack_int ldvr = (opt->jobvr == 'N') ? 1 : n;                                       \
+    const lapack_int ldvl = n;                                                                 \
+    const lapack_int ldvr = n;                                                                 \
     lapack_int i = LAPACKE_##fLapackFunc(                                                      \
       opt->matrix_layout, opt->jobvl, opt->jobvr, n, a, lda, w, vl, ldvl, vr, ldvr             \
     );                                                                                         \

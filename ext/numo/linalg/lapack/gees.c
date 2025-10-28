@@ -90,7 +90,7 @@
       (lapack_int)(opt->matrix_layout == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[0]                \
                                                           : NDL_SHAPE(lp, 0)[1]);              \
     const lapack_int lda = n;                                                                  \
-    const lapack_int ldvs = (opt->jobvs == 'N') ? 1 : n;                                       \
+    const lapack_int ldvs = n;                                                                 \
     lapack_int s = 0;                                                                          \
     lapack_int i = LAPACKE_##fLapackFunc(                                                      \
       opt->matrix_layout, opt->jobvs, opt->sort, opt->select, n, a, lda, &s, wr, wi, vs, ldvs  \
@@ -174,7 +174,7 @@
       (lapack_int)(opt->matrix_layout == LAPACK_ROW_MAJOR ? NDL_SHAPE(lp, 0)[0]                \
                                                           : NDL_SHAPE(lp, 0)[1]);              \
     const lapack_int lda = n;                                                                  \
-    const lapack_int ldvs = (opt->jobvs == 'N') ? 1 : n;                                       \
+    const lapack_int ldvs = n;                                                                 \
     lapack_int s = 0;                                                                          \
     lapack_int i = LAPACKE_##fLapackFunc(                                                      \
       opt->matrix_layout, opt->jobvs, opt->sort, opt->select, n, a, lda, &s, w, vs, ldvs       \
