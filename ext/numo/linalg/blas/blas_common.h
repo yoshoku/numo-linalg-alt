@@ -16,7 +16,13 @@
 #include <cblas.h>
 
 #ifndef CBLAS_INT
+#if defined(BLIS_TYPE_DEFS_H)
+#define CBLAS_INT f77_int
+#elif defined(OPENBLAS_CONFIG_H)
 #define CBLAS_INT blasint
+#else
+#define CBLAS_INT int
+#endif
 #endif
 
 #endif /* NUMO_LINALG_ALT_BLAS_COMMON_H */

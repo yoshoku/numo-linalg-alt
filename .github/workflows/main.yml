@@ -88,3 +88,20 @@ jobs:
     - name: Run the default task
       run: |
         bundle exec rake -- --with-opt-dir=/opt/homebrew/opt/openblas
+
+  build-blis:
+    runs-on: ubuntu-latest
+    name: Ruby 3.4 (BLIS)
+    steps:
+    - uses: actions/checkout@v5
+    - name: Install BLAS and LAPACK
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libblis-dev liblapacke-dev
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.4
+        bundler-cache: true
+    - name: Run the default task
+      run: bundle exec rake -- --with-blas=blis
