@@ -37,7 +37,11 @@
 
 #include <cblas.h>
 #include <lapacke.h>
+
+#include "extconf.h"
+#ifdef HAVE_OPENBLAS_CONFIG_H
 #include <openblas_config.h>
+#endif
 
 #include <numo/narray.h>
 #include <numo/template.h>
