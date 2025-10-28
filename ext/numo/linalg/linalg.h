@@ -35,6 +35,16 @@
 
 #include <ruby.h>
 
+#include <numo/narray.h>
+#include <numo/template.h>
+
+#ifndef _DEFINED_SCOMPLEX
+#define _DEFINED_SCOMPLEX 1
+#endif
+#ifndef _DEFINED_DCOMPLEX
+#define _DEFINED_DCOMPLEX 1
+#endif
+
 #include <cblas.h>
 #include <lapacke.h>
 
@@ -42,9 +52,6 @@
 #ifdef HAVE_OPENBLAS_CONFIG_H
 #include <openblas_config.h>
 #endif
-
-#include <numo/narray.h>
-#include <numo/template.h>
 
 #include "blas/dot.h"
 #include "blas/dot_sub.h"
