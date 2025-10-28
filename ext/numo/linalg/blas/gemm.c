@@ -7,9 +7,9 @@
     enum CBLAS_ORDER order;                                                                    \
     enum CBLAS_TRANSPOSE transa;                                                               \
     enum CBLAS_TRANSPOSE transb;                                                               \
-    blasint m;                                                                                 \
-    blasint n;                                                                                 \
-    blasint k;                                                                                 \
+    CBLAS_INT m;                                                                               \
+    CBLAS_INT n;                                                                               \
+    CBLAS_INT k;                                                                               \
   };
 
 #define DEF_LINALG_ITER_FUNC(tDType, fBlasFunc)                                                \
@@ -18,9 +18,9 @@
     const tDType* b = (tDType*)NDL_PTR(lp, 1);                                                 \
     tDType* c = (tDType*)NDL_PTR(lp, 2);                                                       \
     const struct _gemm_options_##tDType* opt = (struct _gemm_options_##tDType*)(lp->opt_ptr);  \
-    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                         \
-    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                         \
-    const blasint ldc = opt->n;                                                                \
+    const CBLAS_INT lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                       \
+    const CBLAS_INT ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                       \
+    const CBLAS_INT ldc = opt->n;                                                              \
     cblas_##fBlasFunc(                                                                         \
       opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k, opt->alpha, a, lda, b,     \
       ldb, opt->beta, c, ldc                                                                   \
@@ -33,9 +33,9 @@
     const tDType* b = (tDType*)NDL_PTR(lp, 1);                                                 \
     tDType* c = (tDType*)NDL_PTR(lp, 2);                                                       \
     const struct _gemm_options_##tDType* opt = (struct _gemm_options_##tDType*)(lp->opt_ptr);  \
-    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                         \
-    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                         \
-    const blasint ldc = opt->n;                                                                \
+    const CBLAS_INT lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                       \
+    const CBLAS_INT ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                       \
+    const CBLAS_INT ldc = opt->n;                                                              \
     cblas_##fBlasFunc(                                                                         \
       opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k, &opt->alpha, a, lda, b,    \
       ldb, &opt->beta, c, ldc                                                                  \
@@ -48,9 +48,9 @@
     const tDType* b = (tDType*)NDL_PTR(lp, 1);                                                 \
     tDType* c = (tDType*)NDL_PTR(lp, 2);                                                       \
     const struct _gemm_options_##tDType* opt = (struct _gemm_options_##tDType*)(lp->opt_ptr);  \
-    const blasint lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                         \
-    const blasint ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                         \
-    const blasint ldc = opt->n;                                                                \
+    const CBLAS_INT lda = opt->transa == CblasNoTrans ? opt->k : opt->m;                       \
+    const CBLAS_INT ldb = opt->transb == CblasNoTrans ? opt->n : opt->k;                       \
+    const CBLAS_INT ldc = opt->n;                                                              \
     cblas_##fBlasFunc(                                                                         \
       opt->order, opt->transa, opt->transb, opt->m, opt->n, opt->k, opt->alpha, a, lda, b,     \
       ldb, opt->beta, c, ldc                                                                   \
@@ -122,14 +122,14 @@
       return Qnil;                                                                             \
     }                                                                                          \
                                                                                                \
-    const blasint ma = (blasint)NA_SHAPE(a_nary)[0];                                           \
-    const blasint ka = (blasint)NA_SHAPE(a_nary)[1];                                           \
-    const blasint kb = (blasint)NA_SHAPE(b_nary)[0];                                           \
-    const blasint nb = (blasint)NA_SHAPE(b_nary)[1];                                           \
-    const blasint m = transa == CblasNoTrans ? ma : ka;                                        \
-    const blasint n = transb == CblasNoTrans ? nb : kb;                                        \
-    const blasint k = transa == CblasNoTrans ? ka : ma;                                        \
-    const blasint l = transb == CblasNoTrans ? kb : nb;                                        \
+    const CBLAS_INT ma = (CBLAS_INT)NA_SHAPE(a_nary)[0];                                       \
+    const CBLAS_INT ka = (CBLAS_INT)NA_SHAPE(a_nary)[1];                                       \
+    const CBLAS_INT kb = (CBLAS_INT)NA_SHAPE(b_nary)[0];                                       \
+    const CBLAS_INT nb = (CBLAS_INT)NA_SHAPE(b_nary)[1];                                       \
+    const CBLAS_INT m = transa == CblasNoTrans ? ma : ka;                                      \
+    const CBLAS_INT n = transb == CblasNoTrans ? nb : kb;                                      \
+    const CBLAS_INT k = transa == CblasNoTrans ? ka : ma;                                      \
+    const CBLAS_INT l = transb == CblasNoTrans ? kb : nb;                                      \
                                                                                                \
     if (k != l) {                                                                              \
       rb_raise(nary_eShapeError, "shape1[1](=%d) != shape2[0](=%d)", k, l);                    \
@@ -144,7 +144,7 @@
     if (!NIL_P(c)) {                                                                           \
       narray_t* c_nary = NULL;                                                                 \
       GetNArray(c, c_nary);                                                                    \
-      blasint nc = (blasint)NA_SHAPE(c_nary)[0];                                               \
+      CBLAS_INT nc = (CBLAS_INT)NA_SHAPE(c_nary)[0];                                           \
       if (m > nc) {                                                                            \
         rb_raise(nary_eShapeError, "shape3[0](=%d) >= shape1[0]=%d", nc, m);                   \
         return Qnil;                                                                           \

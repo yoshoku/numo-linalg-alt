@@ -4,7 +4,7 @@
   static void _iter_##fBlasFunc(na_loop_t* const lp) {                                         \
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                                       \
     tRtDType* d = (tRtDType*)NDL_PTR(lp, 1);                                                   \
-    const blasint n = (blasint)NDL_SHAPE(lp, 0)[0];                                            \
+    const CBLAS_INT n = (CBLAS_INT)NDL_SHAPE(lp, 0)[0];                                        \
     tRtDType ret = cblas_##fBlasFunc(n, x, 1);                                                 \
     *d = ret;                                                                                  \
   }                                                                                            \

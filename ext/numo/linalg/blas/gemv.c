@@ -6,8 +6,8 @@
     tDType beta;                                                                               \
     enum CBLAS_ORDER order;                                                                    \
     enum CBLAS_TRANSPOSE trans;                                                                \
-    blasint m;                                                                                 \
-    blasint n;                                                                                 \
+    CBLAS_INT m;                                                                               \
+    CBLAS_INT n;                                                                               \
   };
 
 #define DEF_LINALG_ITER_FUNC(tDType, fBlasFunc)                                                \
@@ -16,7 +16,7 @@
     const tDType* x = (tDType*)NDL_PTR(lp, 1);                                                 \
     tDType* y = (tDType*)NDL_PTR(lp, 2);                                                       \
     const struct _gemv_options_##tDType* opt = (struct _gemv_options_##tDType*)(lp->opt_ptr);  \
-    const blasint lda = opt->n;                                                                \
+    const CBLAS_INT lda = opt->n;                                                              \
     cblas_##fBlasFunc(                                                                         \
       opt->order, opt->trans, opt->m, opt->n, opt->alpha, a, lda, x, 1, opt->beta, y, 1        \
     );                                                                                         \
@@ -28,7 +28,7 @@
     const tDType* x = (tDType*)NDL_PTR(lp, 1);                                                 \
     tDType* y = (tDType*)NDL_PTR(lp, 2);                                                       \
     const struct _gemv_options_##tDType* opt = (struct _gemv_options_##tDType*)(lp->opt_ptr);  \
-    const blasint lda = opt->n;                                                                \
+    const CBLAS_INT lda = opt->n;                                                              \
     cblas_##fBlasFunc(                                                                         \
       opt->order, opt->trans, opt->m, opt->n, &opt->alpha, a, lda, x, 1, &opt->beta, y, 1      \
     );                                                                                         \
@@ -97,11 +97,11 @@
       return Qnil;                                                                             \
     }                                                                                          \
                                                                                                \
-    const blasint ma = (blasint)NA_SHAPE(a_nary)[0];                                           \
-    const blasint na = (blasint)NA_SHAPE(a_nary)[1];                                           \
-    const blasint mx = (blasint)NA_SHAPE(x_nary)[0];                                           \
-    const blasint m = trans == CblasNoTrans ? ma : na;                                         \
-    const blasint n = trans == CblasNoTrans ? na : ma;                                         \
+    const CBLAS_INT ma = (CBLAS_INT)NA_SHAPE(a_nary)[0];                                       \
+    const CBLAS_INT na = (CBLAS_INT)NA_SHAPE(a_nary)[1];                                       \
+    const CBLAS_INT mx = (CBLAS_INT)NA_SHAPE(x_nary)[0];                                       \
+    const CBLAS_INT m = trans == CblasNoTrans ? ma : na;                                       \
+    const CBLAS_INT n = trans == CblasNoTrans ? na : ma;                                       \
                                                                                                \
     if (n != mx) {                                                                             \
       rb_raise(nary_eShapeError, "shape1[1](=%d) != shape2[0](=%d)", n, mx);                   \
@@ -116,7 +116,7 @@
     if (!NIL_P(y)) {                                                                           \
       narray_t* y_nary = NULL;                                                                 \
       GetNArray(y, y_nary);                                                                    \
-      blasint my = (blasint)NA_SHAPE(y_nary)[0];                                               \
+      CBLAS_INT my = (CBLAS_INT)NA_SHAPE(y_nary)[0];                                           \
       if (m > my) {                                                                            \
         rb_raise(nary_eShapeError, "shape3[0](=%d) >= shape1[0]=%d", my, m);                   \
         return Qnil;                                                                           \

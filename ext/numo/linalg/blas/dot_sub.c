@@ -5,7 +5,7 @@
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                                       \
     tDType* y = (tDType*)NDL_PTR(lp, 1);                                                       \
     tDType* d = (tDType*)NDL_PTR(lp, 2);                                                       \
-    const blasint n = (blasint)NDL_SHAPE(lp, 0)[0];                                            \
+    const CBLAS_INT n = (CBLAS_INT)NDL_SHAPE(lp, 0)[0];                                        \
     cblas_##fBlasFunc(n, x, 1, y, 1, d);                                                       \
   }                                                                                            \
                                                                                                \
