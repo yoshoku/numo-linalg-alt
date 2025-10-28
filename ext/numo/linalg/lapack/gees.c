@@ -108,7 +108,7 @@
     rb_get_kwargs(kw_args, kw_table, 0, 3, kw_values);                                         \
     const int matrix_layout =                                                                  \
       kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;             \
-    const char jobvs = kw_values[1] != Qundef ? get_jobvs(kw_values[1]) : 'V';                 \
+    const char jobvs = kw_values[1] != Qundef ? get_job(kw_values[1], "jobvs") : 'V';          \
     VALUE sort_val = kw_values[2] != Qundef ? kw_values[2] : Qnil;                             \
     const char sort_ch = NIL_P(sort_val) ? 'N' : 'S';                                          \
                                                                                                \
@@ -192,7 +192,7 @@
     rb_get_kwargs(kw_args, kw_table, 0, 3, kw_values);                                         \
     const int matrix_layout =                                                                  \
       kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;             \
-    const char jobvs = kw_values[1] != Qundef ? get_jobvs(kw_values[1]) : 'V';                 \
+    const char jobvs = kw_values[1] != Qundef ? get_job(kw_values[1], "jobvs") : 'V';          \
     VALUE sort_val = kw_values[2] != Qundef ? kw_values[2] : Qnil;                             \
     const char sort_ch = NIL_P(sort_val) ? 'N' : 'S';                                          \
                                                                                                \

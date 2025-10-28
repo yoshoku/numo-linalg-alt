@@ -10,22 +10,14 @@ lapack_int get_itype(VALUE val) {
   return itype;
 }
 
-char get_jobz(VALUE val) {
-  const char jobz = NUM2CHR(val);
+char get_job(VALUE val, const char* param_name) {
+  const char job = NUM2CHR(val);
 
-  if (jobz != 'N' && jobz != 'V') {
-    rb_raise(rb_eArgError, "jobz must be 'N' or 'V'");
+  if (job != 'N' && job != 'V') {
+    rb_raise(rb_eArgError, "%s must be 'N' or 'V'", param_name);
   }
 
-  return jobz;
-}
-
-char get_jobvs(VALUE val) {
-  const char jobvs = NUM2CHR(val);
-  if (jobvs != 'N' && jobvs != 'V') {
-    rb_raise(rb_eArgError, "jobvs must be 'N' or 'V'");
-  }
-  return jobvs;
+  return job;
 }
 
 char get_range(VALUE val) {

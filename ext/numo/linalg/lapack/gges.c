@@ -49,8 +49,8 @@
     rb_get_kwargs(kw_args, kw_table, 0, 4, kw_values);                                         \
     const int matrix_layout =                                                                  \
       kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;             \
-    const char jobvsl = kw_values[1] != Qundef ? get_jobvs(kw_values[1]) : 'V';                \
-    const char jobvsr = kw_values[2] != Qundef ? get_jobvs(kw_values[2]) : 'V';                \
+    const char jobvsl = kw_values[1] != Qundef ? get_job(kw_values[1], "jobvsl") : 'V';        \
+    const char jobvsr = kw_values[2] != Qundef ? get_job(kw_values[2], "jobvsr") : 'V';        \
                                                                                                \
     if (CLASS_OF(a_vnary) != tNAryClass) {                                                     \
       a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                         \
@@ -141,8 +141,8 @@
     rb_get_kwargs(kw_args, kw_table, 0, 4, kw_values);                                         \
     const int matrix_layout =                                                                  \
       kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;             \
-    const char jobvsl = kw_values[1] != Qundef ? get_jobvs(kw_values[1]) : 'V';                \
-    const char jobvsr = kw_values[2] != Qundef ? get_jobvs(kw_values[1]) : 'V';                \
+    const char jobvsl = kw_values[1] != Qundef ? get_job(kw_values[1], "jobvsl") : 'V';        \
+    const char jobvsr = kw_values[2] != Qundef ? get_job(kw_values[2], "jobvsr") : 'V';        \
                                                                                                \
     if (CLASS_OF(a_vnary) != tNAryClass) {                                                     \
       a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                         \

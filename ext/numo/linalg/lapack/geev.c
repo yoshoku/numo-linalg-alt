@@ -6,22 +6,6 @@ struct _geev_option {
   char jobvr;
 };
 
-char _get_jobvl(VALUE val) {
-  const char jobvl = NUM2CHR(val);
-  if (jobvl != 'N' && jobvl != 'V') {
-    rb_raise(rb_eArgError, "jobvl must be 'N' or 'V'");
-  }
-  return jobvl;
-}
-
-char _get_jobvr(VALUE val) {
-  const char jobvr = NUM2CHR(val);
-  if (jobvr != 'N' && jobvr != 'V') {
-    rb_raise(rb_eArgError, "jobvr must be 'N' or 'V'");
-  }
-  return jobvr;
-}
-
 #define DEF_LINALG_FUNC(tDType, tNAryClass, fLapackFunc)                                       \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                       \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                       \
@@ -52,8 +36,8 @@ char _get_jobvr(VALUE val) {
     rb_get_kwargs(kw_args, kw_table, 0, 3, kw_values);                                         \
     const int matrix_layout =                                                                  \
       kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;             \
-    const char jobvl = kw_values[1] != Qundef ? _get_jobvl(kw_values[1]) : 'V';                \
-    const char jobvr = kw_values[2] != Qundef ? _get_jobvr(kw_values[2]) : 'V';                \
+    const char jobvl = kw_values[1] != Qundef ? get_job(kw_values[1], "jobvl") : 'V';          \
+    const char jobvr = kw_values[2] != Qundef ? get_job(kw_values[2], "jobvr") : 'V';          \
                                                                                                \
     if (CLASS_OF(a_vnary) != tNAryClass) {                                                     \
       a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                         \
@@ -118,8 +102,8 @@ char _get_jobvr(VALUE val) {
     rb_get_kwargs(kw_args, kw_table, 0, 3, kw_values);                                         \
     const int matrix_layout =                                                                  \
       kw_values[0] != Qundef ? get_matrix_layout(kw_values[0]) : LAPACK_ROW_MAJOR;             \
-    const char jobvl = kw_values[1] != Qundef ? _get_jobvl(kw_values[1]) : 'V';                \
-    const char jobvr = kw_values[2] != Qundef ? _get_jobvr(kw_values[2]) : 'V';                \
+    const char jobvl = kw_values[1] != Qundef ? get_job(kw_values[1], "jobvl") : 'V';          \
+    const char jobvr = kw_values[2] != Qundef ? get_job(kw_values[2], "jobvr") : 'V';          \
                                                                                                \
     if (CLASS_OF(a_vnary) != tNAryClass) {                                                     \
       a_vnary = rb_funcall(tNAryClass, rb_intern("cast"), 1, a_vnary);                         \

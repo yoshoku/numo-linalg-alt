@@ -46,7 +46,7 @@
                            Qundef, Qundef, Qundef, Qundef };                                   \
     rb_get_kwargs(kw_args, kw_table, 0, 9, kw_values);                                         \
     const lapack_int itype = kw_values[0] != Qundef ? get_itype(kw_values[0]) : 1;             \
-    const char jobz = kw_values[1] != Qundef ? get_jobz(kw_values[1]) : 'V';                   \
+    const char jobz = kw_values[1] != Qundef ? get_job(kw_values[1], "jobz") : 'V';            \
     const char range = kw_values[2] != Qundef ? get_range(kw_values[2]) : 'A';                 \
     const char uplo = kw_values[3] != Qundef ? get_uplo(kw_values[3]) : 'U';                   \
     const tRtDType vl = kw_values[4] != Qundef ? NUM2DBL(kw_values[4]) : 0.0;                  \

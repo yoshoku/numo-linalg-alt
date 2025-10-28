@@ -40,7 +40,7 @@
                        rb_intern("iu"),   rb_intern("order") };                                \
     VALUE kw_values[8] = { Qundef, Qundef, Qundef, Qundef, Qundef, Qundef, Qundef, Qundef };   \
     rb_get_kwargs(kw_args, kw_table, 0, 8, kw_values);                                         \
-    const char jobz = kw_values[0] != Qundef ? get_jobz(kw_values[0]) : 'V';                   \
+    const char jobz = kw_values[0] != Qundef ? get_job(kw_values[0], "jobz") : 'V';            \
     const char range = kw_values[1] != Qundef ? get_range(kw_values[1]) : 'A';                 \
     const char uplo = kw_values[2] != Qundef ? get_uplo(kw_values[2]) : 'U';                   \
     const tDType vl = kw_values[3] != Qundef ? NUM2DBL(kw_values[3]) : 0.0;                    \

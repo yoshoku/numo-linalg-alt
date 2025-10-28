@@ -26,7 +26,7 @@ struct _heevd_option {
     ID kw_table[3] = { rb_intern("jobz"), rb_intern("uplo"), rb_intern("order") };             \
     VALUE kw_values[3] = { Qundef, Qundef, Qundef };                                           \
     rb_get_kwargs(kw_args, kw_table, 0, 3, kw_values);                                         \
-    const char jobz = kw_values[0] != Qundef ? get_jobz(kw_values[0]) : 'V';                   \
+    const char jobz = kw_values[0] != Qundef ? get_job(kw_values[0], "jobz") : 'V';            \
     const char uplo = kw_values[1] != Qundef ? get_uplo(kw_values[1]) : 'U';                   \
     const int matrix_layout =                                                                  \
       kw_values[2] != Qundef ? get_matrix_layout(kw_values[2]) : LAPACK_ROW_MAJOR;             \

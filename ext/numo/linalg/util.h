@@ -7,8 +7,7 @@
 #include <lapacke.h>
 
 lapack_int get_itype(VALUE val);
-char get_jobz(VALUE val);
-char get_jobvs(VALUE val);
+char get_job(VALUE val, const char* param_name);
 char get_range(VALUE val);
 char get_uplo(VALUE val);
 int get_matrix_layout(VALUE val);
