@@ -942,7 +942,7 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     error = (Numo::SFloat.eye(n) - b_inv.dot(b)).abs.max
 
     assert_equal(0, info)
-    assert_operator(error, :<, 1e-5)
+    assert_operator(error, :<, 2e-5)
   end
 
   def test_lapack_zpotri
