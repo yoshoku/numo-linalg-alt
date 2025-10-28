@@ -18,6 +18,8 @@
 #ifndef CBLAS_INT
 #if defined(BLIS_TYPE_DEFS_H)
 #define CBLAS_INT f77_int
+#elif defined(_MKL_TYPES_H_)
+#define CBLAS_INT MKL_INT
 #elif defined(OPENBLAS_CONFIG_H)
 #define CBLAS_INT blasint
 #else

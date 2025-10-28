@@ -105,3 +105,21 @@ jobs:
         bundler-cache: true
     - name: Run the default task
       run: bundle exec rake -- --with-blas=blis
+
+  build-mkl:
+    runs-on: ubuntu-latest
+    name: Ruby 3.4 (MKL)
+    steps:
+    - uses: actions/checkout@v5
+    - name: Install MKL
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y intel-mkl
+        sudo update-alternatives --install /usr/include/x86_64-linux-gnu/lapacke.h lapacke.h-x86_64-linux-gnu /usr/include/mkl/mkl_lapacke.h 10
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.4
+        bundler-cache: true
+    - name: Run the default task
+      run: bundle exec rake -- --with-blas=mkl_rt
