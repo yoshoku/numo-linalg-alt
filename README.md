@@ -7,18 +7,19 @@
 
 Numo::Linalg Alternative (numo-linalg-alt) is an alternative to [Numo::Linalg](https://github.com/ruby-numo/numo-linalg).
 Unlike Numo::Linalg, numo-linalg-alt depends on [Numo::NArray Alterntive](https://github.com/yoshoku/numo-narray-alt).
-
 Please note that this gem was forked from [Numo::TinyLinalg](https://github.com/yoshoku/numo-tiny_linalg),
-not Numo::Linalg, and therefore it does not support changing backend libraries for BLAS and LAPACK.
-In addition, the version numbering rule is not compatible with that of Numo::Linalg.
+not Numo::Linalg, so its version numbering rule is not compatible with that of Numo::Linalg.
 
 The project owner has the utmost respect for Numo::Linalg and its creator, Prof. [Masahiro Tanaka](https://github.com/masa16).
 This project is in no way intended to adversely affect the development of the original Numo::Linalg.
 
 ## Installation
 
-Unlike Numo::Linalg, numo-linalg-alt only supports [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS)
-as a backend library.
+numo-linalg-alt uses [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS) as the default backend library.
+If BLAS/LAPACKE-related libraries and include files are not found during installation,
+the gem will automatically download and build OpenBLAS from source.
+This process can significantly increase installation time,
+so pre-installing OpenBLAS is recommended.
 
 Install the OpenBLAS.
 
@@ -61,6 +62,47 @@ Ubuntu:
 
 ```sh
 $ gem install numo-linalg-alt
+```
+
+### Using alternative backend libraries
+
+The `--with-blas` and `--with-lapacke` options allow you to specify which BLAS/LAPACKE libraries
+to use as the backend. The following instructions are intended for Ubuntu.
+
+#### BLIS
+
+Install the BLIS:
+
+```sh
+$ sudo apt-get install libblis-dev liblapacke-dev
+```
+
+To use BLIS as the BLAS library, execute the following gem command.
+The `--with-lapacke` option is not required as LAPACKE is automatically selected.
+
+```sh
+$ gem install numo-linalg-alt -- --with-blas=blis
+```
+
+#### Intel MKL
+
+Install the Intel MKL:
+
+```sh
+sudo apt-get install intel-mkl
+```
+
+Run the following command to use Intel MKL's `mkl_lapacke.h` as `lapacke.h`:
+
+```sh
+sudo update-alternatives --install /usr/include/x86_64-linux-gnu/lapacke.h lapacke.h-x86_64-linux-gnu /usr/include/mkl/mkl_lapacke.h 10
+```
+
+To use Intel MKL as the BLAS/LAPACKE libraries, execute the following gem command.
+The `--with-lapacke` option is not required as the `mkl_rt` library includes LAPACKE functions.
+
+```sh
+$ gem install numo-linalg-alt -- --with-blas=mkl_rt
 ```
 
 ## Documentation
