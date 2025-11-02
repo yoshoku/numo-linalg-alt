@@ -1,3 +1,10 @@
+## [[0.6.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.5.0...v0.6.0)] - 2025-11-02
+
+- add `--with-blas` and `--with-lapacke` options for selecting backend libraries.
+- add `logm`, `sqrtm`, and `signm` module functions to Numo::Linalg.
+- add error handling for LAPACK functions such as gesv, getri, and potrs.
+- FIX: ensure pinv returns contiguous array instead of NArray's view.
+
 ## [[0.5.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.4.1...v0.5.0)] - 2025-10-25
 
 - FIX: correct Numo::Linalg::Lapack.xlange return type to Float for Numo::DComplex and Numo::SComplex.
