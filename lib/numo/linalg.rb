@@ -8,6 +8,8 @@ require_relative 'linalg/linalg'
 module Numo
   # Numo::Linalg Alternative (numo-linalg-alt) is an alternative to Numo::Linalg.
   module Linalg # rubocop:disable Metrics/ModuleLength
+    class LapackError < StandardError; end
+
     module_function
 
     # Computes the eigenvalues and eigenvectors of a symmetric / Hermitian matrix
@@ -341,7 +343,7 @@ module Numo
 
       fnc = :"#{bchr}potrs"
       x, info = Numo::Linalg::Lapack.send(fnc, a, b.dup, uplo: uplo)
-      raise "the #{-info}-th argument of potrs had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of potrs had illegal value" if info.negative?
 
       x
     end
@@ -366,7 +368,7 @@ module Numo
 
       getrf = :"#{bchr}getrf"
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
-      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
       raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
 
       det_l = 1
@@ -405,11 +407,11 @@ module Numo
       getri = :"#{bchr}getri"
 
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
-      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
       raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
 
       a_inv, info = Numo::Linalg::Lapack.send(getri, lu, piv)
-      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
       raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
 
       a_inv
@@ -611,7 +613,7 @@ module Numo
 
       fnc = :"#{bchr}gerqf"
       rq, tau, info = Numo::Linalg::Lapack.send(fnc, a.dup)
-      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
 
       m, n = rq.shape
       r = rq.triu(n - m).dup
@@ -629,7 +631,7 @@ module Numo
             end
 
       q, info = Numo::Linalg::Lapack.send(fnc, tmp, tau)
-      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
 
       [r, q]
     end
@@ -674,7 +676,7 @@ module Numo
         aa, bb, _alpha, _beta, q, z, _sdim, info = Numo::Linalg::Lapack.send(fnc, a.dup, b.dup)
       end
 
-      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the QZ algorithm failed.' if info.positive?
 
       [aa, bb, q, z]
@@ -731,7 +733,7 @@ module Numo
       end
 
       n = a.shape[0]
-      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive? && info <= n
       raise 'the eigenvalues could not be reordered.' if info == n + 1
       raise 'after reordering, roundoff changed values of some complex eigenvalues.' if info == n + 2
@@ -778,12 +780,12 @@ module Numo
       func = :"#{bchr}gebal"
       b, ilo, ihi, _, info = Numo::Linalg::Lapack.send(func, a.dup)
 
-      raise "the #{-info}-th argument of #{func} had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of #{func} had illegal value" if info.negative?
 
       func = :"#{bchr}gehrd"
       hq, tau, info = Numo::Linalg::Lapack.send(func, b, ilo: ilo, ihi: ihi)
 
-      raise "the #{-info}-th argument of #{func} had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of #{func} had illegal value" if info.negative?
 
       h = hq.triu(-1)
       return h unless calc_q
@@ -791,7 +793,7 @@ module Numo
       func = %w[d s].include?(bchr) ? :"#{bchr}orghr" : :"#{bchr}unghr"
       q, info = Numo::Linalg::Lapack.send(func, hq, tau, ilo: ilo, ihi: ihi)
 
-      raise "the #{-info}-th argument of #{func} had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of #{func} had illegal value" if info.negative?
 
       [h, q]
     end
@@ -830,7 +832,7 @@ module Numo
 
       gesv = :"#{bchr}gesv"
       _lu, x, _ipiv, info = Numo::Linalg::Lapack.send(gesv, a.dup, b.dup)
-      raise "the #{-info}-th argument of getrf had illegal value" if info.negative?
+      raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
       raise 'the factor U is singular, and the solution could not be computed.' if info.positive?
 
       x
@@ -870,7 +872,7 @@ module Numo
       trtrs = :"#{bchr}trtrs"
       uplo = lower ? 'L' : 'U'
       x, info = Numo::Linalg::Lapack.send(trtrs, a, b.dup, uplo: uplo)
-      raise "wrong value is given to the #{info}-th argument of #{trtrs} used internally" if info.negative?
+      raise LapackError, "wrong value is given to the #{info}-th argument of #{trtrs} used internally" if info.negative?
 
       x
     end
@@ -926,7 +928,7 @@ module Numo
         raise ArgumentError, "invalid driver: #{driver}"
       end
 
-      raise "the #{info.abs}-th argument had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument had illegal value" if info.negative?
       raise 'input array has a NAN entry' if info == -4
       raise 'svd did not converge' if info.positive?
 
@@ -1015,7 +1017,7 @@ module Numo
         raise ArgumentError, "invalid driver: #{driver}"
       end
 
-      raise "the #{info.abs}-th argument had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument had illegal value" if info.negative?
       raise 'input array has a NAN entry' if info == -4
       raise 'svd did not converge' if info.positive?
 
@@ -1143,7 +1145,7 @@ module Numo
       getrf = :"#{bchr}getrf"
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
 
-      raise "the #{info.abs}-th argument of getrf had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of getrf had illegal value" if info.negative?
       raise "the U(#{info}, #{info}) is exactly zero. The factorization has been completed." if info.positive?
 
       [lu, piv]
@@ -1182,7 +1184,7 @@ module Numo
       getrs = :"#{bchr}getrs"
       x, info = Numo::Linalg::Lapack.send(getrs, lu, ipiv, b.dup)
 
-      raise "the #{info.abs}-th argument of getrs had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of getrs had illegal value" if info.negative?
 
       x
     end
@@ -1203,8 +1205,8 @@ module Numo
       fnc = :"#{bchr}potrf"
       c, info = Numo::Linalg::Lapack.send(fnc, a.dup, uplo: uplo)
 
+      raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
       raise "the #{info}-th leading minor of the array is not positive definite, and the factorization could not be completed." if info.positive?
-      raise "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
 
       c
     end
@@ -1300,7 +1302,7 @@ module Numo
       fnc = :"#{bchr}gebal"
       b, lo, hi, prm_scl, info = Numo::Linalg::Lapack.send(fnc, a.dup, job: job)
 
-      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
 
       # convert from Fortran style index to Ruby style index.
       lo -= 1
@@ -1377,7 +1379,7 @@ module Numo
         wr, wi, vl, vr, info = Numo::Linalg::Lapack.send(fnc, a.dup, jobvl: jobvl, jobvr: jobvr)
       end
 
-      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
 
       if %w[d s].include?(bchr)
@@ -1422,7 +1424,7 @@ module Numo
         w = wr + (wi * 1.0i)
       end
 
-      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
 
       w
@@ -1473,7 +1475,7 @@ module Numo
       lud = a.dup
       ipiv, info = Numo::Linalg::Lapack.send(fnc, lud, uplo: uplo)
 
-      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the factorization has been completed' if info.positive?
 
       _lud_permutation(lud, ipiv, uplo: uplo, hermitian: hermitian)
@@ -1562,7 +1564,7 @@ module Numo
       fnc = :"#{bchr}gelsd"
       s, rank, info = Numo::Linalg::Lapack.send(fnc, a.dup, x, rcond: rcond)
 
-      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the algorithm for computing the SVD failed to converge' if info.positive?
 
       resids = x.class[]
@@ -1765,7 +1767,7 @@ module Numo
       fnc = :"#{bchr}getri"
       inv, info = Numo::Linalg::Lapack.send(fnc, lu.dup, ipiv)
 
-      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
       raise 'the matrix is singular and its inverse could not be computed' if info.positive?
 
       inv
@@ -1796,7 +1798,7 @@ module Numo
       fnc = :"#{bchr}potri"
       inv, info = Numo::Linalg::Lapack.send(fnc, a.dup, uplo: uplo)
 
-      raise "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
       raise "the (#{info}, #info)-th element of the factor U or L is zero, and the inverse could not be computed." if info.positive?
 
       inv
