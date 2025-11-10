@@ -209,6 +209,9 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     error = (Numo::DFloat.eye(3) - a_inv.dot(a)).abs.max
 
     assert_operator(error, :<, 1e-7)
+
+    e = assert_raises(Numo::Linalg::LapackError) { Numo::Linalg.inv(Numo::DFloat.ones(2, 2)) }
+    assert_equal('The matrix is singular, and the inverse matrix could not be computed.', e.message)
   end
 
   def test_pinv
@@ -374,6 +377,10 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     error_ab = (b - a.dot(x)).abs.max
 
     assert_operator(error_ab, :<, 1e-7)
+
+    assert_output(nil, /the factorization has been completed, but the factor is singular/) do
+      Numo::Linalg.solve(Numo::DFloat.zeros(3, 3), Numo::DFloat.ones(3))
+    end
   end
 
   def test_solve_triangular
@@ -416,6 +423,7 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     error_ab = (Numo::DFloat[[4, 1], [2, 2]] - Numo::Linalg.matmul(a, b)).abs.max
 
     assert_operator(error_ab, :<, 1e-7)
+
     assert_match(/must be 2-d/, assert_raises(ArgumentError) do
       Numo::Linalg.matmul(Numo::DFloat[1, 2], Numo::DFloat[3, 4])
     end.message)
@@ -497,6 +505,10 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     error = (pm.dot(a) - l.dot(u)).abs.max
 
     assert_operator(error, :<, 1e-7)
+
+    assert_output(nil, /the factorization has been completed, but the factor U\[1, 1\] is exactly zero/) do
+      Numo::Linalg.lu_fact(Numo::DFloat[[1, 2], [2, 4]])
+    end
   end
 
   def test_lu_solve
@@ -523,6 +535,10 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     error = (b - l.dot(l.transpose.conjugate)).abs.max
 
     assert_operator(error, :<, 1e-5)
+
+    e = assert_raises(Numo::Linalg::LapackError) { Numo::Linalg.cho_fact(Numo::DFloat.ones(2, 2)) }
+    assert_equal('the leading principal minor of order 2 is not positive, ' \
+                 'and the factorization could not be completed.', e.message)
   end
 
   def test_orthogonal_procrustes
@@ -630,6 +646,10 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     error = (a - u.dot(d).dot(u.transpose.conj)).abs.max
 
     assert_operator(error, :<, 1e-7)
+
+    assert_output(nil, /the factorization has been completed, but the D\[0, 0\] is exactly zero/) do
+      Numo::Linalg.ldl(Numo::DFloat[[1, 2], [2, 4]])
+    end
   end
 
   def test_cond

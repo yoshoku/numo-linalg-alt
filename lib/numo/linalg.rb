@@ -1173,7 +1173,7 @@ module Numo
       raise LapackError, "the #{info.abs}-th argument of getrf had illegal value" if info.negative?
 
       if info.positive?
-        warn("the factorization has been completed, but the factor U(#{info}, #{info}) is " \
+        warn("the factorization has been completed, but the factor U[#{info - 1}, #{info - 1}] is " \
              'exactly zero, indicating that the matrix is singular.')
       end
 
@@ -1511,7 +1511,7 @@ module Numo
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
 
       if info.positive?
-        warn("the factorization has been completed, but the D(#{info}, #{info}) is " \
+        warn("the factorization has been completed, but the D[#{info - 1}, #{info - 1}] is " \
              'exactly zero, indicating that the block diagonal matrix is singular.')
       end
 
@@ -1838,7 +1838,7 @@ module Numo
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
 
       if info.positive?
-        raise LapackError, "the (#{info}, #{info})-th element of the factor U or L is zero, " \
+        raise LapackError, "the (#{info - 1}, #{info - 1})-th element of the factor U or L is zero, " \
                            'and the inverse could not be computed.'
       end
 
