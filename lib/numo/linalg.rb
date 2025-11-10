@@ -412,11 +412,10 @@ module Numo
 
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
       raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
-      raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
 
       a_inv, info = Numo::Linalg::Lapack.send(getri, lu, piv)
       raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
-      raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
+      raise LapackError, 'The matrix is singular, and the inverse matrix could not be computed.' if info.positive?
 
       a_inv
     end
