@@ -854,7 +854,11 @@ module Numo
       gesv = :"#{bchr}gesv"
       _lu, x, _ipiv, info = Numo::Linalg::Lapack.send(gesv, a.dup, b.dup)
       raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
-      raise 'the factor U is singular, and the solution could not be computed.' if info.positive?
+
+      if info.positive?
+        warn('the factorization has been completed, but the factor is singular, ' \
+             'so the solution could not be computed.')
+      end
 
       x
     end
