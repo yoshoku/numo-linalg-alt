@@ -1235,7 +1235,11 @@ module Numo
       c, info = Numo::Linalg::Lapack.send(fnc, a.dup, uplo: uplo)
 
       raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
-      raise "the #{info}-th leading minor of the array is not positive definite, and the factorization could not be completed." if info.positive?
+
+      if info.positive?
+        raise LapackError, "the leading principal minor of order #{info} is not positive, " \
+                           'and the factorization could not be completed.'
+      end
 
       c
     end
