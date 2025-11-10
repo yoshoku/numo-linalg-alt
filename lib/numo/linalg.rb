@@ -1805,7 +1805,7 @@ module Numo
       inv, info = Numo::Linalg::Lapack.send(fnc, lu.dup, ipiv)
 
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
-      raise 'the matrix is singular and its inverse could not be computed' if info.positive?
+      raise LapackError, 'the matrix is singular and its inverse could not be computed' if info.positive?
 
       inv
     end
@@ -1836,7 +1836,11 @@ module Numo
       inv, info = Numo::Linalg::Lapack.send(fnc, a.dup, uplo: uplo)
 
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
-      raise "the (#{info}, #info)-th element of the factor U or L is zero, and the inverse could not be computed." if info.positive?
+
+      if info.positive?
+        raise LapackError, "the (#{info}, #{info})-th element of the factor U or L is zero, " \
+                           'and the inverse could not be computed.'
+      end
 
       inv
     end
