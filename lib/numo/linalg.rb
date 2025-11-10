@@ -1413,7 +1413,7 @@ module Numo
       end
 
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
-      raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
+      raise LapackError, 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
 
       if %w[d s].include?(bchr)
         w = wr + (wi * 1.0i)
@@ -1458,7 +1458,7 @@ module Numo
       end
 
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
-      raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
+      raise LapackError, 'the QR algorithm failed to compute all the eigenvalues.' if info.positive?
 
       w
     end
