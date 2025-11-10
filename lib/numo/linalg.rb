@@ -1509,7 +1509,11 @@ module Numo
       ipiv, info = Numo::Linalg::Lapack.send(fnc, lud, uplo: uplo)
 
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
-      raise 'the factorization has been completed' if info.positive?
+
+      if info.positive?
+        warn("the factorization has been completed, but the D(#{info}, #{info}) is " \
+             'exactly zero, indicating that the block diagonal matrix is singular.')
+      end
 
       _lud_permutation(lud, ipiv, uplo: uplo, hermitian: hermitian)
     end
