@@ -369,7 +369,11 @@ module Numo
       getrf = :"#{bchr}getrf"
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
       raise LapackError, "the #{-info}-th argument of getrf had illegal value" if info.negative?
-      raise 'the factor U is singular, and the inverse matrix could not be computed.' if info.positive?
+
+      # info > 0 means the factor U has a zero diagonal element and is singular.
+      # In this case, the determinant is zero. The method should simply return 0.0.
+      # Therefore, the error is not raised here.
+      # raise 'the factor U is singular, ...' if info.positive?
 
       det_l = 1
       det_u = lu.diagonal.prod
