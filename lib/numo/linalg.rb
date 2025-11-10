@@ -750,9 +750,14 @@ module Numo
 
       n = a.shape[0]
       raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
-      raise 'the QR algorithm failed to compute all the eigenvalues.' if info.positive? && info <= n
-      raise 'the eigenvalues could not be reordered.' if info == n + 1
-      raise 'after reordering, roundoff changed values of some complex eigenvalues.' if info == n + 2
+      raise LapackError, 'the QR algorithm failed to compute all the eigenvalues.' if info.positive? && info <= n
+      raise LapackError, 'the eigenvalues could not be reordered.' if info == n + 1
+
+      if info == n + 2
+        raise LapackError, 'after reordering, roundoff changed values of some eigenvalues ' \
+                           'so that leading eigenvalues in the Schur form no longer satisfy ' \
+                           'the sorting condition.'
+      end
 
       [b, v, sdim]
     end
