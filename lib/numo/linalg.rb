@@ -1602,7 +1602,7 @@ module Numo
       s, rank, info = Numo::Linalg::Lapack.send(fnc, a.dup, x, rcond: rcond)
 
       raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
-      raise 'the algorithm for computing the SVD failed to converge' if info.positive?
+      raise LapackError, 'the algorithm for computing the SVD failed to converge' if info.positive?
 
       resids = x.class[]
       if m > n
