@@ -679,8 +679,21 @@ module Numo
         aa, bb, _alpha, _beta, q, z, _sdim, info = Numo::Linalg::Lapack.send(fnc, a.dup, b.dup)
       end
 
+      n = a.shape[0]
       raise LapackError, "the #{-info}-th argument of #{fnc} had illegal value" if info.negative?
-      raise 'the QZ algorithm failed.' if info.positive?
+      raise LapackError, 'something other than QZ iteration failed.' if info == n + 1
+      raise LapackError, "reordering failed in #{bchr}tgsen" if info == n + 3
+
+      if info == n + 2
+        raise LapackError, 'after reordering, roundoff changed values of some eigenvalues ' \
+                           'so that leading eigenvalues in the Generalized Schur form no ' \
+                           'longer satisfy the sorting condition.'
+      end
+
+      if info.positive? && info <= n
+        warn('the QZ iteration failed. (a, b) are not in Schur form, ' \
+             "but alpha[i] and beta[i] for i = #{info},...,n are correct.")
+      end
 
       [aa, bb, q, z]
     end
