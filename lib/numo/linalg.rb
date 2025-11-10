@@ -954,8 +954,8 @@ module Numo
       end
 
       raise LapackError, "the #{info.abs}-th argument had illegal value" if info.negative?
-      raise 'input array has a NAN entry' if info == -4
-      raise 'svd did not converge' if info.positive?
+      raise LapackError, 'the input array has a NAN entry' if info == -4
+      raise LapackError, 'the did not converge' if info.positive?
 
       [s, u, vt]
     end
@@ -1043,8 +1043,8 @@ module Numo
       end
 
       raise LapackError, "the #{info.abs}-th argument had illegal value" if info.negative?
-      raise 'input array has a NAN entry' if info == -4
-      raise 'svd did not converge' if info.positive?
+      raise LapackError, 'the input array has a NAN entry' if info == -4
+      raise LapackError, 'the decomposition did not converge' if info.positive?
 
       s
     end
