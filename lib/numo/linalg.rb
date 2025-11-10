@@ -1171,7 +1171,11 @@ module Numo
       lu, piv, info = Numo::Linalg::Lapack.send(getrf, a.dup)
 
       raise LapackError, "the #{info.abs}-th argument of getrf had illegal value" if info.negative?
-      raise "the U(#{info}, #{info}) is exactly zero. The factorization has been completed." if info.positive?
+
+      if info.positive?
+        warn("the factorization has been completed, but the factor U(#{info}, #{info}) is " \
+             'exactly zero, indicating that the matrix is singular.')
+      end
 
       [lu, piv]
     end
