@@ -8,6 +8,7 @@ require_relative 'linalg/linalg'
 module Numo
   # Numo::Linalg Alternative (numo-linalg-alt) is an alternative to Numo::Linalg.
   module Linalg # rubocop:disable Metrics/ModuleLength
+    # Exception class for errors occurred in LAPACK functions.
     class LapackError < StandardError; end
 
     module_function
