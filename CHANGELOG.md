@@ -1,3 +1,34 @@
+## [[0.7.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.6.0...v0.7.0)] - 2025-11-11
+
+**Breaking changes**
+
+improve error handling for LAPACK functions:
+
+- add `LapackError` class under `Numo::Linalg` module.
+  - This exception class is raised when invalid arguments are passed to a LAPACK function or
+    when the algorithm does not execute successfully. In previous versions, `StandardError`
+    was raised in these cases.
+    ```ruby
+    > Numo::Linalg.inv(Numo::DFloat[[3, 1], [9, 3]])
+    /numo-linalg-alt/lib/numo/linalg.rb:418:in 'Numo::Linalg.inv': The matrix is singular, and
+    the inverse matrix could not be computed. (Numo::Linalg::LapackError)
+    ```
+- change `solve`, `lu_fact`, `ldl`, and `qz` methods to issue a warning instead of raising an
+  error when the algorithm completes but produces a result that may affect further computations,
+  such as when the resulting matrix is sigular.
+  ```ruby
+  > Numo::Linalg.solve(Numo::DFloat.zeros(2, 2), Numo::DFloat.ones(2))
+  the factorization has been completed, but the factor is singular, so the solution could not be computed.
+  =>
+  Numo::DFloat#shape=[2]
+  [1, 1]
+  ```
+- change `det` method to return zero instead of raising an error when the input matrix is singular.
+  ```ruby
+  Numo::Linalg.det(Numo::DFloat[[1, 2], [2, 4]])
+  => -0.0
+  ```
+
 ## [[0.6.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.5.0...v0.6.0)] - 2025-11-02
 
 - add `--with-blas` and `--with-lapacke` options for selecting backend libraries.
