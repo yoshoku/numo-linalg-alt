@@ -1,6 +1,6 @@
 #include "nrm2.h"
 
-#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fBlasFunc)                 \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, tRtDType, tRtNAryClass, fBlasFunc)                 \
   static void _iter_##fBlasFunc(na_loop_t* const lp) {                                         \
     tDType* x = (tDType*)NDL_PTR(lp, 0);                                                       \
     tRtDType* d = (tRtDType*)NDL_PTR(lp, 1);                                                   \
@@ -52,10 +52,10 @@
     return ret;                                                                                \
   }
 
-DEF_LINALG_FUNC(double, double, numo_cDFloat, numo_cDFloat, dnrm2)
-DEF_LINALG_FUNC(float, float, numo_cSFloat, numo_cSFloat, snrm2)
-DEF_LINALG_FUNC(dcomplex, double, numo_cDComplex, numo_cDFloat, dznrm2)
-DEF_LINALG_FUNC(scomplex, float, numo_cSComplex, numo_cSFloat, scnrm2)
+DEF_LINALG_FUNC(double, numo_cDFloat, double, numo_cDFloat, dnrm2)
+DEF_LINALG_FUNC(float, numo_cSFloat, float, numo_cSFloat, snrm2)
+DEF_LINALG_FUNC(dcomplex, numo_cDComplex, double, numo_cDFloat, dznrm2)
+DEF_LINALG_FUNC(scomplex, numo_cSComplex, float, numo_cSFloat, scnrm2)
 
 #undef DEF_LINALG_FUNC
 

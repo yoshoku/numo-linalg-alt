@@ -13,7 +13,7 @@ char _get_job(VALUE val) {
   return job;
 }
 
-#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)               \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, tRtDType, tRtNAryClass, fLapackFunc)               \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                       \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                       \
     int* ilo = (int*)NDL_PTR(lp, 1);                                                           \
@@ -72,10 +72,10 @@ char _get_job(VALUE val) {
     return ret;                                                                                \
   }
 
-DEF_LINALG_FUNC(double, double, numo_cDFloat, numo_cDFloat, dgebal)
-DEF_LINALG_FUNC(float, float, numo_cSFloat, numo_cSFloat, sgebal)
-DEF_LINALG_FUNC(lapack_complex_double, double, numo_cDComplex, numo_cDFloat, zgebal)
-DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, cgebal)
+DEF_LINALG_FUNC(double, numo_cDFloat, double, numo_cDFloat, dgebal)
+DEF_LINALG_FUNC(float, numo_cSFloat, float, numo_cSFloat, sgebal)
+DEF_LINALG_FUNC(lapack_complex_double, numo_cDComplex, double, numo_cDFloat, zgebal)
+DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, float, numo_cSFloat, cgebal)
 
 #undef DEF_LINALG_FUNC
 

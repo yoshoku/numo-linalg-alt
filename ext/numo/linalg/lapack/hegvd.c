@@ -7,7 +7,7 @@ struct _hegvd_option {
   char uplo;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)               \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, tRtDType, tRtNAryClass, fLapackFunc)               \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                       \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                       \
     tDType* b = (tDType*)NDL_PTR(lp, 1);                                                       \
@@ -86,8 +86,8 @@ struct _hegvd_option {
     return ret;                                                                                \
   }
 
-DEF_LINALG_FUNC(lapack_complex_double, double, numo_cDComplex, numo_cDFloat, zhegvd)
-DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, chegvd)
+DEF_LINALG_FUNC(lapack_complex_double, numo_cDComplex, double, numo_cDFloat, zhegvd)
+DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, float, numo_cSFloat, chegvd)
 
 #undef DEF_LINALG_FUNC
 

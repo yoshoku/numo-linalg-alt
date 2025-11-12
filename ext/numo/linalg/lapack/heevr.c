@@ -1,6 +1,6 @@
 #include "heevr.h"
 
-#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)               \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, tRtDType, tRtNAryClass, fLapackFunc)               \
   struct _heevr_option_##tRtDType {                                                            \
     int matrix_layout;                                                                         \
     char jobz;                                                                                 \
@@ -111,8 +111,8 @@
     return ret;                                                                                \
   }
 
-DEF_LINALG_FUNC(lapack_complex_double, double, numo_cDComplex, numo_cDFloat, zheevr)
-DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, cheevr)
+DEF_LINALG_FUNC(lapack_complex_double, numo_cDComplex, double, numo_cDFloat, zheevr)
+DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, float, numo_cSFloat, cheevr)
 
 #undef DEF_LINALG_FUNC
 

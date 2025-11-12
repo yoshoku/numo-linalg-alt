@@ -6,7 +6,7 @@ struct _gesvd_option {
   char jobvt;
 };
 
-#define DEF_LINALG_FUNC(tDType, tRtDType, tNAryClass, tRtNAryClass, fLapackFunc)               \
+#define DEF_LINALG_FUNC(tDType, tNAryClass, tRtDType, tRtNAryClass, fLapackFunc)               \
   static void _iter_##fLapackFunc(na_loop_t* const lp) {                                       \
     tDType* a = (tDType*)NDL_PTR(lp, 0);                                                       \
     tRtDType* s = (tRtDType*)NDL_PTR(lp, 1);                                                   \
@@ -148,10 +148,10 @@ struct _gesvd_option {
     return ret;                                                                                \
   }
 
-DEF_LINALG_FUNC(double, double, numo_cDFloat, numo_cDFloat, dgesvd)
-DEF_LINALG_FUNC(float, float, numo_cSFloat, numo_cSFloat, sgesvd)
-DEF_LINALG_FUNC(lapack_complex_double, double, numo_cDComplex, numo_cDFloat, zgesvd)
-DEF_LINALG_FUNC(lapack_complex_float, float, numo_cSComplex, numo_cSFloat, cgesvd)
+DEF_LINALG_FUNC(double, numo_cDFloat, double, numo_cDFloat, dgesvd)
+DEF_LINALG_FUNC(float, numo_cSFloat, float, numo_cSFloat, sgesvd)
+DEF_LINALG_FUNC(lapack_complex_double, numo_cDComplex, double, numo_cDFloat, zgesvd)
+DEF_LINALG_FUNC(lapack_complex_float, numo_cSComplex, float, numo_cSFloat, cgesvd)
 
 #undef DEF_LINALG_FUNC
 
