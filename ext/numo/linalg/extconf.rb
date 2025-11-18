@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'mkmf'
-require 'numo/narray'
+require 'numo/narray/alt'
 require 'open-uri'
 require 'etc'
 require 'fileutils'
@@ -22,8 +22,8 @@ on_windows = RUBY_PLATFORM.match?(/mswin|cygwin|mingw/)
 
 if on_windows
   $LOAD_PATH.each do |lp|
-    if File.exist?(File.join(lp, 'numo/libnarray.a'))
-      $LDFLAGS = "-L#{lp}/numo #{$LDFLAGS}"
+    if File.exist?(File.join(lp, 'numo/narray/libnarray.a'))
+      $LDFLAGS = "-L#{lp}/numo/narray #{$LDFLAGS}"
       break
     end
   end
