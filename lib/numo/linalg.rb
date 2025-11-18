@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'numo/narray/alt'
+
+# On distributions like Rocky Linux, native extensions are installed in a separate
+# directory from Ruby code, so use require to load them.
+require 'numo/linalg/linalg'
 require_relative 'linalg/version'
-require_relative 'linalg/linalg'
 
 # Ruby/Numo (NUmerical MOdules)
 module Numo
