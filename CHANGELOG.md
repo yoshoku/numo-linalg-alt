@@ -1,3 +1,9 @@
+## [[0.7.1](https://github.com/yoshoku/numo-linalg-alt/compare/v0.7.0...v0.7.1)] - 2025-11-19
+
+- set the required version of numo-narray-alt to 0.9.10 or higher.
+- change require statement to explicitly load numo/narray/alt.
+- fix to use require for compatibility with distributions installing extensions separately.
+
 ## [[0.7.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.6.0...v0.7.0)] - 2025-11-11
 
 **Breaking changes**
