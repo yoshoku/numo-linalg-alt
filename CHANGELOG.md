@@ -1,3 +1,7 @@
+## [[0.7.2](https://github.com/yoshoku/numo-linalg-alt/compare/v0.7.1...v0.7.2)] - 2026-01-16
+
+- bump OpenBLAS from 0.3.30 to 0.3.31.
+
 ## [[0.7.1](https://github.com/yoshoku/numo-linalg-alt/compare/v0.7.0...v0.7.1)] - 2025-11-19
 
 - set the required version of numo-narray-alt to 0.9.10 or higher.
