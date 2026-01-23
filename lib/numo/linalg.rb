@@ -318,6 +318,29 @@ module Numo
       end
     end
 
+    # Computes the Cholesky decomposition of a banded symmetric / Hermitian positive-definite matrix.
+    #
+    # @param a [Numo::NArray] The banded matrix.
+    # @param uplo [String] Is the matrix form upper or lower ('U' or 'L').
+    # @return [Numo::NArray] The Cholesky factor of the banded matrix.
+    def cholesky_banded(a, uplo: 'U')
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if a.ndim != 2
+
+      bchr = blas_char(a)
+      raise ArgumentError, "invalid array type: #{a.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}pbtrf"
+      c, info = Numo::Linalg::Lapack.send(fnc, a.dup, uplo: uplo)
+      raise LapackError, "the #{-info}-th argument of potrs had illegal value" if info.negative?
+
+      if info.positive?
+        raise LapackError, "the leading principal minor of order #{info} is not positive, " \
+                           'and the factorization could not be completed.'
+      end
+
+      c
+    end
+
     # Solves linear equation `A * x = b` or `A * X = B` for `x` with the Cholesky factorization of `A`.
     #
     # @example

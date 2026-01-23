@@ -185,6 +185,36 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_cholesky_banded
+    a = Numo::DFloat.new(4, 4).rand - 0.5
+    a = a.transpose.dot(a)
+    a = a.tril(1) * a.triu(-1)
+    ab = Numo::DFloat.zeros(2, 4)
+    ab[0, 1...] = a[a.diag_indices(1)]
+    ab[1, true] = a[a.diag_indices]
+    c = Numo::Linalg.cholesky_banded(ab)
+    u = Numo::DFloat.zeros(*a.shape)
+    u[u.diag_indices] = c[1, true]
+    u[u.diag_indices(1)] = c[0, 1...]
+    error = (a - u.transpose.dot(u)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::SComplex.new(4, 4).rand - (0.5 + 0.2i)
+    a = a.conjugate.transpose.dot(a)
+    a = a.tril(1) * a.triu(-1)
+    ab = Numo::SComplex.zeros(2, 4)
+    ab[0, 1...] = a[a.diag_indices(1)]
+    ab[1, true] = a[a.diag_indices]
+    c = Numo::Linalg.cholesky_banded(ab)
+    u = Numo::SComplex.zeros(*a.shape)
+    u[u.diag_indices] = c[1, true]
+    u[u.diag_indices(1)] = c[0, 1...]
+    error = (a - u.conjugate.transpose.dot(u)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_cho_solve
     a = Numo::DFloat.new(3, 3).rand - 0.5
     c = a.transpose.dot(a)
