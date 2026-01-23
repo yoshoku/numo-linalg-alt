@@ -1053,6 +1053,45 @@ module Numo
       s
     end
 
+    # Creates a diagonal matrix from the given singular values.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   s = Numo::DFloat[4, 2, 1]
+    #   d = Numo::Linalg.diagsvd(s, 3, 4)
+    #   pp d
+    #   # =>
+    #   # Numo::DFloat#shape=[3,4]
+    #   # [[4, 0, 0, 0],
+    #   #  [0, 2, 0, 0],
+    #   #  [0, 0, 1, 0]]
+    #   d = Numo::Linalg.diagsvd(s, 4, 3)
+    #   pp d
+    #   # =>
+    #   # Numo::DFloat#shape=[4,3]
+    #   # [[4, 0, 0],
+    #   #  [0, 2, 0],
+    #   #  [0, 0, 1],
+    #   #  [0, 0, 0]]
+    #
+    # @param s [Numo::NArray] The singular values.
+    # @param m [Integer] The number of rows of the constructed matrix.
+    # @param n [Integer] The number of columns of the constructed matrix.
+    # @return [Numo::NArray] The m-by-n diagonal matrix with the singular values on the diagonal.
+    def diagsvd(s, m, n)
+      sz_s = s.size
+      raise ArgumentError, "size of s must be equal to m or n: s.size=#{sz_s}, m=#{m}, n=#{n}" if sz_s != m && sz_s != n
+
+      mat = s.class.zeros(m, n)
+      if sz_s == m
+        mat[true, 0...m] = s.diag
+      else
+        mat[0...n, true] = s.diag
+      end
+      mat
+    end
+
     # Computes an orthonormal basis for the range of `A` using SVD.
     #
     # @example

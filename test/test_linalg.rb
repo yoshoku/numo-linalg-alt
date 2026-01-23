@@ -459,6 +459,27 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_diagsvd
+    s = Numo::DFloat[4, 3, 2]
+    m = Numo::Linalg.diagsvd(s, 3, 4)
+
+    assert_kind_of(Numo::DFloat, m)
+    assert_equal(3, m.shape[0])
+    assert_equal(4, m.shape[1])
+    assert_equal(Numo::DFloat[[4, 0, 0, 0], [0, 3, 0, 0], [0, 0, 2, 0]], m)
+
+    s = Numo::SFloat[4, 3, 2]
+    m = Numo::Linalg.diagsvd(s, 4, 3)
+
+    assert_kind_of(Numo::SFloat, m)
+    assert_equal(4, m.shape[0])
+    assert_equal(3, m.shape[1])
+    assert_equal(Numo::SFloat[[4, 0, 0], [0, 3, 0], [0, 0, 2], [0, 0, 0]], m)
+    assert_match(/size of s must be equal to m or n/, assert_raises(ArgumentError) do
+      Numo::Linalg.diagsvd(s, 1, 2)
+    end.message)
+  end
+
   def test_orth
     a = Numo::DFloat[[1, 2, 3], [2, 4, 6], [-1, 1, -1]]
     u = Numo::Linalg.orth(a)
