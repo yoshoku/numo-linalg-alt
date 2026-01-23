@@ -3,6 +3,12 @@
 require 'test_helper'
 
 class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
+  LAPACK_PREFIXES = %w[s d c z].freeze
+  F32_PREFIXES = %w[s c].freeze
+  F64_PREFIXES = %w[d z].freeze
+  NARRAY_TYPES = [Numo::SFloat, Numo::DFloat, Numo::SComplex, Numo::DComplex].freeze
+  PREFIX_TYPE_PAIRS = LAPACK_PREFIXES.zip(NARRAY_TYPES)
+
   def setup
     Numo::NArray.srand(53_196)
   end
@@ -1017,6 +1023,22 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     error = (b - c.dot(x)).abs.max
 
     assert_operator(error, :<, 1e-5)
+  end
+
+  def test_lapack_pbtrf
+    PREFIX_TYPE_PAIRS.each do |prefix, dtype|
+      ab = dtype[[-1, 1, 0.5, 0.2], [4, 4, 4, 4]]
+      a = ab[1, true].diag + ab[0, 1...].diag(1) + ab[0, 1...].diag(-1)
+      c, info = Numo::Linalg::Lapack.send("#{prefix}pbtrf", ab)
+      u = dtype.zeros(*a.shape)
+      u[u.diag_indices] = c[1, true]
+      u[u.diag_indices(1)] = c[0, 1...]
+      error = (a - u.conjugate.transpose.dot(u)).abs.max
+
+      assert_equal(0, info)
+      assert_operator(error, :<, 1e-5) if F32_PREFIXES.include?(prefix)
+      assert_operator(error, :<, 1e-7) if F64_PREFIXES.include?(prefix)
+    end
   end
 
   def test_lapack_dsyev
