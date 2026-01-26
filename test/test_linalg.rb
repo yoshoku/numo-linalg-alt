@@ -226,6 +226,34 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-7)
   end
 
+  def test_cho_solve_banded
+    a = Numo::DFloat.new(4, 4).rand - 0.5
+    a = a.transpose.dot(a)
+    a = a.tril(1) * a.triu(-1)
+    ab = Numo::DFloat.zeros(2, 4)
+    ab[0, 1...] = a[a.diag_indices(1)]
+    ab[1, true] = a[a.diag_indices]
+    c = Numo::Linalg.cholesky_banded(ab)
+    b = Numo::DFloat.new(4, 2).rand
+    x = Numo::Linalg.cho_solve_banded(c, b)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    a = Numo::SComplex.new(4, 4).rand - (0.5 + 0.2i)
+    a = a.conjugate.transpose.dot(a)
+    a = a.tril(1) * a.triu(-1)
+    ab = Numo::SComplex.zeros(2, 4)
+    ab[0, 1...] = a[a.diag_indices(1)]
+    ab[1, true] = a[a.diag_indices]
+    c = Numo::Linalg.cholesky_banded(ab)
+    b = Numo::SComplex.new(4, 2).rand - (0.5 + 0.2i)
+    x = Numo::Linalg.cho_solve_banded(c, b)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_det
     a = Numo::DFloat[[0, 2, 3], [4, 5, 6], [7, 8, 9]]
     error = (Numo::Linalg.det(a) - 3).abs

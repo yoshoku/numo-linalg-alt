@@ -375,6 +375,41 @@ module Numo
       x
     end
 
+    # Solves linear equation `A * x = b` or `A * X = B` for `x` with the Cholesky factorization of banded matrix `A`.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   a = Numo::DFloat.new(4, 4).rand - 0.5
+    #   a = a.dot(a.transpose)
+    #   a = a.tril(1) * a.triu(-1)
+    #   ab = Numo::DFloat.zeros(2, 4)
+    #   ab[0, 1...] = a[a.diag_indices(1)]
+    #   ab[1, true] = a[a.diag_indices]
+    #   c = Numo::Linalg.cholesky_banded(ab)
+    #   b = Numo::DFloat.new(4, 2).rand
+    #   x = Numo::Linalg.cho_solve_banded(c, b)
+    #   pp (b - a.dot(x)).abs.max
+    #   # => 1.1102230246251565e-16
+    #
+    # @param ab [Numo::NArray] The m-by-n banded cholesky factor.
+    # @param b [Numo::NArray] The n right-hand side vector, or n-by-nrhs right-hand side matrix.
+    # @param uplo [String] Whether to compute the upper- or lower-triangular Cholesky factor ('U' or 'L').
+    # @return [Numo::NArray] The solution vector or matrix `X`.
+    def cho_solve_banded(ab, b, uplo: 'U')
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if ab.ndim != 2
+      raise Numo::NArray::ShapeError, "incompatible dimensions: ab.shape[1] = #{ab.shape[1]} != b.shape[0] = #{b.shape[0]}" if ab.shape[1] != b.shape[0]
+
+      bchr = blas_char(ab, b)
+      raise ArgumentError, "invalid array type: #{ab.class}" if bchr == 'n'
+
+      fnc = :"#{bchr}pbtrs"
+      x, info = Numo::Linalg::Lapack.send(fnc, ab, b.dup, uplo: uplo)
+      raise LapackError, "the #{-info}-th argument of potrs had illegal value" if info.negative?
+
+      x
+    end
+
     # Computes the determinant of matrix.
     #
     # @example
