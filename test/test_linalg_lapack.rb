@@ -1043,14 +1043,10 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
 
   def test_lapack_pbtrs
     PREFIX_TYPE_PAIRS.each do |prefix, dtype|
-      a = dtype.new(4, 4).rand - 0.5
-      a = a.transpose.conjugate.dot(a)
-      a = a.tril(1) * a.triu(-1)
-      ab = dtype.zeros(2, 4)
-      ab[0, 1...] = a[a.diag_indices(1)]
-      ab[1, true] = a[a.diag_indices]
+      ab = dtype[[-1, 1, 0.5, 0.2], [4, 4, 4, 4]]
+      a = ab[1, true].diag + ab[0, 1...].diag(1) + ab[0, 1...].diag(-1)
       c, _info = Numo::Linalg::Lapack.send("#{prefix}pbtrf", ab)
-      b = dtype.new(4).rand
+      b = dtype[0, 0.5, 2.1, 4.2]
       x, info = Numo::Linalg::Lapack.send("#{prefix}pbtrs", c, b.dup)
       error = (b - a.dot(x)).abs.max
 
