@@ -85,6 +85,7 @@
 #include "lapack/orgqr.h"
 #include "lapack/orgrq.h"
 #include "lapack/pbtrf.h"
+#include "lapack/pbtrs.h"
 #include "lapack/potrf.h"
 #include "lapack/potri.h"
 #include "lapack/potrs.h"
