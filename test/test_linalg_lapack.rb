@@ -1025,6 +1025,20 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_lapack_pbsv
+    PREFIX_TYPE_PAIRS.each do |prefix, dtype|
+      ab = dtype[[-1, 1, 0.5, 0.2], [4, 4, 4, 4]]
+      a = ab[1, true].diag + ab[0, 1...].diag(1) + ab[0, 1...].diag(-1)
+      b = dtype[-1, 0.5, 2.1, 4.2]
+      x, info = Numo::Linalg::Lapack.send("#{prefix}pbsv", ab, b.dup)
+      error = (b - a.dot(x)).abs.max
+
+      assert_equal(0, info)
+      assert_operator(error, :<, 1e-5) if F32_PREFIXES.include?(prefix)
+      assert_operator(error, :<, 1e-7) if F64_PREFIXES.include?(prefix)
+    end
+  end
+
   def test_lapack_pbtrf
     PREFIX_TYPE_PAIRS.each do |prefix, dtype|
       ab = dtype[[-1, 1, 0.5, 0.2], [4, 4, 4, 4]]
