@@ -277,6 +277,7 @@ void Init_linalg(void) {
   define_linalg_lapack_getrf(rb_mLinalgLapack);
   define_linalg_lapack_getri(rb_mLinalgLapack);
   define_linalg_lapack_getrs(rb_mLinalgLapack);
+  define_linalg_lapack_gbsv(rb_mLinalgLapack);
   define_linalg_lapack_trtrs(rb_mLinalgLapack);
   define_linalg_lapack_pbsv(rb_mLinalgLapack);
   define_linalg_lapack_potrf(rb_mLinalgLapack);

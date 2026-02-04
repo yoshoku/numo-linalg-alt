@@ -601,6 +601,24 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_cd, :<, 1e-5)
   end
 
+  def test_lapack_gbsv
+    PREFIX_TYPE_PAIRS.each do |prefix, dtype|
+      a = dtype[[5, 2, -1, 0, 0], [1, 4, 2, -1, 0], [0, 1, 3, 2, -1], [0, 0, 1, 2, 2], [0, 0, 0, 1, 1]]
+      b = dtype[0, 1, 2, 2, 3]
+      ab = dtype[[0, 0, -1, -1, -1], [0, 2, 2, 2, 2], [5, 4, 3, 2, 1], [1, 1, 1, 1, 0]]
+      kl = 1
+      ku = 2
+      tmp = dtype.zeros((2 * kl) + ku + 1, ab.shape[1])
+      tmp[kl..., true] = ab.dup
+      _, x, _, info = Numo::Linalg::Lapack.send("#{prefix}gbsv", tmp, b.dup, kl: kl, ku: ku)
+      error = (b - a.dot(x)).abs.max
+
+      assert_equal(0, info)
+      assert_operator(error, :<, 1e-5) if F32_PREFIXES.include?(prefix)
+      assert_operator(error, :<, 1e-7) if F64_PREFIXES.include?(prefix)
+    end
+  end
+
   def test_lapack_dgesvd
     x = Numo::DFloat.new(5, 3).rand.dot(Numo::DFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg::Lapack.dgesvd(x.dup, jobu: 'S', jobvt: 'S')

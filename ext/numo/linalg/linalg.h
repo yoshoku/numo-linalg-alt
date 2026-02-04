@@ -59,6 +59,7 @@
 #include "blas/gemv.h"
 #include "blas/nrm2.h"
 
+#include "lapack/gbsv.h"
 #include "lapack/gebal.h"
 #include "lapack/gees.h"
 #include "lapack/geev.h"
