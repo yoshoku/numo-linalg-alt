@@ -450,7 +450,68 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_ab, :<, 1e-7)
   end
 
-  def test_solvh_banded
+  def test_solve_banded
+    m = 5
+    kl = 1
+    ku = 2
+    ab = Numo::DFloat.new(kl + ku + 1, m).rand - 0.5
+    ab[0, 0...2] = 0.0
+    ab[1, 0] = 0.0
+    ab[2, true] += 1.0
+    ab[3, -1] = 0.0
+    b = Numo::DFloat.new(m).rand - 0.5
+    x = Numo::Linalg.solve_banded([kl, ku], ab, b)
+    a = ab[2, true].diag + ab[0, 2...].diag(2) + ab[1, 1...].diag(1) + ab[3, 0...-1].diag(-1)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    m = 8
+    kl = 2
+    ku = 1
+    ab = Numo::SFloat.new(kl + ku + 1, m).rand - 0.5
+    ab[0, 0] = 0.0
+    ab[1, true] += 1.0
+    ab[2, -1] = 0.0
+    ab[3, -2...] = 0.0
+    b = Numo::SFloat.new(m).rand - 0.5
+    a = ab[1, true].diag + ab[0, 1...].diag(1) + ab[2, 0...-1].diag(-1) + ab[3, 0...-2].diag(-2)
+    x = Numo::Linalg.solve_banded([kl, ku], ab, b)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+
+    m = 4
+    kl = 1
+    ku = 2
+    ab = Numo::DComplex.new(kl + ku + 1, m).rand - (0.5 + 0.5i)
+    ab[0, 0...2] = 0.0
+    ab[1, 0] = 0.0
+    ab[2, true] += 1.0
+    ab[3, -1] = 0.0
+    b = Numo::DComplex.new(m, 4).rand - (0.5 + 0.5i)
+    x = Numo::Linalg.solve_banded([kl, ku], ab, b)
+    a = ab[2, true].diag + ab[0, 2...].diag(2) + ab[1, 1...].diag(1) + ab[3, 0...-1].diag(-1)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    m = 4
+    kl = 1
+    ku = 1
+    ab = Numo::SComplex.new(kl + ku + 1, m).rand - (0.5 + 0.5i)
+    ab[0, 0] = 0.0
+    ab[1, true] += 1.0
+    ab[2, -1] = 0.0
+    b = Numo::SComplex.new(m).rand - (0.5 + 0.5i)
+    x = Numo::Linalg.solve_banded([kl, ku], ab, b)
+    a = ab[1, true].diag + ab[0, 1...].diag(1) + ab[2, 0...-1].diag(-1)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
+  def test_solveh_banded
     ab = Numo::DFloat.new(3, 5).rand
     ab[0, 0] = 0.0
     ab[0, 1] = 0.0

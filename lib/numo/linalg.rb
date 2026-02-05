@@ -964,6 +964,73 @@ module Numo
       x
     end
 
+    # Solves linear equation `A * x = b` or `A * X = B` for `x` assuming `A` is a banded matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   # Banded matrix A:
+    #   # [4 2 1 0 0]
+    #   # [1 5 2 1 0]
+    #   # [0 1 6 2 1]
+    #   # [0 0 1 7 2]
+    #   # [0 0 0 1 8]
+    #   #
+    #   ab = Numo::DFloat[[0, 0, 1, 1, 1],
+    #                     [0, 2, 2, 2, 2],
+    #                     [4, 5, 6, 7, 8],
+    #                     [1, 1, 1, 1, 0]]
+    #
+    #   b = Numo::DFloat[1, 2, 3, 4, 5]
+    #
+    #   x = Numo::Linalg.solve_banded([1, 2], ab, b)
+    #   pp x
+    #   # =>
+    #   # Numo::DFloat#shape=[5]
+    #   # [0.0832055, 0.211273, 0.244632, 0.371166, 0.578604]
+    #
+    #   a = ab[2, true].diag + ab[0, 2...].diag(2) + ab[1, 1...].diag(1) + ab[3, 0...-1].diag(-1)
+    #   pp a
+    #   # =>
+    #   # Numo::DFloat#shape=[5,5]
+    #   # [[4, 2, 1, 0, 0],
+    #   #  [1, 5, 2, 1, 0],
+    #   #  [0, 1, 6, 2, 1],
+    #   #  [0, 0, 1, 7, 2],
+    #   #  [0, 0, 0, 1, 8]]
+    #   pp a.dot(x)
+    #   # =>
+    #   # Numo::DFloat#shape=[5]
+    #   # [1, 2, 3, 4, 5]
+    #
+    # @param l_u [Array<Integer>] The number of sub-diagonals and super-diagonals of the banded matrix `A`.
+    # @param ab [Numo::NArray] The (l + u + 1)-by-n array representing the banded matrix `A`.
+    # @param b [Numo::NArray] The n right-hand side vector, or n-by-nrhs right-hand side matrix.
+    # @return [Numo::NArray] The solution vector / matrix `X`.
+    def solve_banded(l_u, ab, b)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if ab.ndim != 2
+
+      unless l_u.is_a?(Array) && l_u.size == 2 && l_u.all?(Integer)
+        raise ArgumentError, 'l_u must be an array of two integers'
+      end
+
+      kl, ku = l_u
+      raise Numo::NArray::ShapeError, "ab.shape[0] must be equal to l + u + 1: #{ab.shape[0]} != #{kl} + #{ku} + 1" if ab.shape[0] != kl + ku + 1
+
+      bchr = blas_char(ab, b)
+      raise ArgumentError, "invalid array type: #{a.class}, #{b.class}" if bchr == 'n'
+
+      gbsv = :"#{bchr}gbsv"
+
+      tmp = ab.class.zeros((2 * kl) + ku + 1, ab.shape[1])
+      tmp[kl..., true] = ab
+      _, x, _, info = Numo::Linalg::Lapack.send(gbsv, tmp, b.dup, kl: kl, ku: ku)
+      raise LapackError, "wrong value is given to the #{-info}-th argument of #{gbsv} used internally" if info.negative?
+      raise LapackError, 'the leading minor of the matrix is not positive definite' if info.positive?
+
+      x
+    end
+
     # Solves linear equation `A * x = b` or `A * X = B` for `x` assuming `A` is
     # a symmetric/Hermitian positive-definite banded matrix.
     #

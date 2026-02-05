@@ -13,12 +13,12 @@ struct _gbsv_option {
     int* ipiv = (int*)NDL_PTR(lp, 2);                                                          \
     int* info = (int*)NDL_PTR(lp, 3);                                                          \
     struct _gbsv_option* opt = (struct _gbsv_option*)(lp->opt_ptr);                            \
-    const lapack_int n = (lapack_int)NDL_SHAPE(lp, 1)[0];                                      \
-    const lapack_int nhrs = lp->args[1].ndim == 1 ? 1 : (lapack_int)NDL_SHAPE(lp, 1)[1];       \
-    const lapack_int ldab = 2 * opt->kl + opt->ku + 1;                                         \
-    const lapack_int ldb = nhrs;                                                               \
+    const lapack_int n = (lapack_int)NDL_SHAPE(lp, 0)[1];                                      \
+    const lapack_int nrhs = lp->args[1].ndim == 1 ? 1 : (lapack_int)NDL_SHAPE(lp, 1)[1];       \
+    const lapack_int ldab = n;                                                                 \
+    const lapack_int ldb = nrhs;                                                               \
     const lapack_int i = LAPACKE_##fLapackFunc(                                                \
-      opt->matrix_layout, n, opt->kl, opt->ku, nhrs, ab, ldab, ipiv, b, ldb                    \
+      opt->matrix_layout, n, opt->kl, opt->ku, nrhs, ab, ldab, ipiv, b, ldb                    \
     );                                                                                         \
     *info = (int)i;                                                                            \
   }                                                                                            \
@@ -64,8 +64,7 @@ struct _gbsv_option {
       return Qnil;                                                                             \
     }                                                                                          \
                                                                                                \
-    const size_t n = NA_SHAPE(b_nary)[0];                                                      \
-    size_t shape[1] = { n };                                                                   \
+    size_t shape[1] = { NA_SHAPE(ab_nary)[1] };                                                \
     ndfunc_arg_in_t ain[2] = { { OVERWRITE, 2 }, { OVERWRITE, b_n_dims } };                    \
     ndfunc_arg_out_t aout[2] = { { numo_cInt32, 1, shape }, { numo_cInt32, 0 } };              \
     ndfunc_t ndf = { _iter_##fLapackFunc, NO_LOOP | NDF_EXTRACT, 2, 2, ain, aout };            \
