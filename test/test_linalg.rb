@@ -450,6 +450,32 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error_ab, :<, 1e-7)
   end
 
+  def test_solvh_banded
+    ab = Numo::DFloat.new(3, 5).rand
+    ab[0, 0] = 0.0
+    ab[0, 1] = 0.0
+    ab[1, 0] = 0.0
+    ab[2, true] += 1.0
+    b = Numo::DFloat.new(5).rand - 0.5
+    x = Numo::Linalg.solveh_banded(ab, b)
+    a = ab[2, true].diag + ab[1, 1...].diag(1) + ab[0, 2...].diag(2) + ab[1, 1...].diag(-1) + ab[0, 2...].diag(-2)
+    error = (b - a.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    ab = Numo::SComplex.new(3, 5).rand - (0.5 + 0.5i)
+    ab[0, true] = ab[0, true].real + 3.0
+    ab[1, -1] = 0.0
+    ab[2, -2...] = 0.0
+    b = Numo::SComplex.new(5).rand - (0.5 + 0.5i)
+    x = Numo::Linalg.solveh_banded(ab, b, lower: true)
+    a = ab[0, true].diag + ab[1, 0...-1].diag(1) + ab[2, 0...-2].diag(2) +
+        ab[1, 0...-1].conj.diag(-1) + ab[2, 0...-2].conj.diag(-2)
+    error = (b - a.conj.dot(x)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_svd
     x = Numo::DFloat.new(5, 3).rand.dot(Numo::DFloat.new(3, 2).rand)
     s, u, vt, = Numo::Linalg.svd(x, driver: 'sdd', job: 'S')

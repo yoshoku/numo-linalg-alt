@@ -964,6 +964,60 @@ module Numo
       x
     end
 
+    # Solves linear equation `A * x = b` or `A * X = B` for `x` assuming `A` is
+    # a symmetric/Hermitian positive-definite banded matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   # Banded matrix A:
+    #   # [4 2 1 0 0]
+    #   # [2 5 2 1 0]
+    #   # [1 2 6 2 1]
+    #   # [0 1 2 7 2]
+    #   # [0 0 1 2 8]
+    #   #
+    #   # The banded representation ab for lower-banded form is:
+    #   ab = Numo::DFloat[[4, 5, 6, 7, 8],
+    #                     [2, 2, 2, 2, 0],
+    #                     [1, 1, 1, 0, 0]]
+    #   # The banded representation ab for upper-banded form is:
+    #   # ab = Numo::DFloat[[0, 0, 1, 1, 1],
+    #   #                   [0, 2, 2, 2, 2],
+    #   #                   [4, 5, 6, 7, 8]]
+    #   b = Numo::DFloat[1, 2, 3, 4, 5]
+    #
+    #   x = Numo::Linalg.solveh_banded(ab, b, lower: true)
+    #   pp x
+    #   # =>
+    #   # Numo::DFloat#shape=[5]
+    #   # [0.0903361, 0.210084, 0.218487, 0.331933, 0.514706]
+    #
+    #   a = ab[0, true].diag + ab[1, 0...-1].diag(1) + ab[2, 0...-2].diag(2) +
+    #    ab[1, 0...-1].diag(-1) + ab[2, 0...-2].diag(-2)
+    #   pp a.dot(x)
+    #   # => Numo::DFloat#shape=[5]
+    #   # [1, 2, 3, 4, 5]
+    #
+    # @param ab [Numo::NArray] The m-by-n array representing the banded matrix `A`.
+    # @param b [Numo::NArray] The n right-hand side vector, or n-by-k right-hand side matrix.
+    # @param lower [Boolean] The flag indicating whether to be in the lower-banded form.
+    # @return [Numo::NArray] The solusion vector / matrix `X`.
+    def solveh_banded(ab, b, lower: false)
+      raise Numo::NArray::ShapeError, 'input array a must be 2-dimensional' if ab.ndim != 2
+
+      bchr = blas_char(ab, b)
+      raise ArgumentError, "invalid array type: #{a.class}, #{b.class}" if bchr == 'n'
+
+      pbsv = :"#{bchr}pbsv"
+      uplo = lower ? 'L' : 'U'
+      x, info = Numo::Linalg::Lapack.send(pbsv, ab.dup, b.dup, uplo: uplo)
+      raise LapackError, "wrong value is given to the #{info}-th argument of #{pbsv} used internally" if info.negative?
+      raise LapackError, 'the leading minor of the matrix is not positive definite' if info.positive?
+
+      x
+    end
+
     # Computes the Singular Value Decomposition (SVD) of a matrix: `A = U * S * V^T`
     #
     # @example
