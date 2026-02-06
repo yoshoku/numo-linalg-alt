@@ -1,3 +1,10 @@
+## [[0.8.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.7.2...v0.8.0)] - 2026-02-06
+
+- relax numo-narray-alt version constraint to >= 0.9.10, < 0.11.0.
+- add `diagsvd` module function to Numo::Linalg.
+- add `cholesky_banded` and `cho_solve_banded` module functions to Numo::Linalg.
+- add `solve_banded` and `solveh_banded` module functions to Numo::Linalg.
+
 ## [[0.7.2](https://github.com/yoshoku/numo-linalg-alt/compare/v0.7.1...v0.7.2)] - 2026-01-16
 
 - bump OpenBLAS from 0.3.30 to 0.3.31.
