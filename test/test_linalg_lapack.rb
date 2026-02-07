@@ -1273,7 +1273,8 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
       assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
       assert_operator(error_z, :<, 1e-7) if dtype == Numo::DFloat
 
-      _, m, wv, zv, _, info = Numo::Linalg::Lapack.send("#{prefix}sbevx", ab.dup, range: 'V', vl: w[1], vu: w[3])
+      _, m, wv, zv, _, info = Numo::Linalg::Lapack.send("#{prefix}sbevx", ab.dup,
+                                                        range: 'V', vl: w[1] - 1e-2, vu: w[3] - 1e-2)
       error_w = (w[1...3] - wv[0...m]).abs.max
       error_z = (z[true, 1...3].abs - zv[true, 0...m].abs).abs.max
 
