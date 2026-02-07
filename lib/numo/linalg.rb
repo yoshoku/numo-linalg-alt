@@ -1699,6 +1699,41 @@ module Numo
       eigh(a, b, vals_only: true, vals_range: vals_range, uplo: uplo, turbo: turbo)[0]
     end
 
+    # Computes the eigenvalues and eigenvectors of a symmetric / Hermitian banded matrix.
+    #
+    # @param ab [Numo::NArray] The (kd+1)-by-n array representing the banded matrix.
+    # @param vals_only [Boolean] The flag indicating whether to compute only eigenvalues.
+    # @param vals_range [Range/Array]
+    #   The range of indices of the eigenvalues (in ascending order) and corresponding eigenvectors to be returned.
+    #   If nil, all eigenvalues and eigenvectors are computed.
+    # @param lower [Boolean] The flag indicating whether to be in the lower-banded form.
+    # @return [Array<Numo::NArray>] The eigenvalues and eigenvectors.
+    def eig_banded(ab, vals_only: false, vals_range: nil, lower: false)
+      raise Numo::NArray::ShapeError, 'input array ab must be 2-dimensional' if ab.ndim != 2
+
+      bchr = blas_char(ab)
+      raise ArgumentError, "invalid array type: #{ab.class}" if bchr == 'n'
+
+      jobz = vals_only ? 'N' : 'V'
+      uplo = lower ? 'L' : 'U'
+      fnc = %w[d s].include?(bchr) ? "#{bchr}sbevx" : "#{bchr}hbevx"
+
+      if vals_range.nil?
+        _, _, vals, vecs, _, info = Numo::Linalg::Lapack.send(fnc.to_sym, ab.dup, range: 'A', jobz: jobz, uplo: uplo)
+      else
+        il = vals_range.first(1)[0] + 1
+        iu = vals_range.last(1)[0] + 1
+        _, _, vals, vecs, _, info = Numo::Linalg::Lapack.send(fnc.to_sym, ab.dup,
+                                                              range: 'I', jobz: jobz, uplo: uplo, il: il, iu: iu)
+      end
+
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+
+      vecs = nil if vals_only
+
+      [vals, vecs]
+    end
+
     # Computes the Bunch-Kaufman decomposition of a symmetric / Hermitian matrix.
     # The factorization has the form `A = U * D * U^T` or `A = L * D * L^T`,
     # where `U` (or `L`) is a product of permutation and unit upper

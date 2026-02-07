@@ -785,6 +785,45 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator((v - r).abs.max, :<, 1e-7)
   end
 
+  def test_eig_banded
+    ab = Numo::DFloat.new(3, 5).rand
+    ab[0, 0] = 0.0
+    ab[0, 1] = 0.0
+    ab[1, 0] = 0.0
+    ab[2, true] += 1.0
+    w, v = Numo::Linalg.eig_banded(ab)
+    a = ab[2, true].diag + ab[1, 1...].diag(1) + ab[0, 2...].diag(2) + ab[1, 1...].diag(-1) + ab[0, 2...].diag(-2)
+    error = (a - v.dot(w.diag).dot(v.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    wo, vo = Numo::Linalg.eig_banded(ab, vals_only: true)
+    error_w = (w - wo).abs.max
+
+    assert_operator(error_w, :<, 1e-7)
+    assert_nil(vo)
+
+    wr, vr = Numo::Linalg.eig_banded(ab, vals_range: [1, 2])
+    error_w = (w[1..2] - wr).abs.max
+    error_v = (v[true, 1..2].abs - vr.abs).abs.max
+
+    assert_equal(2, wr.size)
+    assert_equal([5, 2], vr.shape)
+    assert_operator(error_w, :<, 1e-7)
+    assert_operator(error_v, :<, 1e-7)
+
+    ab = Numo::SComplex.new(3, 5).rand - (0.5 + 0.5i)
+    ab[0, true] = ab[0, true].real + 3.0
+    ab[1, -1] = 0.0
+    ab[2, -2...] = 0.0
+    w, v = Numo::Linalg.eig_banded(ab, lower: true)
+    a = ab[0, true].diag + ab[1, 0...-1].diag(1) + ab[2, 0...-2].diag(2) +
+        ab[1, 0...-1].conj.diag(-1) + ab[2, 0...-2].conj.diag(-2)
+    error = (a - v.conj.dot(w.diag).dot(v.transpose)).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_ldl
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5
