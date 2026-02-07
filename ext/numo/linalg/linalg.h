@@ -74,6 +74,7 @@
 #include "lapack/getri.h"
 #include "lapack/getrs.h"
 #include "lapack/gges.h"
+#include "lapack/hbevx.h"
 #include "lapack/heev.h"
 #include "lapack/heevd.h"
 #include "lapack/heevr.h"
