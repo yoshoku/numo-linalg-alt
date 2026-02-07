@@ -824,6 +824,36 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_eigvals_banded
+    ab = Numo::DFloat.new(3, 5).rand
+    ab[0, 0] = 0.0
+    ab[0, 1] = 0.0
+    ab[1, 0] = 0.0
+    ab[2, true] += 1.0
+    w, = Numo::Linalg.eig_banded(ab)
+    z = Numo::Linalg.eigvals_banded(ab)
+    error = (w - z).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    w, = Numo::Linalg.eig_banded(ab, vals_range: [1, 3])
+    z = Numo::Linalg.eigvals_banded(ab, vals_range: [1, 3])
+    error = (w - z).abs.max
+
+    assert_operator(error, :<, 1e-7)
+
+    ab = Numo::SComplex.new(3, 5).rand - (0.5 + 0.5i)
+    ab[0, true] = ab[0, true].real + 3.0
+    ab[1, -1] = 0.0
+    ab[2, -2...] = 0.0
+    w, = Numo::Linalg.eig_banded(ab, lower: true)
+    z = Numo::Linalg.eigvals_banded(ab, lower: true)
+
+    error = (w - z).abs.max
+
+    assert_operator(error, :<, 1e-5)
+  end
+
   def test_ldl
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5

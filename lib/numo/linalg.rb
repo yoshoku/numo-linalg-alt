@@ -1701,6 +1701,33 @@ module Numo
 
     # Computes the eigenvalues and eigenvectors of a symmetric / Hermitian banded matrix.
     #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   # Banded matrix A:
+    #   # [4 2 1 0 0]
+    #   # [2 5 2 1 0]
+    #   # [1 2 6 2 1]
+    #   # [0 1 2 7 2]
+    #   # [0 0 1 2 8]
+    #   #
+    #   ab = Numo::DFloat[[0, 0, 1, 1, 1],
+    #                     [0, 2, 2, 2, 2],
+    #                     [4, 5, 6, 7, 8]]
+    #
+    #   w, v = Numo::Linalg.eig_banded(ab)
+    #
+    #   b = v.dot(w.diag).dot(v.transpose)
+    #   b[b<1e-10] = 0.0
+    #   pp b
+    #   # =>
+    #   # Numo::DFloat#shape=[5,5]
+    #   # [[4, 2, 1, 0, 0],
+    #   #  [2, 5, 2, 1, 0],
+    #   #  [1, 2, 6, 2, 1],
+    #   #  [0, 1, 2, 7, 2],
+    #   #  [0, 0, 1, 2, 8]]
+    #
     # @param ab [Numo::NArray] The (kd+1)-by-n array representing the banded matrix.
     # @param vals_only [Boolean] The flag indicating whether to compute only eigenvalues.
     # @param vals_range [Range/Array]
@@ -1732,6 +1759,18 @@ module Numo
       vecs = nil if vals_only
 
       [vals, vecs]
+    end
+
+    # Computes the eigenvalues a symmetric / Hermitian banded matrix.
+    #
+    # @param ab [Numo::NArray] The (kd+1)-by-n array representing the banded matrix.
+    # @param vals_range [Range/Array]
+    #   The range of indices of the eigenvalues (in ascending order) to be returned.
+    #   If nil, all eigenvalues are computed.
+    # @param lower [Boolean] The flag indicating whether to be in the lower-banded form.
+    # @return [Numo::NArray] The eigenvalues.
+    def eigvals_banded(ab, vals_range: nil, lower: false)
+      eig_banded(ab, vals_only: true, vals_range: vals_range, lower: lower)[0]
     end
 
     # Computes the Bunch-Kaufman decomposition of a symmetric / Hermitian matrix.
