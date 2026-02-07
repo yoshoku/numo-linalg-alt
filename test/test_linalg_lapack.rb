@@ -1244,6 +1244,69 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     # assert(mv < n)
   end
 
+  def test_lapack_sbevx # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    [Numo::SFloat, Numo::DFloat].zip(%w[s d]).each do |dtype, prefix|
+      ab = dtype.new(3, 5).rand - 0.5
+      ab[0, 0] = 0.0
+      ab[0, 1] = 0.0
+      ab[1, 0] = 0.0
+      ab[2, true] = 2.0
+      a = ab[2, true].diag + ab[1, 1...].diag(1) + ab[1, 1...].diag(-1) + ab[0, 2...].diag(2) + ab[0, 2...].diag(-2)
+
+      _, _, w, z, _, info = Numo::Linalg::Lapack.send("#{prefix}sbevx", ab.dup, range: 'A')
+      error = (a - z.dot(w.diag).dot(z.transpose)).abs.max
+
+      assert_equal(0, info)
+      assert_operator(error, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error, :<, 1e-7) if dtype == Numo::DFloat
+
+      _, m, wi, zi, _, info = Numo::Linalg::Lapack.send("#{prefix}sbevx", ab.dup, range: 'I', il: 2, iu: 4)
+      error_w = (w[1..3] - wi).abs.max
+      error_z = (z[true, 1..3].abs - zi.abs).abs.max
+
+      assert_equal(0, info)
+      assert_equal(3, m)
+      assert_equal(3, wi.size)
+      assert_equal([5, 3], zi.shape)
+      assert_operator(error_w, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_z, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
+      assert_operator(error_z, :<, 1e-7) if dtype == Numo::DFloat
+
+      _, m, wv, zv, _, info = Numo::Linalg::Lapack.send("#{prefix}sbevx", ab.dup, range: 'V', vl: w[1], vu: w[3])
+      error_w = (w[1...3] - wv[0...m]).abs.max
+      error_z = (z[true, 1...3].abs - zv[true, 0...m].abs).abs.max
+
+      assert_equal(0, info)
+      assert_equal(2, m)
+      assert_operator(error_w, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_z, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
+      assert_operator(error_z, :<, 1e-7) if dtype == Numo::DFloat
+
+      _, _, wn, _, _, info = Numo::Linalg::Lapack.send("#{prefix}sbevx", ab.dup, range: 'A', jobz: 'N')
+      error_w = (w - wn).abs.max
+
+      assert_equal(0, info)
+      assert_operator(error_w, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
+
+      ab_l = dtype.zeros(3, 5)
+      ab_l[0, true] = ab[2, true]
+      ab_l[1, 0..3] = ab[1, 1..4]
+      ab_l[2, 0..2] = ab[0, 2..4]
+      _, _, wl, zl, _, info = Numo::Linalg::Lapack.send("#{prefix}sbevx", ab_l.dup, range: 'A', uplo: 'L')
+      error_w = (w - wl).abs.max
+      error_z = (z - zl).abs.max
+
+      assert_equal(0, info)
+      assert_operator(error_w, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_z, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
+      assert_operator(error_z, :<, 1e-7) if dtype == Numo::DFloat
+    end
+  end
+
   def test_lapack_dsygv
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5
