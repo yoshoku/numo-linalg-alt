@@ -854,6 +854,40 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_operator(error, :<, 1e-5)
   end
 
+  def test_eigh_tridiagonal
+    d = Numo::DFloat.new(5).rand
+    e = Numo::DFloat.new(4).rand - 0.5
+    w, v = Numo::Linalg.eigh_tridiagonal(d, e)
+    a = d.diag + e.diag(1) + e.diag(-1)
+    error = (a - v.dot(w.diag).dot(v.transpose)).abs.max
+
+    assert_equal(5, w.size)
+    assert_equal([5, 5], v.shape)
+    assert_operator(error, :<, 1e-7)
+
+    wo, vo = Numo::Linalg.eigh_tridiagonal(d, e, vals_only: true)
+    error_w = (w - wo).abs.max
+
+    assert_operator(error_w, :<, 1e-7)
+    assert_nil(vo)
+
+    wr, vr = Numo::Linalg.eigh_tridiagonal(d, e, vals_range: [1, 3])
+    error_w = (w[1..3] - wr).abs.max
+    error_v = (v[true, 1..3].abs - vr.abs).abs.max
+
+    assert_equal(3, wr.size)
+    assert_equal([5, 3], vr.shape)
+    assert_operator(error_w, :<, 1e-7)
+    assert_operator(error_v, :<, 1e-7)
+
+    assert_match(/does not support complex arrays/, assert_raises(ArgumentError) do
+      Numo::Linalg.eigh_tridiagonal(Numo::DComplex.new(5).rand, Numo::DComplex.new(4).rand)
+    end.message)
+    assert_match(/does not support complex arrays/, assert_raises(ArgumentError) do
+      Numo::Linalg.eigh_tridiagonal(Numo::SComplex.new(5).rand, Numo::SComplex.new(4).rand)
+    end.message)
+  end
+
   def test_ldl
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5

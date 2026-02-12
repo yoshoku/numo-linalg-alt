@@ -1773,6 +1773,77 @@ module Numo
       eig_banded(ab, vals_only: true, vals_range: vals_range, lower: lower)[0]
     end
 
+    # Computes the eigenvalues and eigenvectors of a real symmetric tridiagonal matrix.
+    #
+    # @example
+    #   require 'numo/linalg'
+    #
+    #   # symmetric tridiagonal matrix A:
+    #   # [4 2 0 0 0]
+    #   # [2 5 2 0 0]
+    #   # [0 2 6 2 0]
+    #   # [0 0 2 7 2]
+    #   # [0 0 0 2 8]
+    #   d = Numo::DFloat[4, 5, 6, 7, 8]
+    #   e = Numo::DFloat[2, 2, 2, 2]
+    #
+    #   w, v = Numo::Linalg.eigh_tridiagonal(d, e)
+    #
+    #   b = v.dot(w.diag).dot(v.transpose)
+    #   b[b<1e-10] = 0.0
+    #   pp b
+    #   # =>
+    #   # Numo::DFloat#shape=[5,5]
+    #   # [[4, 2, 0, 0, 0],
+    #   #  [2, 5, 2, 0, 0],
+    #   #  [0, 2, 6, 2, 0],
+    #   #  [0, 0, 2, 7, 2],
+    #   #  [0, 0, 0, 2, 8]]
+    #
+    # @param d [Numo::NArray] The 1-dimensional array of length n representing the diagonal elements of the matrix.
+    # @param e [Numo::NArray] The 1-dimensional array of length n-1 representing the off-diagonal elements of the matrix.
+    # @param vals_only [Boolean] The flag indicating whether to compute only eigenvalues.
+    # @param vals_range [Range/Array]
+    #   The range of indices of the eigenvalues (in ascending order) and corresponding eigenvectors to be returned.
+    #   If nil, all eigenvalues and eigenvectors are computed.
+    # @return [Array<Numo::NArray>] The eigenvalues and eigenvectors.
+    def eigh_tridiagonal(d, e, vals_only: false, vals_range: nil) # rubocop:disable Metrics/AbcSize
+      raise Numo::NArray::ShapeError, 'input array d must be 1-dimensional' if d.ndim != 1
+      raise Numo::NArray::ShapeError, 'input array e must be 1-dimensional' if e.ndim != 1
+
+      if d.shape[0] != e.shape[0] + 1
+        raise Numo::NArray::ShapeError,
+              "incompatible dimensions: d.shape[0] (#{d.shape[0]}) != e.shape[0] + 1 (#{e.shape[0] + 1})"
+      end
+
+      if d.is_a?(Numo::DComplex) || d.is_a?(Numo::SComplex) || e.is_a?(Numo::DComplex) || e.is_a?(Numo::SComplex)
+        raise ArgumentError, 'eigh_tridiagonal does not support complex arrays'
+      end
+
+      bchr = blas_char(d)
+      raise ArgumentError, "invalid array type: #{d.class}" if bchr == 'n'
+
+      jobz = vals_only ? 'N' : 'V'
+      fnc = "#{bchr}stevx"
+
+      e_w_zero = e.concatenate(0)
+
+      if vals_range.nil?
+        _, vals, vecs, _, info = Numo::Linalg::Lapack.send(fnc.to_sym, d.dup, e_w_zero, range: 'A', jobz: jobz)
+      else
+        il = vals_range.first(1)[0] + 1
+        iu = vals_range.last(1)[0] + 1
+        _, vals, vecs, _, info = Numo::Linalg::Lapack.send(fnc.to_sym, d.dup, e_w_zero,
+                                                           range: 'I', jobz: jobz, il: il, iu: iu)
+      end
+
+      raise LapackError, "the #{info.abs}-th argument of #{fnc} had illegal value" if info.negative?
+
+      vecs = nil if vals_only
+
+      [vals, vecs]
+    end
+
     # Computes the Bunch-Kaufman decomposition of a symmetric / Hermitian matrix.
     # The factorization has the form `A = U * D * U^T` or `A = L * D * L^T`,
     # where `U` (or `L`) is a product of permutation and unit upper
