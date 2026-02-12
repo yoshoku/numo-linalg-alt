@@ -93,6 +93,7 @@
 #include "lapack/potri.h"
 #include "lapack/potrs.h"
 #include "lapack/sbevx.h"
+#include "lapack/stevx.h"
 #include "lapack/syev.h"
 #include "lapack/syevd.h"
 #include "lapack/syevr.h"

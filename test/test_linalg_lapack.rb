@@ -1373,6 +1373,56 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def test_lapack_stevx
+    [Numo::SFloat, Numo::DFloat].zip(%w[s d]).each do |dtype, prefix|
+      d = dtype.new(5).rand
+      e = dtype.new(4).rand - 0.5
+      a = d.diag + e.diag(1) + e.diag(-1)
+      e = e.concatenate(0)
+
+      m, w, z, _, info = Numo::Linalg::Lapack.send("#{prefix}stevx", d.dup, e.dup, range: 'A')
+      error = (a - z.dot(w.diag).dot(z.transpose)).abs.max
+
+      assert_equal(0, info)
+      assert_equal(5, m)
+      assert_operator(error, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error, :<, 1e-7) if dtype == Numo::DFloat
+
+      m, wi, zi, _, info = Numo::Linalg::Lapack.send("#{prefix}stevx", d.dup, e.dup, range: 'I', il: 2, iu: 4)
+      error_w = (w[1..3] - wi).abs.max
+      error_z = (z[true, 1..3].abs - zi.abs).abs.max
+
+      assert_equal(0, info)
+      assert_equal(3, m)
+      assert_equal(3, wi.size)
+      assert_equal([5, 3], zi.shape)
+      assert_operator(error_w, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_z, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
+      assert_operator(error_z, :<, 1e-7) if dtype == Numo::DFloat
+
+      m, wv, zv, _, info = Numo::Linalg::Lapack.send("#{prefix}stevx", d.dup, e.dup,
+                                                     range: 'V', vl: w[1] - 1e-2, vu: w[3] - 1e-2)
+      error_w = (w[1...3] - wv[0...m]).abs.max
+      error_z = (z[true, 1...3].abs - zv[true, 0...m].abs).abs.max
+
+      assert_equal(0, info)
+      assert_equal(2, m)
+      assert_operator(error_w, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_z, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
+      assert_operator(error_z, :<, 1e-7) if dtype == Numo::DFloat
+
+      m, wn, _, _, info = Numo::Linalg::Lapack.send("#{prefix}stevx", d.dup, e.dup, range: 'A', jobz: 'N')
+      error_w = (w - wn).abs.max
+
+      assert_equal(0, info)
+      assert_equal(5, m)
+      assert_operator(error_w, :<, 1e-5) if dtype == Numo::SFloat
+      assert_operator(error_w, :<, 1e-7) if dtype == Numo::DFloat
+    end
+  end
+
   def test_lapack_dsygv
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5

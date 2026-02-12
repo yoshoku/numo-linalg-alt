@@ -293,6 +293,7 @@ void Init_linalg(void) {
   define_linalg_lapack_heevr(rb_mLinalgLapack);
   define_linalg_lapack_sbevx(rb_mLinalgLapack);
   define_linalg_lapack_hbevx(rb_mLinalgLapack);
+  define_linalg_lapack_stevx(rb_mLinalgLapack);
   define_linalg_lapack_sygv(rb_mLinalgLapack);
   define_linalg_lapack_hegv(rb_mLinalgLapack);
   define_linalg_lapack_sygvd(rb_mLinalgLapack);
