@@ -888,6 +888,23 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
     end.message)
   end
 
+  def test_eigvalsh_tridiagonal
+    d = Numo::DFloat.new(5).rand
+    e = Numo::DFloat.new(4).rand - 0.5
+    w, = Numo::Linalg.eigh_tridiagonal(d, e)
+    z = Numo::Linalg.eigvalsh_tridiagonal(d, e)
+    error = (w - z).abs.max
+
+    assert_equal(5, w.size)
+    assert_operator(error, :<, 1e-7)
+
+    zr = Numo::Linalg.eigvalsh_tridiagonal(d, e, vals_range: [1, 3])
+    error = (w[1..3] - zr).abs.max
+
+    assert_equal(3, zr.size)
+    assert_operator(error, :<, 1e-7)
+  end
+
   def test_ldl
     n = 5
     a = Numo::DFloat.new(n, n).rand - 0.5

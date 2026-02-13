@@ -1844,6 +1844,18 @@ module Numo
       [vals, vecs]
     end
 
+    # Computes the eigenvalues of a real symmetric tridiagonal matrix.
+    #
+    # @param d [Numo::NArray] The 1-dimensional array of length n representing the diagonal elements of the matrix.
+    # @param e [Numo::NArray] The 1-dimensional array of length n-1 representing the off-diagonal elements of the matrix.
+    # @param vals_range [Range/Array]
+    #   The range of indices of the eigenvalues (in ascending order) and corresponding eigenvectors to be returned.
+    #   If nil, all eigenvalues and eigenvectors are computed.
+    # @return [Numo::NArray] The eigenvalues.
+    def eigvalsh_tridiagonal(d, e, vals_range: nil)
+      eigh_tridiagonal(d, e, vals_only: true, vals_range: vals_range)[0]
+    end
+
     # Computes the Bunch-Kaufman decomposition of a symmetric / Hermitian matrix.
     # The factorization has the form `A = U * D * U^T` or `A = L * D * L^T`,
     # where `U` (or `L`) is a product of permutation and unit upper
