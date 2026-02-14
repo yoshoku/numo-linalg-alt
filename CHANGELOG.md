@@ -1,3 +1,9 @@
+## [[0.9.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.8.0...v0.9.0)] - 2026-02-14
+
+- add `eigh_tridiagonal` and `eigvalsh_tridiagonal` module functions to Numo::Linalg.
+- add `eig_banded` and `eigvals_banded` module functions to Numo::Linalg.
+- fix CI workflow to correctly run ruby_memcheck.
+
 ## [[0.8.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.7.2...v0.8.0)] - 2026-02-06
 
 - relax numo-narray-alt version constraint to >= 0.9.10, < 0.11.0.
