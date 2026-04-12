@@ -8,6 +8,8 @@ class TestLinalg < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_that_it_has_a_version_number
+    p Numo::Linalg::Lapack.ilaver.join('.')
+
     refute_nil ::Numo::Linalg::VERSION
   end
 
