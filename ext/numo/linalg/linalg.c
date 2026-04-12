@@ -202,6 +202,16 @@ static VALUE linalg_dot(VALUE self, VALUE a_, VALUE b_) {
   return ret;
 }
 
+static VALUE linalg_lapack_ilaver(VALUE self) {
+  lapack_int vers_major;
+  lapack_int vers_minor;
+  lapack_int vers_patch;
+  LAPACKE_ilaver(&vers_major, &vers_minor, &vers_patch);
+  VALUE version_arr =
+    rb_ary_new3(3, INT2NUM(vers_major), INT2NUM(vers_minor), INT2NUM(vers_patch));
+  return version_arr;
+}
+
 void Init_linalg(void) {
   rb_require("numo/narray");
 
@@ -256,6 +266,13 @@ void Init_linalg(void) {
    *   Numo::Linalg::Blas.call(:gemv, a, b)
    */
   rb_define_singleton_method(rb_mLinalgBlas, "call", linalg_blas_call, -1);
+  /**
+   * Returns the version of LAPACKE used in background library.
+   *
+   * @overload ilaver() -> Array<Integer>
+   *   @return [Array<Integer>] [major, minor, patch]
+   */
+  rb_define_module_function(rb_mLinalgLapack, "ilaver", linalg_lapack_ilaver, 0);
 
   define_linalg_blas_dot(rb_mLinalgBlas);
   define_linalg_blas_dot_sub(rb_mLinalgBlas);

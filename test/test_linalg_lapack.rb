@@ -1911,6 +1911,16 @@ class TestLinalgLapack < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert_equal(0, info)
   end
 
+  def test_lapack_ilaver
+    arr = Numo::Linalg::Lapack.ilaver
+
+    assert_kind_of(Array, arr)
+    assert_equal(3, arr.size)
+    assert_kind_of(Integer, arr[0])
+    assert_kind_of(Integer, arr[1])
+    assert_kind_of(Integer, arr[2])
+  end
+
   def xtrf_permutation_u(lud, ipiv, hermitian: false)
     n = lud.shape[0]
     u = lud.triu.tap { |m| m[m.diag_indices] = 1 }
