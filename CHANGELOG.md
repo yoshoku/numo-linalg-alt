@@ -1,3 +1,8 @@
+## [[0.9.1](https://github.com/yoshoku/numo-linalg-alt/compare/v0.9.0...v0.9.1)] - 2026-04-26
+
+- bump OpenBLAS from 0.3.30 to 0.3.33.
+- add `ilaver` module function to Numo::Linalg::Lapack.
+
 ## [[0.9.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.8.0...v0.9.0)] - 2026-02-14
 
 - add `eigh_tridiagonal` and `eigvalsh_tridiagonal` module functions to Numo::Linalg.
