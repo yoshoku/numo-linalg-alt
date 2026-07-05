@@ -1,3 +1,7 @@
+## [[0.10.0](https://github.com/yoshoku/numo-linalg-alt/compare/v0.9.1...v0.10.0)] - 2026-07-05
+
+- relax numo-narray-alt upper bound to < 0.12.0.
+
 ## [[0.9.1](https://github.com/yoshoku/numo-linalg-alt/compare/v0.9.0...v0.9.1)] - 2026-04-26
 
 - bump OpenBLAS from 0.3.30 to 0.3.33.

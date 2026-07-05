@@ -5,6 +5,6 @@ module Numo
   # Numo::Linalg Alternative (numo-linalg-alt) is an alternative to Numo::Linalg.
   module Linalg
     # The version of numo-linalg-alt you install.
-    VERSION = '0.9.1'
+    VERSION = '0.10.0'
   end
 end
